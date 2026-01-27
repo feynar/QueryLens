@@ -41,3 +41,23 @@ src/scripts/inspect_plan_ops.py
 Updated /plans/ directory
 
 Git commit – “Week 3: Add plan operator inspection helper script for operator exploration”.
+
+Week 4 — Dataset Engineering and Execution Plan Experiment Design
+
+Hours Logged: 15
+
+Activities:
+Designed a controlled SQL Server dataset to support reproducible execution plan analysis. Implemented a relational schema and indexing strategy intended to influence optimizer behavior under varying data volumes. Created seeded datasets at multiple scales to force predictable transitions between index seeks, index scans, and join operators. Developed a baseline query set targeting common performance scenarios including sargable filters, non-sargable predicates, and join operations. Documented expected execution plan changes as dataset size increases and mapped observed plan operators to existing prototype detection rules. Verified that generated execution plans align with anticipated optimizer behavior under different cardinality conditions.
+
+Outcome:
+Reproducible dataset and experimental framework enabling validation of execution plan analysis rules based on data volume and query structure.
+
+Evidence:
+
+datasets/schema.sql
+
+datasets/seed_data.sql
+
+datasets/test_queries.sql
+
+Sample .sqlplan files generated from controlled experiments
