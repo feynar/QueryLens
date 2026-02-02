@@ -1,0 +1,37 @@
+[
+    {
+        "query_id": "Q1_Sargable_seek",
+        "rule": "select_star",
+        "confirmed": true,
+        "confidence": "medium",
+        "reason": "Scan suggests large data retrieval"
+    },
+    {
+        "query_id": "Q2_NonSargable_scan",
+        "rule": "select_star",
+        "confirmed": true,
+        "confidence": "medium",
+        "reason": "Scan suggests large data retrieval"
+    },
+    {
+        "query_id": "Q2_NonSargable_scan",
+        "rule": "non_sargable_predicate",
+        "confirmed": true,
+        "confidence": "high",
+        "reason": "Scan with high row count confirms filter inefficiency"
+    },
+    {
+        "query_id": "Q4_Merge_Join_Sort",
+        "rule": "complex_join",
+        "confirmed": true,
+        "confidence": "medium",
+        "reason": "Hash Join indicates possible missing index or large join"
+    },
+    {
+        "query_id": "Q5_Explicit_sort",
+        "rule": "select_star",
+        "confirmed": true,
+        "confidence": "medium",
+        "reason": "Scan suggests large data retrieval"
+    }
+]

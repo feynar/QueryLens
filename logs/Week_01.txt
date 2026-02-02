@@ -1,0 +1,9 @@
+Week 1 — Development Environment Setup
+
+Hours Logged: 6
+
+Activities:
+Installed Microsoft SQL Server 2019 Developer Edition and SQL Server Management Studio (SSMS) to provide a local database environment for generating execution plans. Installed Python 3.11 (64-bit), pip, and Git to establish the development toolchain. Configured required Python libraries including pyodbc, antlr4-python3-runtime, and lxml. Initialized the QueryLens Git repository with structured directories for source code, datasets, plans, logs, and artifacts. Verified successful imports of all required dependencies and confirmed SQL Server connectivity readiness.
+
+Outcome:
+Fully operational development environment and initialized repository.

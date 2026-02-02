@@ -1,122 +1,55 @@
-import sys
+"""
+QueryLens Prototype — Execution Plan Analyzer (Week 5)
+
+Parses SQL Server execution plan (.sqlplan XML) files and extracts
+operators and estimated row counts for correlation.
+"""
+
+import json
 import os
+import sys
 import xml.etree.ElementTree as ET
-from typing import List, Dict, Optional
 
 
-THRESHOLD_ROWS = 1000  # lower for demo; can be raised later
-
-
-def _strip_ns(tag: str) -> str:
-    """Remove XML namespace from tag."""
-    return tag.split("}", 1)[-1] if "}" in tag else tag
-
-
-def _to_float(val: Optional[str]) -> float:
-    try:
-        return float(val)
-    except (TypeError, ValueError):
-        return 0.0
-
-
-def extract_operators(plan_path: str) -> List[Dict[str, Optional[str]]]:
-    """Extract RelOp operators from a SQL Server execution plan."""
-    tree = ET.parse(plan_path)
+def parse_plan(file_path):
+    tree = ET.parse(file_path)
     root = tree.getroot()
 
-    operators = []
+    ns = {"p": "http://schemas.microsoft.com/sqlserver/2004/07/showplan"}
 
-    for elem in root.iter():
-        if _strip_ns(elem.tag) == "RelOp":
-            operators.append(
-                {
-                    "node_id": elem.attrib.get("NodeId"),
-                    "physical_op": elem.attrib.get("PhysicalOp"),
-                    "logical_op": elem.attrib.get("LogicalOp"),
-                    "estimated_rows": elem.attrib.get("EstimateRows"),
-                    "estimated_cost": elem.attrib.get("EstimatedTotalSubtreeCost"),
-                }
-            )
+    findings = []
+    query_id = os.path.splitext(os.path.basename(file_path))[0]
 
-    return operators
+    for relop in root.findall(".//p:RelOp", ns):
+        physical_op = relop.get("PhysicalOp")
+        est_rows = relop.get("EstimateRows")
+        subtree_cost = relop.get("EstimatedTotalSubtreeCost")
 
+        findings.append({
+            "query_id": query_id,
+            "operator": physical_op,
+            "estimated_rows": float(est_rows) if est_rows else 0,
+            "subtree_cost": float(subtree_cost) if subtree_cost else 0
+        })
 
-def flag_issues(operators: List[Dict[str, Optional[str]]]) -> List[Dict[str, Optional[str]]]:
-    """Apply simple prototype performance rules."""
-    issues = []
-
-    for op in operators:
-        phys = op["physical_op"]
-        est_rows = _to_float(op["estimated_rows"])
-
-        if phys == "Table Scan":
-            issues.append(
-                {
-                    "node_id": op["node_id"],
-                    "issue": "Table Scan detected",
-                    "detail": "Full table scan may indicate a missing index or non-sargable predicate.",
-                    "estimated_rows": op["estimated_rows"],
-                    "estimated_cost": op["estimated_cost"],
-                }
-            )
-
-        elif phys in ("Index Scan", "Clustered Index Scan") and est_rows > THRESHOLD_ROWS:
-            issues.append(
-                {
-                    "node_id": op["node_id"],
-                    "issue": f"{phys} with high estimated row count",
-                    "detail": "Large row scan suggests inefficient filtering or index design.",
-                    "estimated_rows": op["estimated_rows"],
-                    "estimated_cost": op["estimated_cost"],
-                }
-            )
-
-    return issues
+    return findings
 
 
-def main():
-    print("\n=== QueryLens Prototype: Execution Plan Analysis ===\n")
+def save_results(results):
+    os.makedirs("artifacts", exist_ok=True)
+    out_path = os.path.join("artifacts", "runtime_results.json")
 
-    if len(sys.argv) < 2:
-        print("ERROR: No execution plan file provided.")
-        print("Usage: python prototype_plan_analyzer.py <file.sqlplan>")
-        sys.exit(1)
+    with open(out_path, "w") as f:
+        json.dump(results, f, indent=4)
 
-    plan_path = sys.argv[1]
-
-    if not os.path.exists(plan_path):
-        print("ERROR: File does not exist:", plan_path)
-        sys.exit(1)
-
-    print("Plan file:", plan_path)
-
-    operators = extract_operators(plan_path)
-
-    print("\nOperators found in plan:")
-    for op in operators:
-        print(
-            f"  [Node {op['node_id']}] "
-            f"{op['physical_op']} ({op['logical_op']}) "
-            f"rows={op['estimated_rows']} "
-            f"cost={op['estimated_cost']}"
-        )
-
-    issues = flag_issues(operators)
-
-    print("\nDetected issues (prototype rules):")
-    if not issues:
-        print("  None detected.")
-    else:
-        for issue in issues:
-            print(
-                f"  [Node {issue['node_id']}] {issue['issue']}\n"
-                f"    {issue['detail']}\n"
-                f"    estimated rows={issue['estimated_rows']}, "
-                f"cost={issue['estimated_cost']}\n"
-            )
-
-    print("Analysis complete.\n")
+    print(f"Runtime results saved to {out_path}")
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) != 2:
+        print("Usage: python prototype_plan_analyzer.py <plan.sqlplan>")
+        sys.exit(1)
+
+    plan_file = sys.argv[1]
+    results = parse_plan(plan_file)
+    save_results(results)

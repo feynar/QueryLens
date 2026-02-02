@@ -1,0 +1,14 @@
+Week 2 — Execution Plan Analysis Prototype
+
+Hours Logged: 15
+
+Activities:
+Developed an initial Python prototype to parse SQL Server execution plan (.sqlplan) XML files. Implemented logic to extract RelOp nodes, physical and logical operators, estimated row counts, and subtree cost values. Created rule-based detection for identifying high-row-count Index Scan and Clustered Index Scan operators as potential performance risks. Generated sample execution plans from SQL Server using sargable and non-sargable query variants and validated prototype output against expected execution plan operator behavior.
+
+Outcome:
+Working runtime execution plan analyzer capable of reading .sqlplan files and flagging scan-based inefficiencies.
+
+Evidence:
+src/scripts/prototype_plan_analyzer.py
+plans/query1_good.sqlplan
+plans/query2_nonsargable.sqlplan

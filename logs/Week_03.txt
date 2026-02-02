@@ -1,0 +1,14 @@
+Week 3 — Plan Operator Inspection and Dataset Preparation
+
+Hours Logged: 14
+
+Activities:
+Implemented a supporting inspection script to enumerate all RelOp operators in execution plans for exploratory analysis of SQL Server plan structures. Used this script to confirm operator variety across single-table and join queries. Prepared initial test query set including baseline sargable filter, non-sargable filter, and join query examples. Verified correct detection of Index Seek, Index Scan, Hash Match, Merge Join, Sort, and Compute Scalar operators in sample plans. Updated repository structure to store prototype scripts and plan samples in version control.
+
+Outcome:
+Supporting operator inspection tooling completed and baseline test queries established for later static and correlation testing.
+Evidence:
+
+src/scripts/inspect_plan_ops.py
+
+Updated /plans/ directory

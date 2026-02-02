@@ -1,0 +1,27 @@
+[
+    {
+        "query_id": "Q1_Sargable_seek",
+        "issue_type": "SELECT_STAR",
+        "description": "Query selects all columns using *"
+    },
+    {
+        "query_id": "Q2_NonSargable_scan",
+        "issue_type": "SELECT_STAR",
+        "description": "Query selects all columns using *"
+    },
+    {
+        "query_id": "Q2_NonSargable_scan",
+        "issue_type": "NON_SARGABLE_PREDICATE",
+        "description": "Function applied to column in WHERE clause"
+    },
+    {
+        "query_id": "Q4_Merge_Join_Sort",
+        "issue_type": "COMPLEX_JOIN",
+        "description": "Query contains multiple JOIN operations"
+    },
+    {
+        "query_id": "Q5_Explicit_sort",
+        "issue_type": "SELECT_STAR",
+        "description": "Query selects all columns using *"
+    }
+]

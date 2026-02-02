@@ -12,7 +12,7 @@ WHERE CreatedDate >= '2024-01-01';
 -- Q2: Index Scan (non-sargable)
 SELECT *
 FROM Customers
-WHERE YEAR(CreatedDate) = 2024;
+WHERE YEAR(CreatedDate) = 2025;
 
 -- Expected: Index Scan + Compute Scalar
 

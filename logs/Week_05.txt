@@ -1,0 +1,21 @@
+Week 5 — Static/Runtime Correlation and Evaluation Pipeline
+
+Hours Logged: 10
+
+Activities:
+Implemented a static SQL analysis module to detect query anti-patterns including SELECT *, non-sargable predicates, and complex join structures. Extended the execution plan analyzer to integrate with static analysis outputs. Developed a rule-based correlation engine that maps static warnings to supporting runtime execution plan evidence (e.g., scans, sorts, hash joins). Created a batch driver script to process multiple query/plan pairs and aggregate results. Implemented an evaluation metrics generator to compute confirmation statistics (confirmed vs. suppressed warnings) from correlation outputs. Validated the full pipeline using experimental queries and verified correct generation of structured JSON artifacts.
+
+Outcome:
+End-to-end analysis pipeline completed, linking static SQL issues with execution plan behavior and producing measurable evaluation metrics.
+
+Evidence:
+
+src/scripts/static_analyzer.py  
+src/scripts/prototype_plan_analyzer.py  
+src/scripts/correlator.py  
+src/scripts/evaluation_metrics.py  
+run_full_analysis.py  
+artifacts/static_results.json  
+artifacts/runtime_results.json  
+artifacts/correlation_output.json  
+artifacts/evaluation_metrics.json  
