@@ -1,0 +1,13 @@
+Week 6 — Static Analyzer Validation and Testing
+Hours Logged: 14
+
+Activities:
+Developed automated unit tests to verify static SQL detection rules. Implemented structured test cases for SELECT * detection, non-sargable predicate detection, and complex join detection using Python’s unittest framework. Created a categorized static SQL test suite (10 queries) representing both implemented rules and planned future rule coverage. Refactored project structure to support modular imports and reproducible test execution. Executed tests to confirm analyzer correctness and rule stability.
+
+Outcome:
+Static analysis component is now formally validated through automated testing, improving reliability and experimental rigor.
+
+Evidence:
+tests/test_static_rules.py  
+datasets/test_queries_static.sql  
+src/analysis/static_analyzer.py  

@@ -10,12 +10,12 @@ End-to-end analysis pipeline completed, linking static SQL issues with execution
 
 Evidence:
 
-src/scripts/static_analyzer.py  
-src/scripts/prototype_plan_analyzer.py  
-src/scripts/correlator.py  
-src/scripts/evaluation_metrics.py  
-run_full_analysis.py  
-artifacts/static_results.json  
-artifacts/runtime_results.json  
-artifacts/correlation_output.json  
-artifacts/evaluation_metrics.json  
+src/analysis/static_analyzer.py  
+src/analysis/prototype_plan_analyzer.py  
+src/correlation/correlator.py  
+src/evaluation/evaluation_metrics.py  
+src/run_full_analysis.py  
+artifacts/analyzer/static_results.json  
+artifacts/analyzer/plan_results.json  
+artifacts/reports/correlation_output.json  
+artifacts/eval/evaluation_metrics.json  

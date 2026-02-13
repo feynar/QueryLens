@@ -1,0 +1,65 @@
+[
+    {
+        "query_id": "Q1_Sargable_seek",
+        "rule": "select_star",
+        "confirmed": true,
+        "confidence": "medium",
+        "max_estimated_rows": 50000.0,
+        "operators_observed": [
+            "Clustered Index Scan"
+        ],
+        "reason": "Wide data retrieval causing scan"
+    },
+    {
+        "query_id": "Q2_NonSargable_scan",
+        "rule": "select_star",
+        "confirmed": true,
+        "confidence": "medium",
+        "max_estimated_rows": 46439.0,
+        "operators_observed": [
+            "Clustered Index Scan"
+        ],
+        "reason": "Wide data retrieval causing scan"
+    },
+    {
+        "query_id": "Q2_NonSargable_scan",
+        "rule": "non_sargable_predicate",
+        "confirmed": true,
+        "confidence": "high",
+        "max_estimated_rows": 46439.0,
+        "operators_observed": [
+            "Clustered Index Scan"
+        ],
+        "reason": "Large scan confirms non-sargable filter"
+    },
+    {
+        "query_id": "Q4_Merge_Join_Sort",
+        "rule": "complex_join",
+        "confirmed": true,
+        "confidence": "medium",
+        "max_estimated_rows": 200000.0,
+        "operators_observed": [
+            "Parallelism",
+            "Sort",
+            "Hash Match",
+            "Parallelism",
+            "Index Scan",
+            "Parallelism",
+            "Clustered Index Scan"
+        ],
+        "reason": "Hash join indicates expensive join"
+    },
+    {
+        "query_id": "Q5_Explicit_sort",
+        "rule": "select_star",
+        "confirmed": true,
+        "confidence": "medium",
+        "max_estimated_rows": 200000.0,
+        "operators_observed": [
+            "Parallelism",
+            "Sort",
+            "Clustered Index Scan"
+        ],
+        "reason": "Wide data retrieval causing scan"
+    }
+]
