@@ -1,0 +1,50 @@
+[
+    {
+        "query": "schema.sql",
+        "regex_issues": [],
+        "ast_issues": [],
+        "regex_count": 0,
+        "ast_count": 0,
+        "agreement": true
+    },
+    {
+        "query": "seed_data.sql",
+        "regex_issues": [],
+        "ast_issues": [],
+        "regex_count": 0,
+        "ast_count": 0,
+        "agreement": true
+    },
+    {
+        "query": "test_queries.sql",
+        "regex_issues": [
+            "COMPLEX_JOIN",
+            "NON_SARGABLE_PREDICATE",
+            "SELECT_STAR"
+        ],
+        "ast_issues": [
+            "COMPLEX_JOIN",
+            "NON_SARGABLE_PREDICATE",
+            "SELECT_STAR"
+        ],
+        "regex_count": 3,
+        "ast_count": 3,
+        "agreement": true
+    },
+    {
+        "query": "test_queries_static.sql",
+        "regex_issues": [
+            "COMPLEX_JOIN",
+            "NON_SARGABLE_PREDICATE",
+            "SELECT_STAR"
+        ],
+        "ast_issues": [
+            "COMPLEX_JOIN",
+            "NON_SARGABLE_PREDICATE",
+            "SELECT_STAR"
+        ],
+        "regex_count": 3,
+        "ast_count": 3,
+        "agreement": true
+    }
+]

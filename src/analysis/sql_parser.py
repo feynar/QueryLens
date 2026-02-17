@@ -13,6 +13,12 @@ def parse_sql_text(sql_text):
 
 
 def parse_sql_file(path):
-    with open(path, "r", encoding="utf-8") as f:
-        sql = f.read()
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            sql = f.read()
+    except UnicodeDecodeError:
+        with open(path, "r", encoding="cp1252") as f:
+            sql = f.read()
+
     return parse_sql_text(sql)
+

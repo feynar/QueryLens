@@ -1,31 +1,27 @@
 """
-QueryLens Static Analyzer — Hybrid Engine
-Week 7: Regex + AST Integration
+QueryLens — AST Static SQL Analyzer (Week 8)
+Grammar-aware SQL detection using ANTLR parse tree.
+Produces same output format as legacy regex analyzer.
 """
 
 import os
-
-from src.analysis.legacy_regex_rules import analyze_sql_regex
-from src.analysis.sql_parser import parse_sql_file
-from src.analysis.ast_visitor import QueryLensASTVisitor
+from src.analysis.sql_parser import parse_sql_file, parse_sql_text
+from src.analysis.feature_extractor import FeatureExtractor
+from src.analysis.static_rules import detect_issues_from_features
 
 
 def analyze_sql(file_path):
-    findings = []
+    tree, _ = parse_sql_file(file_path)
+    extractor = FeatureExtractor()
+    features = extractor.extract(tree)
 
     query_id = os.path.splitext(os.path.basename(file_path))[0]
+    return detect_issues_from_features(features, query_id)
 
-    # 1️⃣ Legacy regex detection (unchanged behavior)
-    findings.extend(analyze_sql_regex(file_path))
 
-    # 2️⃣ AST-based detection (new capability)
-    try:
-        tree, parser = parse_sql_file(file_path)
-        visitor = QueryLensASTVisitor(query_id)
-        visitor.visit(tree)
-        findings.extend(visitor.findings)
-    except Exception:
-        # Parser errors should NEVER break pipeline
-        pass
-
-    return findings
+# Helper used by unit tests
+def analyze_with_ast_text(sql_text):
+    tree, _ = parse_sql_text(sql_text)
+    extractor = FeatureExtractor()
+    features = extractor.extract(tree)
+    return detect_issues_from_features(features, "test_query")

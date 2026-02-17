@@ -2,26 +2,16 @@ Week 7 — Static Analyzer Refactor for AST Integration
 
 Hours Logged: 14
 
-Objective
+Activities:
+Refactored the static SQL analysis component to support future grammar-based analysis while preserving existing detection behavior. Separated heuristic detection logic into a dedicated legacy module and updated the analyzer interface to support modular analysis engines. Updated automated tests to reference the refactored structure and verified system stability through full test execution. Confirmed that architectural changes introduced no functional regressions.
 
-Prepare the static analysis architecture for migration from heuristic regex-based detection to grammar-aware AST analysis using ANTLR, while preserving existing behavior and test stability.
+Outcome:
+Static analysis architecture is now modularized, enabling integration of an ANTLR-based parser while maintaining backward-compatible regex detection for baseline evaluation.
 
-Activities
-
-Refactored the static analysis module to separate legacy detection logic from the future parser-driven pipeline. Renamed static_analyzer.py to legacy_regex_rules.py and updated the primary function interface to reflect its role as the baseline heuristic engine. Updated unit tests to reference the refactored module and verified that all existing detection behavior remains unchanged. Validated that the refactor introduced no regressions by executing the full automated test suite.
-
-Outcome
-
-Static analysis is now modularized into a legacy rule engine that can operate independently from future AST-based analysis. The project structure supports side-by-side evaluation of regex and grammar-aware detection methods without breaking existing functionality.
-
-Evidence
-
+Evidence:
 src/analysis/legacy_regex_rules.py
-
 tests/test_static_rules.py
-
 Successful automated test execution
 
-Next Steps
-
-Integrate ANTLR-generated T-SQL parser, implement parser adapter, and introduce AST-based rule detection alongside the legacy engine.
+Next Steps:
+Integrate ANTLR T-SQL parser and implement AST-based detection rules alongside legacy analysis.

@@ -1,0 +1,9 @@
+{
+    "total_queries": 4,
+    "agreements": 4,
+    "disagreements": 0,
+    "agreement_rate": 1.0,
+    "total_regex_issues": 6,
+    "total_ast_issues": 6,
+    "issue_count_difference": 0
+}

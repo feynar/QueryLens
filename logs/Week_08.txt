@@ -1,0 +1,20 @@
+Week 8 — AST Feature Extraction and Rule Engine Implementation
+Hours Logged: 16
+
+Activities:
+Implemented grammar-aware static SQL analysis using ANTLR-generated T-SQL parser. Developed an AST feature extraction layer to identify SELECT * usage, function-based predicates, and join complexity from parse tree structure. Integrated AST detection into the QueryLens analysis pipeline while preserving output compatibility with the legacy regex engine. Implemented a comparison framework to evaluate detection equivalence between heuristic and grammar-based analysis. Executed controlled experiments across dataset queries and generated structured comparison results.
+
+Outcome:
+QueryLens now supports grammar-aware static analysis with validated behavioral equivalence to the baseline regex engine. This establishes a research foundation for improved detection precision and future rule expansion.
+
+Evidence:
+src/analysis/sql_parser.py
+src/analysis/feature_extractor.py
+src/analysis/static_rules.py
+src/analysis/compare_engines.py
+src/analysis/static_analyzer.py
+src/analysis/comparison_summary.py
+tests/test_ast_rules.py
+artifacts/eval/comparison_summary.json
+artifacts/eval/regex_vs_ast_comparison.json
+Successful automated test execution
