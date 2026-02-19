@@ -1,0 +1,7 @@
+{
+  "test_queries_static.sql": [
+    "SELECT_STAR",
+    "NON_SARGABLE_PREDICATE",
+    "COMPLEX_JOIN"
+  ]
+}

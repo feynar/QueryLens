@@ -1,0 +1,23 @@
+Week 9 — Static Analysis Accuracy Evaluation
+
+Hours Logged: 14
+
+Objective
+
+Quantitatively evaluate the AST-based static SQL analyzer by comparing detected issues against labeled ground truth datasets and producing reproducible accuracy metrics.
+
+Activities
+
+Implemented a static analysis evaluation framework to measure detection accuracy against labeled SQL datasets. Created a structured ground truth specification defining expected static issues for evaluation queries. Developed an evaluation engine to compute true positives, false positives, false negatives, precision, recall, and F1-score. Generated structured JSON accuracy reports and a formatted evaluation table suitable for research documentation. Validated the evaluation pipeline using both controlled test queries and experimental workload queries.
+
+Outcome
+
+QueryLens now includes a reproducible empirical evaluation pipeline that quantitatively measures static analysis effectiveness. The system supports experimental comparison of detection approaches and produces research-ready metrics.
+
+Evidence
+
+src/analysis/evaluate_static_accuracy.py
+src/analysis/generate_evaluation_table.py
+datasets/ground_truth_static.json
+artifacts/eval/static_accuracy_report.json
+artifacts/eval/static_accuracy_table.txt
