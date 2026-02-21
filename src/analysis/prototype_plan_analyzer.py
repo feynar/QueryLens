@@ -31,7 +31,42 @@ def parse_plan(file_path):
 
     return findings
 
+# -------------------------------------------------
+# Week 10: Operator → runtime issue classification
+# -------------------------------------------------
+def classify_runtime_issues(plan_rows):
+    """
+    Converts raw operators into runtime performance evidence.
+    """
 
+    runtime_issues = []
+
+    for row in plan_rows:
+        op = (row.get("operator") or "").upper()
+
+        if "TABLE SCAN" in op or "INDEX SCAN" in op:
+            runtime_issues.append({"issue_type": "FULL_SCAN"})
+
+        elif "HASH MATCH" in op:
+            runtime_issues.append({"issue_type": "HASH_JOIN"})
+
+        elif "SORT" in op:
+            runtime_issues.append({"issue_type": "SORT"})
+
+        elif "MERGE JOIN" in op:
+            runtime_issues.append({"issue_type": "MERGE_JOIN"})
+
+    return runtime_issues
+
+def analyze_plan_file(plan_path):
+    """
+    Required by full_pipeline_evaluator.
+    Returns runtime evidence in normalized format.
+    """
+
+    raw_rows = parse_plan(plan_path)
+    return classify_runtime_issues(raw_rows)
+    
 def save_results(results):
     out_dir = ARTIFACTS / "analyzer"
     out_dir.mkdir(parents=True, exist_ok=True)

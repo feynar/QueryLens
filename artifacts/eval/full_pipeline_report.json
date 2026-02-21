@@ -1,0 +1,39 @@
+{
+    "per_query_results": [
+        {
+            "query": "Q1_Sargable_seek.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q2_NonSargable_scan.sql",
+            "static_warnings": 2,
+            "confirmed_warnings": 2,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q3_Hash_Join.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q4_Merge_Join_Sort.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q5_Explicit_sort.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        }
+    ],
+    "global_metrics": {
+        "total_static_warnings": 4,
+        "total_confirmed_warnings": 4,
+        "confirmation_rate": 1.0
+    }
+}
