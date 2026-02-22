@@ -1,0 +1,3 @@
+rule,total,confirmed,confirmation_rate
+select_star,3,0,0.0
+non_sargable_predicate,1,0,0.0

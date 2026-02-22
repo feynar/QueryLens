@@ -1,0 +1,22 @@
+Week 11 — Runtime Correlation Accuracy Evaluation
+
+Hours Logged: 12
+
+Objective
+
+Evaluate the effectiveness of runtime validation by measuring how frequently statically detected SQL anti-patterns are confirmed by execution plan evidence.
+
+Activities
+
+Implemented a rule-level correlation analysis framework to quantify alignment between static detections and runtime execution behavior. Developed a correlation matrix generator that aggregates static warnings and confirmed runtime matches by rule category. Integrated static analysis results, execution plan parsing, and correlation logic into a unified evaluation workflow. Generated structured CSV output summarizing total detections, confirmed detections, and confirmation rates per rule. Validated the correlation pipeline using experimental workload queries and produced research-ready metrics for system evaluation.
+
+Outcome
+
+QueryLens now supports empirical measurement of runtime validation effectiveness. The system provides quantitative evidence of how often static anti-pattern warnings correspond to observable execution plan behavior, enabling research-level evaluation of static-runtime alignment.
+
+Evidence
+
+src/analysis/generate_correlation_matrix.py
+src/analysis/full_pipeline_evaluator.py
+artifacts/correlation_matrix.csv
+artifacts/eval/full_pipeline_report.json
