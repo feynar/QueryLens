@@ -6,7 +6,12 @@ Links SQL anti-patterns to execution plan operators.
 import json
 from pathlib import Path
 
-HIGH_ROW_THRESHOLD = 5000
+from src.analysis.threshold_config import (
+    HIGH_ROW_THRESHOLD,
+    MIN_SCAN_COUNT,
+    ALLOW_HASH_JOIN_CONFIRMATION,
+    ALLOW_SORT_CONFIRMATION
+)
 
 
 # ----------------------------
@@ -58,6 +63,13 @@ def correlate(static_findings, plan_findings):
     has_hash_join = any("Hash" in o for o in operators)
     has_sort = "Sort" in operators
     max_rows = max(rows, default=0)
+
+    scan_count = sum(o in ["Index Scan", "Clustered Index Scan"] for o in operators)
+
+    has_large_scan = (
+        scan_count >= MIN_SCAN_COUNT
+        and max_rows > HIGH_ROW_THRESHOLD
+)
 
     for finding in static_findings:
         rule = normalize_static(finding)

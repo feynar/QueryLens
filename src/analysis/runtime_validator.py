@@ -1,10 +1,11 @@
 """
-QueryLens — Full Pipeline Evaluator (Week 10)
+QueryLens — Runtime Validation Evaluator (Week 10)
 
-Runs the complete analysis pipeline:
-SQL → AST Static Analysis → Execution Plan Analysis → Correlation → Metrics
+Evaluates whether detected SQL anti-patterns
+are confirmed by execution plan evidence.
 
-Evaluates how many static warnings are confirmed by runtime evidence.
+Dataset:
+Runtime workload = plans/
 """
 
 import os
@@ -17,7 +18,8 @@ from src.correlation.correlator import correlate
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-PLAN_DIR = os.path.join(PROJECT_ROOT, "plans")
+RUNTIME_WORKLOAD_DIR = os.path.join(PROJECT_ROOT, "plans")
+
 OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "eval", "full_pipeline_report.json")
 
 
@@ -89,9 +91,9 @@ def compute_global_metrics(rows):
 def run_full_evaluation():
     results = []
 
-    for file in os.listdir(PLAN_DIR):
+    for file in os.listdir(RUNTIME_WORKLOAD_DIR):
         if file.endswith(".sql"):
-            sql_path = os.path.join(PLAN_DIR, file)
+            sql_path = os.path.join(RUNTIME_WORKLOAD_DIR, file)
             results.append(evaluate_query(sql_path))
 
     metrics = compute_global_metrics(results)
@@ -106,7 +108,7 @@ def run_full_evaluation():
     with open(OUTPUT_PATH, "w") as f:
         json.dump(report, f, indent=4)
 
-    print("✔ Full pipeline evaluation complete")
+    print("✔ Runtime Validation evaluation complete")
     print(json.dumps(metrics, indent=4))
 
 

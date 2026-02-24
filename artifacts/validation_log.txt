@@ -1,0 +1,11 @@
+QueryLens False Positive Analysis
+================================
+
+
+Summary
+-------
+Total static warnings evaluated: 4
+False positives detected: 0
+
+No false positives were observed in the runtime validation workload.
+All static warnings were supported by execution plan evidence.
