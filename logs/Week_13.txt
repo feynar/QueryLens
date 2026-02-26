@@ -1,0 +1,21 @@
+Week 13 — HTML Diagnostic Report Generation
+
+Hours Logged: 12
+
+Objective
+
+Transform runtime validation results into a structured, human-readable HTML report suitable for research presentation and analysis.
+
+Activities
+
+Implemented an HTML report generator that converts runtime validation metrics into a formatted diagnostic report. Integrated global validation metrics and per-query confirmation results into a structured tabular layout. Designed a presentation layer summarizing the QueryLens analysis pipeline and validation methodology. Automated report generation from pipeline output to ensure reproducibility of research artifacts. Validated report accuracy against evaluation metrics produced by the runtime validation pipeline.
+
+Outcome
+
+QueryLens now produces presentation-quality diagnostic reports that communicate validation results in a structured and interpretable format. The system supports reproducible research reporting and provides a clear interface for evaluating agreement between static analysis and execution plan behavior.
+
+Evidence
+
+src/analysis/html_report_generator.py
+artifacts/reports/runtime_validation_report.html
+artifacts/eval/full_pipeline_report.json

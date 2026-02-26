@@ -1,0 +1,76 @@
+
+    <html>
+    <head>
+        <title>QueryLens Runtime Validation Report</title>
+        <style>
+            body { font-family: Arial; margin: 40px; }
+            h1 { color: #2c3e50; }
+            table { border-collapse: collapse; width: 80%; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+            th { background-color: #f4f4f4; }
+        </style>
+    </head>
+
+    <body>
+        <h1>QueryLens Runtime Validation Report</h1>
+
+        <h2>Global Metrics</h2>
+        <p><b>Total Static Warnings:</b> 4</p>
+        <p><b>Total Confirmed Warnings:</b> 4</p>
+        <p><b>Confirmation Rate:</b> 1.0</p>
+
+        <h2>Per-Query Results</h2>
+        <table>
+            <tr>
+                <th>Query</th>
+                <th>Static Warnings</th>
+                <th>Confirmed Warnings</th>
+                <th>Confirmation Rate</th>
+            </tr>
+            
+        <tr>
+            <td>Q1_Sargable_seek.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+        <tr>
+            <td>Q2_NonSargable_scan.sql</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1.0</td>
+        </tr>
+        
+        <tr>
+            <td>Q3_Hash_Join.sql</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        
+        <tr>
+            <td>Q4_Merge_Join_Sort.sql</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        
+        <tr>
+            <td>Q5_Explicit_sort.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+        </table>
+
+        <h2>System Pipeline</h2>
+        <p>
+        QueryLens performs static SQL analysis, extracts execution plan operators,
+        correlates detected anti-patterns with runtime behavior, and evaluates
+        confirmation agreement between analysis layers.
+        </p>
+    </body>
+    </html>
+    
