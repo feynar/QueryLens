@@ -1,0 +1,19 @@
+Week 14 — Expanded Runtime Validation Experiment
+
+Hours Logged: 16
+
+Objective
+Evaluate QueryLens across a large and diverse SQL workload to assess robustness of static-runtime correlation under varied execution behaviors.
+
+Activities
+Constructed a 20-query experimental workload covering scan behavior, predicate selectivity, join strategies, aggregation patterns, and sorting operations. Organized expanded workload queries and execution plans into a dedicated runtime validation dataset. Implemented an expanded runtime evaluation pipeline and generated structured empirical metrics quantifying agreement between static analysis predictions and execution plan evidence.
+
+Outcome
+QueryLens now includes a scalable empirical validation framework capable of evaluating performance diagnostics across diverse SQL patterns. Experimental results demonstrate strong agreement between static analysis warnings and observed runtime behavior.
+
+Evidence
+plans_expanded/.sql
+plans_expanded/.sqlplan
+src/analysis/runtime_validator_expanded.py
+artifacts/eval/expanded_runtime_report.json
+artifacts/eval/expanded_research_summary.txt

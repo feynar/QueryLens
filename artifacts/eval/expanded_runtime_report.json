@@ -1,0 +1,129 @@
+{
+    "per_query_results": [
+        {
+            "query": "Q01_SelectStar_Customers_FullScan.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q02_Sargable_DateRange_Customers_Seek.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q03_NonSargable_DateFunction_Customers_Scan.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q04_FunctionPredicate_Customers_Scan.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0.0
+        },
+        {
+            "query": "Q05_OrderBy_IndexedColumn_Orders.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q06_OrderBy_NonIndexed_Customers_Sort.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q07_CustomersOrders_BasicJoin.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q08_CustomersOrders_AggregateJoin.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q09_Join_WithSelectiveFilter.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q10_FullSchema_MultiJoin.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q11_GlobalAggregation_Orders.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q12_GroupBy_ProductCategory.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q13_HighSelectivity_OrderLookup.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0.0
+        },
+        {
+            "query": "Q14_LowSelectivity_DateRange.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q15_Join_WithExplicitSort.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q16_FilteredAggregation_CustomerOrders.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q17_ProductPrice_FilterJoin.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q18_ComputedAggregation_Revenue.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q19_ProductJoin_NonIndexedSort.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q20_WideSchema_SelectStar.sql",
+            "static_warnings": 2,
+            "confirmed_warnings": 2,
+            "confirmation_rate": 1.0
+        }
+    ],
+    "global_metrics": {
+        "total_static_warnings": 11,
+        "total_confirmed_warnings": 9,
+        "confirmation_rate": 0.818
+    }
+}
