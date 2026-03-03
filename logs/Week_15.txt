@@ -1,0 +1,22 @@
+Week 15 — Runtime Behavior Characterization and Expanded Evaluation
+
+Hours Logged: 25
+
+Objective
+
+Characterize execution plan operator behavior across an expanded SQL workload and quantify runtime manifestations of detected query anti-patterns.
+
+Activities
+
+Developed a runtime behavior summary module to aggregate execution plan operator distributions across the expanded workload. Implemented analysis of index scans, index seeks, hash joins, and sort operators extracted from SQL Server execution plans. Generated per-query and global runtime behavior statistics to support empirical evaluation of static detection outcomes. Produced structured JSON runtime behavior reports and integrated results into the experimental evaluation pipeline. Validated system performance using a normalized relational schema and a 20-query workload spanning diverse query structures.
+
+Outcome
+
+QueryLens now provides empirical characterization of runtime execution behavior associated with detected SQL anti-patterns. The system supports quantitative analysis of execution plan operator distributions and strengthens the experimental validation of the static-to-runtime correlation framework.
+
+Evidence
+
+src/analysis/runtime_behavior_summary.py
+artifacts/eval/runtime_behavior_summary.json
+plans_expanded/*.sqlplan
+artifacts/eval/expanded_runtime_report.json
