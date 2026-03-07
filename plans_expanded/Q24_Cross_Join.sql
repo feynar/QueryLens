@@ -1,0 +1,4 @@
+/* Q24: CROSS JOIN */
+SELECT TOP 1000 *
+FROM Customers c
+CROSS JOIN Orders o;

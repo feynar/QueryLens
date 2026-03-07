@@ -3,6 +3,7 @@
    Schema: Customers, Orders, Products, OrderItems
    ============================================================ */
 
+USE QueryLensDB;
 
 /* Q1 — SELECT * full table scan */
 SELECT *
@@ -134,3 +135,76 @@ FROM Customers c
 JOIN Orders o ON c.CustomerID = o.CustomerID
 JOIN OrderItems oi ON o.OrderID = oi.OrderID
 JOIN Products p ON oi.ProductID = p.ProductID;
+
+
+/* Q21: EXISTS Subquery */
+SELECT TOP 1000 *
+FROM Customers c
+WHERE EXISTS (
+    SELECT 1 FROM Orders o
+    WHERE o.CustomerID = c.CustomerID
+);
+
+
+/* Q22: NOT EXISTS */
+SELECT *
+FROM Customers c
+WHERE NOT EXISTS (
+    SELECT 1 FROM Orders o
+    WHERE o.CustomerID = c.CustomerID
+);
+
+
+/* Q23: LEFT JOIN with WHERE filter */
+SELECT c.CustomerID, o.OrderTotal
+FROM Customers c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE o.OrderTotal > 100;
+
+
+/* Q24: CROSS JOIN */
+SELECT TOP 1000 *
+FROM Customers c
+CROSS JOIN Orders o;
+
+
+/* Q25: Aggregation with HAVING */
+SELECT CustomerID, COUNT(*) AS OrderCount
+FROM Orders
+GROUP BY CustomerID
+HAVING COUNT(*) > 5;
+
+
+/* Q26: TOP with ORDER BY */
+SELECT TOP 10 *
+FROM Orders
+ORDER BY OrderTotal DESC;
+
+
+/* Q27: Derived table */
+SELECT *
+FROM (
+    SELECT CustomerID, SUM(OrderTotal) AS TotalSpent
+    FROM Orders
+    GROUP BY CustomerID
+) t
+WHERE t.TotalSpent > 500;
+
+
+/* Q28: Window function */
+SELECT CustomerID,
+       ROW_NUMBER() OVER (PARTITION BY CustomerID ORDER BY OrderDate) AS rn
+FROM Orders;
+
+
+/* Q29: Multi-condition predicate */
+SELECT *
+FROM Customers
+WHERE CreatedDate >= '2023-01-01'
+AND FirstName LIKE 'First4%';
+
+
+/* Q30: Correlated subquery */
+SELECT c.CustomerID,
+       (SELECT COUNT(*) FROM Orders o WHERE o.CustomerID = c.CustomerID)
+FROM Customers c;

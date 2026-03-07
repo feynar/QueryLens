@@ -1,0 +1,4 @@
+/* Q26: TOP with ORDER BY */
+SELECT TOP 10 *
+FROM Orders
+ORDER BY OrderTotal DESC;

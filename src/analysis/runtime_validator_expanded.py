@@ -34,7 +34,11 @@ def evaluate_query(sql_path):
     static_findings = analyze_sql(sql_path)
 
     plan_path = find_plan_file(sql_path)
-    runtime_findings = parse_plan(plan_path) if plan_path else []
+    if plan_path:
+        print(f"Parsing plan: {plan_path}")
+        runtime_findings = parse_plan(plan_path)
+    else:
+        runtime_findings = []
 
     correlations = correlate(static_findings, runtime_findings)
     confirmed = [c for c in correlations if c["confirmed"]]

@@ -14,8 +14,30 @@ ARTIFACTS = PROJECT_ROOT / "artifacts"
 
 
 def parse_plan(file_path):
-    tree = ET.parse(file_path)
-    root = tree.getroot()
+    """
+    Robust parser for SQL Server .sqlplan files.
+    Handles UTF-8 / UTF-16 encoding differences automatically.
+    """
+
+    import xml.etree.ElementTree as ET
+    from pathlib import Path
+
+    # Read raw bytes
+    with open(file_path, "rb") as f:
+        raw = f.read()
+
+    # Decode safely
+    try:
+        xml_text = raw.decode("utf-16")
+    except UnicodeError:
+        xml_text = raw.decode("utf-8", errors="ignore")
+
+    # Remove XML declaration if present
+    if xml_text.startswith("<?xml"):
+        xml_text = xml_text.split("?>", 1)[1]
+
+    root = ET.fromstring(xml_text)
+
     ns = {"p": "http://schemas.microsoft.com/sqlserver/2004/07/showplan"}
 
     findings = []
@@ -37,6 +59,7 @@ def parse_plan(file_path):
 def classify_runtime_issues(plan_rows):
     """
     Converts raw operators into runtime performance evidence.
+    Extended Week 16 to support EXISTS, WINDOW, HAVING, CROSS JOIN.
     """
 
     runtime_issues = []
@@ -44,17 +67,44 @@ def classify_runtime_issues(plan_rows):
     for row in plan_rows:
         op = (row.get("operator") or "").upper()
 
+        # -------------------------
+        # SCAN detection
+        # -------------------------
         if "TABLE SCAN" in op or "INDEX SCAN" in op:
             runtime_issues.append({"issue_type": "FULL_SCAN"})
 
+        # -------------------------
+        # JOIN detection
+        # -------------------------
         elif "HASH MATCH" in op:
             runtime_issues.append({"issue_type": "HASH_JOIN"})
 
+        elif "MERGE JOIN" in op:
+            runtime_issues.append({"issue_type": "MERGE_JOIN"})
+
+        elif "NESTED LOOPS" in op:
+            runtime_issues.append({"issue_type": "NESTED_LOOP"})
+
+        # -------------------------
+        # SORT detection
+        # -------------------------
         elif "SORT" in op:
             runtime_issues.append({"issue_type": "SORT"})
 
-        elif "MERGE JOIN" in op:
-            runtime_issues.append({"issue_type": "MERGE_JOIN"})
+        # -------------------------
+        # WINDOW function detection (NEW)
+        # -------------------------
+        elif "SEGMENT" in op:
+            runtime_issues.append({"issue_type": "WINDOW_FUNCTION"})
+
+        elif "SEQUENCE PROJECT" in op:
+            runtime_issues.append({"issue_type": "WINDOW_FUNCTION"})
+
+        # -------------------------
+        # Aggregation evidence (HAVING support)
+        # -------------------------
+        elif "STREAM AGGREGATE" in op or "HASH MATCH" in op:
+            runtime_issues.append({"issue_type": "AGGREGATION"})
 
     return runtime_issues
 

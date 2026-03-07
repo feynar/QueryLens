@@ -54,7 +54,10 @@ def normalize_operator(op):
 
 def correlate(static_findings, plan_findings):
     results = []
-
+    
+    """
+    Extended Week 16 to support EXISTS, WINDOW, HAVING, CROSS JOIN.
+    """
     operators = [normalize_operator(op) for op in plan_findings]
     rows = [op.get("estimated_rows", 0) for op in plan_findings]
 
@@ -62,6 +65,15 @@ def correlate(static_findings, plan_findings):
     has_seek = "Index Seek" in operators
     has_hash_join = any("Hash" in o for o in operators)
     has_sort = "Sort" in operators
+    has_nested_loop = any("Nested Loops" in o for o in operators)
+    has_merge_join = any("Merge Join" in o for o in operators)
+    has_window_operator = any(
+        o in ["Segment", "Sequence Project"] for o in operators
+    )
+    has_aggregation = any(
+        o in ["Stream Aggregate", "Hash Match"] for o in operators
+    )
+
     max_rows = max(rows, default=0)
 
     scan_count = sum(o in ["Index Scan", "Clustered Index Scan"] for o in operators)
@@ -69,7 +81,7 @@ def correlate(static_findings, plan_findings):
     has_large_scan = (
         scan_count >= MIN_SCAN_COUNT
         and max_rows > HIGH_ROW_THRESHOLD
-)
+    )
 
     for finding in static_findings:
         rule = normalize_static(finding)
@@ -110,7 +122,37 @@ def correlate(static_findings, plan_findings):
                 confirmed = True
                 confidence = "medium"
                 reason = "Sort operator indicates missing index"
+                
+        elif rule == "exists_subquery":
+            if has_nested_loop or has_hash_join:
+                confirmed = True
+                confidence = "medium"
+                reason = "Join operator confirms EXISTS evaluation"        
 
+        elif rule == "not_exists_subquery":
+            if has_nested_loop or has_hash_join:
+                confirmed = True
+                confidence = "medium"
+                reason = "Join operator confirms NOT EXISTS evaluation"
+
+        elif rule == "window_function":
+            if has_window_operator:
+                confirmed = True
+                confidence = "high"
+                reason = "Segment/Sequence Project confirms window processing" 
+         
+        elif rule == "having_clause":
+            if has_aggregation:
+                confirmed = True
+                confidence = "medium"
+                reason = "Aggregation operator confirms HAVING evaluation"
+
+        elif rule == "cross_join":
+            if has_hash_join:
+                confirmed = True
+                confidence = "medium"
+                reason = "Hash join confirms cross join behavior"        
+ 
         results.append({
             "query_id": query_id,
             "rule": rule,

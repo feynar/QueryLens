@@ -119,11 +119,71 @@
             "static_warnings": 2,
             "confirmed_warnings": 2,
             "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q21_Exists.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0.0
+        },
+        {
+            "query": "Q22_Not_Exists.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q23_Left_Join.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q24_Cross_Join.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0.0
+        },
+        {
+            "query": "Q25_Group_By.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q26_Top_Order_By.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q27_Derived_Table.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q28_Window.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q29_Multi_Condition_Where.sql",
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q30_Correlated_Subquery.sql",
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
         }
     ],
     "global_metrics": {
-        "total_static_warnings": 11,
-        "total_confirmed_warnings": 9,
-        "confirmation_rate": 0.818
+        "total_static_warnings": 17,
+        "total_confirmed_warnings": 13,
+        "confirmation_rate": 0.765
     }
 }
