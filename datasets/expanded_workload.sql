@@ -138,7 +138,7 @@ JOIN Products p ON oi.ProductID = p.ProductID;
 
 
 /* Q21: EXISTS Subquery */
-SELECT TOP 1000 *
+SELECT c.CustomerID
 FROM Customers c
 WHERE EXISTS (
     SELECT 1 FROM Orders o
@@ -163,7 +163,7 @@ WHERE o.OrderTotal > 100;
 
 
 /* Q24: CROSS JOIN */
-SELECT TOP 1000 *
+SELECT TOP 1000 c.CustomerID, o.OrderID
 FROM Customers c
 CROSS JOIN Orders o;
 

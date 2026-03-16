@@ -1,7 +1,10 @@
 """
-QueryLens — Rule Level Metrics Generator (Week 16)
+QueryLens — Rule Level Metrics Generator (Week 17)
 
-Computes precision per static rule using runtime validation results.
+Computes:
+- Precision
+- Confirmation rate
+- False positives
 
 Input:
     artifacts/eval/expanded_runtime_report.json
@@ -14,8 +17,9 @@ import os
 import json
 from collections import defaultdict
 
-
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..")
+)
 
 INPUT_PATH = os.path.join(
     PROJECT_ROOT,
@@ -40,32 +44,25 @@ def generate_metrics():
     with open(INPUT_PATH, "r") as f:
         data = json.load(f)
 
-    rule_stats = defaultdict(lambda: {"static": 0, "confirmed": 0})
+    rule_stats = defaultdict(lambda: {
+        "queries": set(),
+        "static": 0,
+        "confirmed": 0
+    })
 
     for query in data["per_query_results"]:
 
-        static = query["static_warnings"]
-        confirmed = query["confirmed_warnings"]
+        query_name = query["query"]
 
-        # NOTE:
-        # expanded report does not store rule names per query,
-        # so we approximate by rule type embedded in filename
+        for instance in query["rule_instances"]:
 
-        name = query["query"].lower()
+            rule = instance["rule"].upper()
 
-        if "selectstar" in name:
-            rule = "SELECT_STAR"
-        elif "nonsargable" in name or "functionpredicate" in name:
-            rule = "NON_SARGABLE_PREDICATE"
-        elif "join" in name:
-            rule = "COMPLEX_JOIN"
-        elif "sort" in name:
-            rule = "ORDER_BY_NO_INDEX"
-        else:
-            rule = "OTHER"
+            rule_stats[rule]["static"] += 1
+            rule_stats[rule]["queries"].add(query_name)
 
-        rule_stats[rule]["static"] += static
-        rule_stats[rule]["confirmed"] += confirmed
+            if instance["confirmed"]:
+                rule_stats[rule]["confirmed"] += 1
 
     results = {}
 
@@ -73,13 +70,19 @@ def generate_metrics():
 
         static = stats["static"]
         confirmed = stats["confirmed"]
+        queries = len(stats["queries"])
 
         precision = confirmed / static if static else 0
+        confirmation_rate = confirmed / static if static else 0
+        false_positives = static - confirmed
 
         results[rule] = {
+            "queries_with_rule": queries,
             "static_detections": static,
             "confirmed_runtime": confirmed,
-            "precision": round(precision, 3)
+            "false_positives": false_positives,
+            "precision": round(precision, 3),
+            "confirmation_rate": round(confirmation_rate, 3)
         }
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
@@ -87,7 +90,7 @@ def generate_metrics():
     with open(OUTPUT_PATH, "w") as f:
         json.dump(results, f, indent=4)
 
-    print("✔ Rule-level metrics generated")
+    print("✔ Rule-level metrics generated\n")
     print(json.dumps(results, indent=4))
 
 

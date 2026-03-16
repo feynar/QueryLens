@@ -1,0 +1,25 @@
+Week 17 — Rule Expansion and Runtime Validation Refinement
+
+Hours Logged: 26
+
+Activities:
+
+Expanded the static SQL rule set to improve structural query detection and strengthen the empirical evaluation pipeline. Updated the AST-based feature extraction layer to support additional SQL constructs including subquery usage, derived tables, window functions, and Cartesian joins. Implemented new feature flags within the FeatureExtractor module to capture these structures using parse tree traversal combined with targeted SQL text analysis.
+
+Refined several static rule heuristics to reduce unnecessary detections and better align static warnings with observed execution plan behavior. Adjustments included improved logic for detecting aggregation without grouping, refined handling of analytical queries containing GROUP BY, and expanded subquery recognition including correlated subqueries.
+
+Executed rule coverage analysis across the full benchmark query dataset to verify rule activation and ensure consistent detection across diverse query patterns. Updated the runtime validation pipeline to incorporate the expanded rule set and regenerated confirmation metrics using SQL Server execution plan evidence.
+
+Generated updated rule-level precision metrics summarizing static detections, runtime confirmations, and false positives across all implemented rules. Results demonstrated strong precision for several performance anti-pattern rules including SELECT *, non-sargable predicates, order-by sorting, and complex joins, while structural rules provided additional descriptive insight into query composition.
+
+Outcome:
+
+Expanded static rule coverage and refined runtime validation results, producing an updated empirical evaluation dataset containing 51 static warnings with 22 runtime confirmations (43.1% confirmation rate). These results strengthen the evaluation component of the QueryLens analysis framework and support final project documentation.
+
+Evidence:
+src/analysis/feature_extractor.py
+src/analysis/static_rules.py
+src/analysis/debug_rule_coverage.py
+src/analysis/runtime_validator_expanded.py
+src/analysis/generate_rule_level_metrics.py
+Updated evaluation artifacts and metrics outputs

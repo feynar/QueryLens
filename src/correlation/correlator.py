@@ -78,6 +78,8 @@ def correlate(static_findings, plan_findings):
 
     scan_count = sum(o in ["Index Scan", "Clustered Index Scan"] for o in operators)
 
+    is_large_query = max_rows > HIGH_ROW_THRESHOLD
+
     has_large_scan = (
         scan_count >= MIN_SCAN_COUNT
         and max_rows > HIGH_ROW_THRESHOLD
@@ -96,62 +98,75 @@ def correlate(static_findings, plan_findings):
         # ----------------------------
 
         if rule == "non_sargable_predicate":
-            if has_scan and max_rows > HIGH_ROW_THRESHOLD:
+
+            if has_scan:
                 confirmed = True
                 confidence = "high"
-                reason = "Large scan confirms non-sargable filter"
-            elif has_seek:
-                confidence = "low"
-                reason = "Optimizer used seek despite predicate"
+                reason = "Index/Table scan confirms non-sargable predicate"
+
 
         elif rule == "select_star":
-            if has_scan and max_rows > HIGH_ROW_THRESHOLD:
+
+            if has_scan:
                 confirmed = True
                 confidence = "medium"
-                reason = "Wide data retrieval causing scan"
+                reason = "Scan caused by wide column retrieval"
+
 
         elif rule == "complex_join":
-            if has_hash_join:
+
+            if has_hash_join or has_merge_join:
                 confirmed = True
                 confidence = "medium"
-                reason = "Hash join indicates expensive join"
+                reason = "Complex join operator detected"
 
-        # Future extensibility
+
         elif rule == "order_by_no_index":
+
             if has_sort:
                 confirmed = True
                 confidence = "medium"
-                reason = "Sort operator indicates missing index"
-                
+                reason = "Sort operator confirms missing index"
+
+
         elif rule == "exists_subquery":
-            if has_nested_loop or has_hash_join:
+
+            if has_nested_loop:
                 confirmed = True
                 confidence = "medium"
-                reason = "Join operator confirms EXISTS evaluation"        
+                reason = "Nested loop join confirms EXISTS evaluation"
+
 
         elif rule == "not_exists_subquery":
-            if has_nested_loop or has_hash_join:
+
+            if has_nested_loop:
                 confirmed = True
                 confidence = "medium"
-                reason = "Join operator confirms NOT EXISTS evaluation"
+                reason = "Nested loop join confirms NOT EXISTS evaluation"
+
 
         elif rule == "window_function":
+
             if has_window_operator:
                 confirmed = True
                 confidence = "high"
-                reason = "Segment/Sequence Project confirms window processing" 
-         
+                reason = "Segment/Sequence Project confirms window function"
+
+
         elif rule == "having_clause":
+
             if has_aggregation:
                 confirmed = True
                 confidence = "medium"
-                reason = "Aggregation operator confirms HAVING evaluation"
+                reason = "Aggregation operator confirms HAVING"
+
 
         elif rule == "cross_join":
-            if has_hash_join:
+
+            if has_hash_join or has_nested_loop:
                 confirmed = True
                 confidence = "medium"
-                reason = "Hash join confirms cross join behavior"        
+                reason = "Join operator confirms cross join"      
  
         results.append({
             "query_id": query_id,

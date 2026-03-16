@@ -1,5 +1,5 @@
 /* Q21: EXISTS Subquery */
-SELECT TOP 1000 *
+SELECT c.CustomerID
 FROM Customers c
 WHERE EXISTS (
     SELECT 1 FROM Orders o

@@ -10,6 +10,7 @@ import json
 from src.analysis.static_analyzer import analyze_sql
 from src.analysis.prototype_plan_analyzer import parse_plan
 from src.correlation.correlator import correlate
+from src.correlation.correlator import normalize_static
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
@@ -32,24 +33,44 @@ def evaluate_query(sql_path):
     sql_name = os.path.basename(sql_path)
 
     static_findings = analyze_sql(sql_path)
+    static_rules = [normalize_static(f) for f in static_findings]
 
     plan_path = find_plan_file(sql_path)
+
     if plan_path:
-        print(f"Parsing plan: {plan_path}")
+        """ print(f"Parsing plan: {plan_path}") """
         runtime_findings = parse_plan(plan_path)
     else:
         runtime_findings = []
 
     correlations = correlate(static_findings, runtime_findings)
+
     confirmed = [c for c in correlations if c["confirmed"]]
+    confirmed_rules = [c["rule"] for c in confirmed if c["confirmed"]]
 
     static_count = len(static_findings)
     confirmed_count = len(confirmed)
 
     rate = confirmed_count / static_count if static_count else 0
 
+    rule_instances = []
+
+    for rule in static_rules:
+        confirmed = rule in confirmed_rules
+
+        rule_instances.append({
+            "rule": rule,
+            "confirmed": confirmed
+        })
+
     return {
         "query": sql_name,
+
+        "rule_instances": rule_instances,
+
+        "static_rules": static_rules,
+        "runtime_confirmed_rules": confirmed_rules,
+
         "static_warnings": static_count,
         "confirmed_warnings": confirmed_count,
         "confirmation_rate": round(rate, 3)
