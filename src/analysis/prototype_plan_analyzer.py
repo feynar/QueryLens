@@ -1,8 +1,16 @@
 """
-QueryLens Prototype — Execution Plan Analyzer (Week 5)
+Execution Plan Analyzer Responsibilities:
 
-Parses SQL Server execution plan (.sqlplan XML) files and extracts
-operators and estimated row counts for correlation.
+1. Parse SQL Server XML plan files (.sqlplan)
+2. Extract:
+    - physical operators
+    - estimated rows
+    - subtree cost
+3. Convert operators → runtime issue signals
+
+Used by:
+    - correlation engine
+    - runtime validation pipeline
 """
 
 import json
@@ -14,14 +22,6 @@ ARTIFACTS = PROJECT_ROOT / "artifacts"
 
 
 def parse_plan(file_path):
-    """
-    Robust parser for SQL Server .sqlplan files.
-    Handles UTF-8 / UTF-16 encoding differences automatically.
-    """
-
-    import xml.etree.ElementTree as ET
-    from pathlib import Path
-
     # Read raw bytes
     with open(file_path, "rb") as f:
         raw = f.read()
@@ -47,6 +47,7 @@ def parse_plan(file_path):
         findings.append({
             "query_id": query_id,
             "operator": relop.get("PhysicalOp"),
+            "logical_op": relop.get("LogicalOp"),  
             "estimated_rows": float(relop.get("EstimateRows") or 0),
             "subtree_cost": float(relop.get("EstimatedTotalSubtreeCost") or 0)
         })
@@ -77,7 +78,12 @@ def classify_runtime_issues(plan_rows):
         # JOIN detection
         # -------------------------
         elif "HASH MATCH" in op:
-            runtime_issues.append({"issue_type": "HASH_JOIN"})
+            logical = (row.get("logical_op") or "").upper()
+
+            if "JOIN" in logical:
+                runtime_issues.append({"issue_type": "HASH_JOIN"})
+            elif "AGGREGATE" in logical:
+                runtime_issues.append({"issue_type": "HASH_AGGREGATE"})
 
         elif "MERGE JOIN" in op:
             runtime_issues.append({"issue_type": "MERGE_JOIN"})
@@ -103,7 +109,7 @@ def classify_runtime_issues(plan_rows):
         # -------------------------
         # Aggregation evidence (HAVING support)
         # -------------------------
-        elif "STREAM AGGREGATE" in op or "HASH MATCH" in op:
+        elif "STREAM AGGREGATE" in op:
             runtime_issues.append({"issue_type": "AGGREGATION"})
 
     return runtime_issues
@@ -118,7 +124,7 @@ def analyze_plan_file(plan_path):
     return classify_runtime_issues(raw_rows)
     
 def save_results(results):
-    out_dir = ARTIFACTS / "analyzer"
+    out_dir = ARTIFACTS / "analysis"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "plan_results.json"
 

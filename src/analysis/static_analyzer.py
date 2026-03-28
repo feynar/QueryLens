@@ -5,14 +5,14 @@ Produces same output format as legacy regex analyzer.
 """
 
 import os
-from src.analysis.sql_parser import parse_sql_file, parse_sql_text
-from src.analysis.feature_extractor import FeatureExtractor
+from src.parser.sql_parser import parse_sql_file, parse_sql
+from src.parser.feature_extractor import FeatureExtractor
 from src.analysis.static_rules import detect_issues_from_features
 
 def analyze_sql(file_path):
 
     # Parse AST
-    tree, _ = parse_sql_file(file_path)
+    tree, parser = parse_sql_file(file_path)
 
     # Read SQL text directly
     try:
@@ -33,10 +33,9 @@ def analyze_sql(file_path):
 # Helper used by unit tests
 def analyze_with_ast_text(sql_text):
 
-    tree, _ = parse_sql_text(sql_text)
+    tree, parser = parse_sql_text(sql_text)
 
     extractor = FeatureExtractor(sql_text)
-
     features = extractor.extract(tree)
 
     return detect_issues_from_features(features, "test_query")

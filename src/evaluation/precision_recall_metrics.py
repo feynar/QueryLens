@@ -9,8 +9,8 @@ import os
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-REPORT = os.path.join(PROJECT_ROOT, "artifacts", "eval", "expanded_runtime_report.json")
-OUT = os.path.join(PROJECT_ROOT, "artifacts", "eval", "precision_recall_metrics.json")
+REPORT = os.path.join(PROJECT_ROOT, "artifacts", "evaluation", "expanded_runtime_report.json")
+OUT = os.path.join(PROJECT_ROOT, "artifacts", "evaluation", "precision_recall_metrics.json")
 
 with open(REPORT) as f:
     data = json.load(f)

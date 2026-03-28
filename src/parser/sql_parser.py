@@ -1,9 +1,9 @@
-from antlr4 import *
-from parser.grammar.TSqlLexer import TSqlLexer
-from parser.grammar.TSqlParser import TSqlParser
+from antlr4 import InputStream, CommonTokenStream
+from src.parser.grammar.TSqlLexer import TSqlLexer
+from src.parser.grammar.TSqlParser import TSqlParser
 
 
-def parse_sql_text(sql_text):
+def parse_sql(sql_text: str):
     input_stream = InputStream(sql_text)
     lexer = TSqlLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
@@ -12,7 +12,7 @@ def parse_sql_text(sql_text):
     return tree, parser
 
 
-def parse_sql_file(path):
+def parse_sql_file(path: str):
     try:
         with open(path, "r", encoding="utf-8") as f:
             sql = f.read()
@@ -20,5 +20,4 @@ def parse_sql_file(path):
         with open(path, "r", encoding="cp1252") as f:
             sql = f.read()
 
-    return parse_sql_text(sql)
-
+    return parse_sql(sql)

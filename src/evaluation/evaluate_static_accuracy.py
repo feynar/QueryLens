@@ -13,7 +13,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..
 
 DATASET_DIR = os.path.join(PROJECT_ROOT, "datasets")
 GROUND_TRUTH_PATH = os.path.join(DATASET_DIR, "ground_truth_static.json")
-OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "eval", "static_accuracy_report.json")
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "evaluation", "static_accuracy_report.json")
 
 
 def load_ground_truth():

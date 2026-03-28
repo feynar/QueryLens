@@ -14,7 +14,7 @@ from src.correlation.correlator import correlate
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PLAN_DIR = os.path.join(PROJECT_ROOT, "plans")
-OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "validation_log.txt")
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "analysis", "validation_log.txt")
 
 
 def find_plan(sql_path):
@@ -65,9 +65,9 @@ def run_analysis():
 
         for item in unconfirmed:
             lines.append(f"  Rule: {item['rule']}")
-            lines.append(f"  Reason: {item['reason']}")
-            lines.append(f"  Operators: {item['operators_observed']}")
-            lines.append(f"  Max Rows: {item['max_estimated_rows']}\n")
+            lines.append(f"  Confidence: {item['confidence']}")
+            lines.append(f"  Evidence: {item['evidence']}")
+            lines.append(f"  Reason: {item['reason']}\n")
 
     # ---- Always write summary ----
     lines.append("\nSummary")
@@ -76,8 +76,7 @@ def run_analysis():
     lines.append(f"False positives detected: {total_false_positives}\n")
 
     if total_false_positives == 0:
-        lines.append("No false positives were observed in the runtime validation workload.")
-        lines.append("All static warnings were supported by execution plan evidence.")
+        lines.append("No false positives observed. All warnings supported by runtime evidence.")
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
 

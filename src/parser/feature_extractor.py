@@ -1,11 +1,20 @@
 """
 QueryLens — AST Feature Extractor (Week 8)
 
-Extracts structural SQL features from ANTLR parse tree.
-No rule decisions are made here.
+Feature Extraction Strategy:
+
+Hybrid approach:
+- AST traversal → structural detection
+- Regex fallback → semantic detection not exposed in AST
+
+Outputs normalized feature dictionary used by rule engine.
+
+Important:
+Some SQL constructs (e.g., EXISTS, HAVING, WINDOW) are detected
+via regex because they are not consistently exposed in the AST.
 """
 
-from parser.grammar.TSqlParserVisitor import TSqlParserVisitor
+from src.parser.grammar.TSqlParserVisitor import TSqlParserVisitor
 import re
 
 
@@ -80,7 +89,7 @@ class FeatureExtractor(TSqlParserVisitor):
 
             for func, arg in matches:
 
-                if func in self.NON_SARGABLE_FUNCTIONS:
+                if func in self.NON_SARGABLE_FUNCTIONS and "." in arg:
                     self.features["non_sargable_functions"].append(func)
 
             return self.visitChildren(ctx)
@@ -124,7 +133,7 @@ class FeatureExtractor(TSqlParserVisitor):
             self.features["has_cross_join"] = True
 
         # CARTESIAN JOIN (comma joins)
-        if re.search(r"FROM\s+[A-Z_]+\s*,\s*[A-Z_]+", text):
+        if re.search(r"\bFROM\b\s+[A-Z_]+(\s+[A-Z_]+)?\s*,", text):
             self.features["has_cartesian_join"] = True
             
         # ORDER BY

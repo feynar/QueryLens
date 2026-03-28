@@ -12,7 +12,7 @@ from src.correlation.correlator import normalize_static
 
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-QUERY_DIR = os.path.join(PROJECT_ROOT, "plans_expanded")
+QUERY_DIR = os.path.join(PROJECT_ROOT, "plans")
 
 
 def run_debug():

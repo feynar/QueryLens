@@ -1,0 +1,873 @@
+{
+    "per_query_results": [
+        {
+            "query": "Q01_SelectStar_Customers_FullScan.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 50000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 50000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q02_Sargable_DateRange_Customers_Seek.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q03_NonSargable_DateFunction_Customers_Scan.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q04_FunctionPredicate_Customers_Scan.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q05_OrderBy_IndexedColumn_Orders.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q06_OrderBy_NonIndexed_Customers_Sort.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 50000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 50000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q07_CustomersOrders_BasicJoin.sql",
+            "rule_instances": [
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Merge Join",
+                            "Clustered Index Scan",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q08_CustomersOrders_AggregateJoin.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q09_Join_WithSelectiveFilter.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q10_FullSchema_MultiJoin.sql",
+            "rule_instances": [
+                {
+                    "rule": "complex_join",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Adaptive Join",
+                            "Index Scan",
+                            "Index Scan",
+                            "Index Seek",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 4
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Adaptive Join",
+                            "Index Scan",
+                            "Index Scan",
+                            "Index Seek",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 4
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q11_GlobalAggregation_Orders.sql",
+            "rule_instances": [
+                {
+                    "rule": "aggregate_function",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Compute Scalar",
+                            "Stream Aggregate",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q12_GroupBy_ProductCategory.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q13_HighSelectivity_OrderLookup.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Clustered Index Seek"
+                        ],
+                        "max_estimated_rows": 1.0,
+                        "scan_count": 0
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0.0
+        },
+        {
+            "query": "Q14_LowSelectivity_DateRange.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q15_Join_WithExplicitSort.sql",
+            "rule_instances": [
+                {
+                    "rule": "order_by_no_index",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Sort",
+                            "Hash Match",
+                            "Parallelism",
+                            "Index Scan",
+                            "Parallelism",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Sort",
+                            "Hash Match",
+                            "Parallelism",
+                            "Index Scan",
+                            "Parallelism",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q16_FilteredAggregation_CustomerOrders.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q17_ProductPrice_FilterJoin.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q18_ComputedAggregation_Revenue.sql",
+            "rule_instances": [
+                {
+                    "rule": "complex_join",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 3
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "group_by_aggregation",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 3
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q19_ProductJoin_NonIndexedSort.sql",
+            "rule_instances": [
+                {
+                    "rule": "order_by_no_index",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Sort",
+                            "Hash Match",
+                            "Parallelism",
+                            "Clustered Index Scan",
+                            "Parallelism",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Sort",
+                            "Hash Match",
+                            "Parallelism",
+                            "Clustered Index Scan",
+                            "Parallelism",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q20_WideSchema_SelectStar.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 4
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "complex_join",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 4
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Hash Match",
+                            "Clustered Index Scan",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 400000.0,
+                        "scan_count": 4
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 2,
+            "confirmed_warnings": 2,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q21_Exists.sql",
+            "rule_instances": [
+                {
+                    "rule": "exists_subquery",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Merge Join",
+                            "Clustered Index Scan",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q22_Not_Exists.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Merge Join",
+                            "Clustered Index Scan",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "exists_subquery",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Merge Join",
+                            "Clustered Index Scan",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "not_exists_subquery",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Merge Join",
+                            "Clustered Index Scan",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 3,
+            "confirmed_warnings": 3,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q23_Left_Join.sql",
+            "rule_instances": [],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        },
+        {
+            "query": "Q24_Cross_Join.sql",
+            "rule_instances": [
+                {
+                    "rule": "cross_join",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Top",
+                            "Nested Loops",
+                            "Index Scan",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 1000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Top",
+                            "Nested Loops",
+                            "Index Scan",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 1000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q25_Group_By.sql",
+            "rule_instances": [
+                {
+                    "rule": "having_clause",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Filter",
+                            "Compute Scalar",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q26_Top_Order_By.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Top",
+                            "Parallelism",
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Top",
+                            "Parallelism",
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q27_Derived_Table.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Filter",
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "subquery_usage",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Filter",
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                },
+                {
+                    "rule": "derived_table",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Filter",
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q28_Window.sql",
+            "rule_instances": [
+                {
+                    "rule": "window_function",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Window Aggregate",
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_where",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Parallelism",
+                            "Window Aggregate",
+                            "Sort",
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q29_Multi_Condition_Where.sql",
+            "rule_instances": [
+                {
+                    "rule": "select_star",
+                    "confirmed": true,
+                    "confidence": "high",
+                    "evidence": {
+                        "operators": [
+                            "Clustered Index Scan"
+                        ],
+                        "max_estimated_rows": 11124.9,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
+        },
+        {
+            "query": "Q30_Correlated_Subquery.sql",
+            "rule_instances": [
+                {
+                    "rule": "aggregate_function",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                },
+                {
+                    "rule": "subquery_usage",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
+            "static_warnings": 0,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0
+        }
+    ],
+    "global_metrics": {
+        "total_static_warnings": 21,
+        "total_confirmed_warnings": 20,
+        "confirmation_rate": 0.952
+    }
+}
