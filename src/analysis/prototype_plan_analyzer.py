@@ -44,10 +44,21 @@ def parse_plan(file_path):
     query_id = Path(file_path).stem
 
     for relop in root.findall(".//p:RelOp", ns):
+
+        physical_op = relop.get("PhysicalOp", "")
+        logical_op = relop.get("LogicalOp", "")
+
+        # ----------------------------
+        # Missing Index detection (NEW)
+        # ----------------------------
+        missing_index = relop.find(".//p:MissingIndex", ns)
+        if missing_index is not None:
+            physical_op += " | MISSING INDEX"
+
         findings.append({
             "query_id": query_id,
-            "operator": relop.get("PhysicalOp"),
-            "logical_op": relop.get("LogicalOp"),  
+            "operator": physical_op,
+            "logical_op": logical_op,
             "estimated_rows": float(relop.get("EstimateRows") or 0),
             "subtree_cost": float(relop.get("EstimatedTotalSubtreeCost") or 0)
         })
@@ -111,6 +122,13 @@ def classify_runtime_issues(plan_rows):
         # -------------------------
         elif "STREAM AGGREGATE" in op:
             runtime_issues.append({"issue_type": "AGGREGATION"})
+
+
+        # -------------------------
+        # KEY LOOKUP detection
+        # -------------------------
+        elif "KEY LOOKUP" in op:
+            runtime_issues.append({"issue_type": "KEY_LOOKUP"})
 
     return runtime_issues
 

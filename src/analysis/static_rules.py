@@ -15,162 +15,100 @@ Confidence Levels:
     low    → heuristic / context-dependent
 """
 
-def detect_issues_from_features(features, query_id):
+RULE_METADATA = {
+    "select_star": {"runtime_verifiable": True},
+    "non_sargable_predicate": {"runtime_verifiable": True},
+    "complex_join": {"runtime_verifiable": True},
+    "order_by_no_index": {"runtime_verifiable": True},
+    "cross_join": {"runtime_verifiable": True},
+    "exists_subquery": {"runtime_verifiable": True},
+    "window_function": {"runtime_verifiable": True},
+    "missing_index": {"runtime_verifiable": True},
+    
+    "missing_where": {"runtime_verifiable": False},
+    "derived_table": {"runtime_verifiable": False},
+    "basic_join": {"runtime_verifiable": False},
+    "correlated_subquery": {"runtime_verifiable": False},
+}
 
-    findings = []
 
-    # SELECT *
-    if features.get("has_select_star", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "SELECT_STAR",
-            "confidence": "high"
-        })
+def build_rule(rule_name, confidence="medium"):
+    meta = RULE_METADATA.get(rule_name, {})
 
-    # NON-SARGABLE
-    if len(features.get("non_sargable_functions", [])) > 0:
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "NON_SARGABLE_PREDICATE",
-            "confidence": "high"
-        })
+    return {
+        "rule": rule_name,
+        "confidence": confidence,
+        "runtime_verifiable": meta.get("runtime_verifiable", False)
+    }
 
-    # COMPLEX JOIN
-    if features.get("join_count", 0) >= 2:
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "COMPLEX_JOIN",
-            "confidence": "medium"
-        })
 
-    # CARTESIAN vs CROSS JOIN (avoid duplication)
-    if features.get("has_cartesian_join"):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "CARTESIAN_JOIN",
-            "confidence": "high"
-        })
-    elif features.get("has_cross_join"):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "CROSS_JOIN",
-            "confidence": "medium"
-        })
+def evaluate_rules(features):
 
-    # ORDER BY (refined to reduce false positives)
-    if (
-        features.get("has_order_by", False)
-        and features.get("join_count", 0) > 0
-    ):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "ORDER_BY_NO_INDEX",
-            "confidence": "medium"
-        })
+    rules = []
 
-    # AGGREGATE WITHOUT GROUP
-    if (
-        features.get("has_aggregation")
-        and not features.get("has_group_by")
-    ):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "AGGREGATE_FUNCTION",
-            "confidence": "low"
-        })
+    if features["has_select_star"]:
+        rules.append(build_rule("select_star", "high"))
 
-    # GROUP BY (refined)
-    if (
-        features.get("has_group_by")
-        and features.get("join_count", 0) > 1
-    ):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "GROUP_BY_AGGREGATION",
-            "confidence": "low"
-        })
+    if not features["has_where"] and not features["has_group_by"]:
+        rules.append(build_rule("missing_where", "low"))
 
-    # EXISTS
-    if features.get("has_exists", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "EXISTS_SUBQUERY",
-            "confidence": "medium"
-        })
+    if features["non_sargable_functions"]:
+        rules.append(build_rule("non_sargable_predicate", "high"))
 
-    # NOT EXISTS
-    if features.get("has_not_exists", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "NOT_EXISTS_SUBQUERY",
-            "confidence": "medium"
-        })
+    if features["join_count"] >= 3:
+        rules.append(build_rule("complex_join", "high"))
+    elif features["join_count"] > 0:
+        rules.append(build_rule("basic_join", "low"))
 
-    # HAVING
-    if features.get("has_having", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "HAVING_CLAUSE",
-            "confidence": "medium"
-        })
+    if features["has_cross_join"]:
+        rules.append(build_rule("cross_join", "medium"))
 
-    # WINDOW FUNCTION
-    if features.get("has_window_function", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "WINDOW_FUNCTION",
-            "confidence": "medium"
-        })
+    if features["has_order_by"] and not features["has_where"]:
+        rules.append(build_rule("order_by_no_index", "medium"))
 
-    # SUBQUERY (avoid duplication with EXISTS)
-    if (
-        features.get("has_subquery", False)
-        and not features.get("has_exists")
-        and not features.get("has_not_exists")
-    ):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "SUBQUERY_USAGE",
-            "confidence": "low"
-        })
+    if features["has_exists"]:
+        rules.append(build_rule("exists_subquery", "medium"))
 
-    # DERIVED TABLE
-    if features.get("has_derived_table", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "DERIVED_TABLE",
-            "confidence": "low"
-        })
+    if features["has_not_exists"]:
+        rules.append(build_rule("not_exists_subquery", "medium"))
 
-    # DISTINCT
-    if features.get("has_distinct", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "DISTINCT_USAGE",
-            "confidence": "low"
-        })
+    if features["has_correlated_subquery"]:
+        rules.append(build_rule("correlated_subquery", "medium"))
 
-    # MISSING WHERE (refined)
-    if (
-        not features.get("has_where")
-        and not features.get("has_group_by")
-        and not features.get("has_aggregation")
-        and not features.get("has_exists")
-        and not features.get("has_not_exists")
-        and not features.get("has_subquery")
-    ):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "MISSING_WHERE",
-            "confidence": "low"
-        })
+    if features["has_derived_table"]:
+        rules.append(build_rule("derived_table", "low"))
 
-    # CORRELATED SUBQUERY
-    if features.get("has_correlated_subquery", False):
-        findings.append({
-            "query_id": query_id,
-            "issue_type": "CORRELATED_SUBQUERY",
-            "confidence": "medium"
-        })
+    if features["has_window_function"]:
+        rules.append(build_rule("window_function", "medium"))
+        
+    if features["join_count"] > 0:
 
-    return findings
+        # Case 0: CROSS JOIN → not an index issue
+        if features["has_cross_join"]:
+            pass
+
+        # Case 1: No join predicate → true cartesian / bad join
+        elif not features["has_join_predicate"]:
+            rules.append(build_rule("missing_index", "high"))
+
+        # Case 2: Join + WHERE → only flag if weak filtering on join columns
+        elif features["has_where"]:
+
+            where_text = " ".join(features["where_columns"])
+            join_text = " ".join(features["join_columns"])
+
+            # Only trigger if WHERE does NOT reference join columns
+            # (suggests poor filtering/index usage)
+            if not any(jc in where_text for jc in features["join_columns"]):
+
+                if not features["has_selective_predicate"] and not features["has_range_predicate"]:
+                    rules.append(build_rule("missing_index", "medium"))
+
+                elif features["has_range_predicate"] and not features["has_selective_predicate"]:
+                    rules.append(build_rule("missing_index", "low"))
+
+        # Case 3: JOIN without WHERE → don't assume missing index
+        else:
+            pass
+    
+    return rules

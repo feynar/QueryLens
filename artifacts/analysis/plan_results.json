@@ -1,104 +1,828 @@
 [
     {
-        "query_id": "Q1_Sargable_seek",
+        "query_id": "Q01_SelectStar_Customers_FullScan",
         "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
         "estimated_rows": 50000.0,
         "subtree_cost": 0.532356
     },
     {
-        "query_id": "Q2_NonSargable_scan",
-        "operator": "Clustered Index Scan",
-        "estimated_rows": 46439.0,
-        "subtree_cost": 0.532356
-    },
-    {
-        "query_id": "Q3_Hash_Join",
-        "operator": "Hash Match",
-        "estimated_rows": 50000.0,
-        "subtree_cost": 2.12321
-    },
-    {
-        "query_id": "Q3_Hash_Join",
-        "operator": "Index Scan",
+        "query_id": "Q02_Sargable_DateRange_Customers_Seek",
+        "operator": "Index Seek",
+        "logical_op": "Index Seek",
         "estimated_rows": 50000.0,
         "subtree_cost": 0.150134
     },
     {
-        "query_id": "Q3_Hash_Join",
-        "operator": "Compute Scalar",
-        "estimated_rows": 50000.0,
-        "subtree_cost": 1.58693
-    },
-    {
-        "query_id": "Q3_Hash_Join",
-        "operator": "Hash Match",
-        "estimated_rows": 50000.0,
-        "subtree_cost": 1.58693
-    },
-    {
-        "query_id": "Q3_Hash_Join",
-        "operator": "Clustered Index Scan",
-        "estimated_rows": 200000.0,
-        "subtree_cost": 0.753652
-    },
-    {
-        "query_id": "Q4_Merge_Join_Sort",
-        "operator": "Parallelism",
-        "estimated_rows": 200000.0,
-        "subtree_cost": 4.0437
-    },
-    {
-        "query_id": "Q4_Merge_Join_Sort",
-        "operator": "Sort",
-        "estimated_rows": 200000.0,
-        "subtree_cost": 3.19076
-    },
-    {
-        "query_id": "Q4_Merge_Join_Sort",
-        "operator": "Hash Match",
-        "estimated_rows": 200000.0,
-        "subtree_cost": 1.16863
-    },
-    {
-        "query_id": "Q4_Merge_Join_Sort",
-        "operator": "Parallelism",
-        "estimated_rows": 50000.0,
-        "subtree_cost": 0.145348
-    },
-    {
-        "query_id": "Q4_Merge_Join_Sort",
+        "query_id": "Q03_NonSargable_DateFunction_Customers_Scan",
         "operator": "Index Scan",
-        "estimated_rows": 50000.0,
-        "subtree_cost": 0.101871
+        "logical_op": "Index Scan",
+        "estimated_rows": 46439.0,
+        "subtree_cost": 0.150134
     },
     {
-        "query_id": "Q4_Merge_Join_Sort",
-        "operator": "Parallelism",
-        "estimated_rows": 200000.0,
-        "subtree_cost": 0.677021
-    },
-    {
-        "query_id": "Q4_Merge_Join_Sort",
+        "query_id": "Q04_FunctionPredicate_Customers_Scan",
         "operator": "Clustered Index Scan",
-        "estimated_rows": 200000.0,
-        "subtree_cost": 0.561015
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 1.0,
+        "subtree_cost": 0.532356
     },
     {
-        "query_id": "Q5_Explicit_sort",
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
         "operator": "Parallelism",
+        "logical_op": "Gather Streams",
         "estimated_rows": 200000.0,
         "subtree_cost": 3.4723
     },
     {
-        "query_id": "Q5_Explicit_sort",
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
         "operator": "Sort",
+        "logical_op": "Sort",
         "estimated_rows": 200000.0,
         "subtree_cost": 2.58314
     },
     {
-        "query_id": "Q5_Explicit_sort",
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
         "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
         "estimated_rows": 200000.0,
         "subtree_cost": 0.561015
+    },
+    {
+        "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
+        "operator": "Sort",
+        "logical_op": "Sort",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 4.12613
+    },
+    {
+        "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.532356
+    },
+    {
+        "query_id": "Q07_CustomersOrders_BasicJoin",
+        "operator": "Merge Join",
+        "logical_op": "Inner Join",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 1.68994
+    },
+    {
+        "query_id": "Q07_CustomersOrders_BasicJoin",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.532356
+    },
+    {
+        "query_id": "Q07_CustomersOrders_BasicJoin",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.606986
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 2.12321
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.150134
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.58693
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "operator": "Hash Match",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.58693
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q09_Join_WithSelectiveFilter",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 2.47724
+    },
+    {
+        "query_id": "Q09_Join_WithSelectiveFilter",
+        "operator": "Index Seek",
+        "logical_op": "Index Seek",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.150134
+    },
+    {
+        "query_id": "Q09_Join_WithSelectiveFilter",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 2.54624
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 2.00302
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Adaptive Join",
+        "logical_op": "Inner Join",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.551349
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.101871
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.414348
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Index Seek",
+        "logical_op": "Index Seek",
+        "estimated_rows": 4.0,
+        "subtree_cost": 2.00317
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.3678
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.00920805
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.30259
+    },
+    {
+        "query_id": "Q11_GlobalAggregation_Orders",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 1.0,
+        "subtree_cost": 0.873653
+    },
+    {
+        "query_id": "Q11_GlobalAggregation_Orders",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 1.0,
+        "subtree_cost": 0.873653
+    },
+    {
+        "query_id": "Q11_GlobalAggregation_Orders",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 20.0,
+        "subtree_cost": 1.45664
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 20.0,
+        "subtree_cost": 1.45663
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Sort",
+        "logical_op": "Sort",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 1.45602
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Merge Join",
+        "logical_op": "Inner Join",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 1.44399
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 1.42378
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.18328
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.0103079
+    },
+    {
+        "query_id": "Q13_HighSelectivity_OrderLookup",
+        "operator": "Clustered Index Seek",
+        "logical_op": "Clustered Index Seek",
+        "estimated_rows": 1.0,
+        "subtree_cost": 0.0032831
+    },
+    {
+        "query_id": "Q14_LowSelectivity_DateRange",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 4.0437
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Sort",
+        "logical_op": "Sort",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 3.19076
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 1.16863
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Parallelism",
+        "logical_op": "Repartition Streams",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.145348
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.101871
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Parallelism",
+        "logical_op": "Repartition Streams",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.677021
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.561015
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 2.12521
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.150134
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.58893
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "operator": "Hash Match",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.58893
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q17_ProductPrice_FilterJoin",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 324898.0,
+        "subtree_cost": 3.84123
+    },
+    {
+        "query_id": "Q17_ProductPrice_FilterJoin",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 812.245,
+        "subtree_cost": 0.0103079
+    },
+    {
+        "query_id": "Q17_ProductPrice_FilterJoin",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.68773
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 2.01091
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.96034
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.101871
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.8439
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Hash Match",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.8439
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.80181
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.414348
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.30309
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.30259
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 8.36527
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Sort",
+        "logical_op": "Sort",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 6.36015
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 2.08781
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Parallelism",
+        "logical_op": "Repartition Streams",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.038965
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.00920805
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Parallelism",
+        "logical_op": "Repartition Streams",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.48885
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.30259
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 4.63409
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 2.63422
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.00920805
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 2.56865
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.484094
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.96207
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.561015
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 400000.0,
+        "subtree_cost": 1.30259
+    },
+    {
+        "query_id": "Q21_Exists",
+        "operator": "Merge Join",
+        "logical_op": "Inner Join",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.48494
+    },
+    {
+        "query_id": "Q21_Exists",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.532356
+    },
+    {
+        "query_id": "Q21_Exists",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.731986
+    },
+    {
+        "query_id": "Q21_Exists",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.606986
+    },
+    {
+        "query_id": "Q22_Not_Exists",
+        "operator": "Merge Join",
+        "logical_op": "Left Anti Semi Join",
+        "estimated_rows": 1.0,
+        "subtree_cost": 1.47994
+    },
+    {
+        "query_id": "Q22_Not_Exists",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.532356
+    },
+    {
+        "query_id": "Q22_Not_Exists",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.731986
+    },
+    {
+        "query_id": "Q22_Not_Exists",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.606986
+    },
+    {
+        "query_id": "Q23_Left_Join",
+        "operator": "Hash Match",
+        "logical_op": "Inner Join",
+        "estimated_rows": 160099.0,
+        "subtree_cost": 2.36013
+    },
+    {
+        "query_id": "Q23_Left_Join",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.150134
+    },
+    {
+        "query_id": "Q23_Left_Join",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 160099.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "operator": "Top",
+        "logical_op": "Top",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.0119459
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "operator": "Nested Loops",
+        "logical_op": "Inner Join",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.0118459
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 1.0,
+        "subtree_cost": 0.0032831
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 1000.0,
+        "subtree_cost": 0.00629861
+    },
+    {
+        "query_id": "Q25_Group_By",
+        "operator": "Filter",
+        "logical_op": "Filter",
+        "estimated_rows": 11331.3,
+        "subtree_cost": 0.775986
+    },
+    {
+        "query_id": "Q25_Group_By",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.751986
+    },
+    {
+        "query_id": "Q25_Group_By",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.751986
+    },
+    {
+        "query_id": "Q25_Group_By",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.606986
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "operator": "Top",
+        "logical_op": "Top",
+        "estimated_rows": 10.0,
+        "subtree_cost": 2.61172
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 10.0,
+        "subtree_cost": 2.61171
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "operator": "Sort",
+        "logical_op": "TopN Sort",
+        "estimated_rows": 10.0,
+        "subtree_cost": 2.58314
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.561015
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "operator": "Filter",
+        "logical_op": "Filter",
+        "estimated_rows": 41604.0,
+        "subtree_cost": 1.61093
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.58693
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "operator": "Hash Match",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.58693
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.753652
+    },
+    {
+        "query_id": "Q28_Window",
+        "operator": "Parallelism",
+        "logical_op": "Gather Streams",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.86508
+    },
+    {
+        "query_id": "Q28_Window",
+        "operator": "Window Aggregate",
+        "logical_op": "Window Aggregate",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.763817
+    },
+    {
+        "query_id": "Q28_Window",
+        "operator": "Sort",
+        "logical_op": "Sort",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.763567
+    },
+    {
+        "query_id": "Q28_Window",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.561015
+    },
+    {
+        "query_id": "Q29_Multi_Condition_Where",
+        "operator": "Clustered Index Scan",
+        "logical_op": "Clustered Index Scan",
+        "estimated_rows": 11124.9,
+        "subtree_cost": 0.532356
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.31112
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "operator": "Hash Match",
+        "logical_op": "Left Outer Join",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 1.30862
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.150134
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "operator": "Compute Scalar",
+        "logical_op": "Compute Scalar",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.751986
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "operator": "Stream Aggregate",
+        "logical_op": "Aggregate",
+        "estimated_rows": 50000.0,
+        "subtree_cost": 0.751986
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "operator": "Index Scan",
+        "logical_op": "Index Scan",
+        "estimated_rows": 200000.0,
+        "subtree_cost": 0.606986
     }
 ]

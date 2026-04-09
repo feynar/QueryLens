@@ -1,0 +1,29 @@
+Week 19 — Runtime Confidence Calibration & Correlation Refinement
+
+Hours Logged: 22
+
+Objective
+
+Improve the precision and interpretability of runtime validation by refining correlation scoring and introducing confidence calibration mechanisms.
+
+Activities
+
+Refined the static–runtime correlation engine to improve precision and reduce false-positive confirmations. Introduced score normalization and suppression logic to eliminate weak correlations that lack sufficient execution plan evidence.
+
+Enhanced the correlation scoring model by revisiting rule-specific heuristics, particularly for missing index detection, ORDER BY sorting, and SELECT * scenarios. Adjusted scoring thresholds to better distinguish between strong, moderate, and weak runtime signals.
+
+Implemented suppression of low-confidence matches by introducing a minimum score threshold, ensuring that only meaningful correlations contribute to confirmation metrics. This reduced noise in the evaluation pipeline and improved overall reliability of reported results.
+
+Analyzed execution plan operator distributions across the expanded workload to validate updated scoring behavior. Verified that high-confidence confirmations consistently align with expected execution plan characteristics such as scans, sorts, and join strategies.
+
+Regenerated runtime validation artifacts and rule-level metrics to reflect updated scoring behavior.
+
+Outcome
+
+Correlation precision improved through suppression of weak signals and refined scoring heuristics. Runtime validation results are now more interpretable, with clearer separation between confirmed and unconfirmed warnings.
+
+Evidence
+src/correlation/correlator.py
+src/analysis/runtime_confidence.py
+artifacts/evaluation/expanded_runtime_report.json
+artifacts/evaluation/rule_level_metrics.json

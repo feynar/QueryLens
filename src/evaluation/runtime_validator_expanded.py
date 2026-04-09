@@ -12,7 +12,7 @@ from src.analysis.prototype_plan_analyzer import parse_plan
 from src.correlation.correlator import correlate, normalize_static
 
 
-# ✅ Only rules that can be validated from execution plans
+# Only rules that can be validated from execution plans
 RUNTIME_VERIFIABLE_RULES = {
     "select_star",
     "non_sargable_predicate",
@@ -23,7 +23,8 @@ RUNTIME_VERIFIABLE_RULES = {
     "not_exists_subquery",
     "window_function",
     "having_clause",
-    "cartesian_join"
+    "cartesian_join",
+    "missing_index"
 }
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))

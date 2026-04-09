@@ -1,21 +1,4 @@
-"""
-QueryLens — AST Feature Extractor (Week 8)
-
-Feature Extraction Strategy:
-
-Hybrid approach:
-- AST traversal → structural detection
-- Regex fallback → semantic detection not exposed in AST
-
-Outputs normalized feature dictionary used by rule engine.
-
-Important:
-Some SQL constructs (e.g., EXISTS, HAVING, WINDOW) are detected
-via regex because they are not consistently exposed in the AST.
-"""
-
 from src.parser.grammar.TSqlParserVisitor import TSqlParserVisitor
-import re
 
 
 class FeatureExtractor(TSqlParserVisitor):
@@ -30,158 +13,219 @@ class FeatureExtractor(TSqlParserVisitor):
     AGGREGATE_FUNCTIONS = {
         "SUM", "COUNT", "AVG", "MIN", "MAX",
     }
-    
-    COLUMN_PATTERN = re.compile(r"[A-Z_]+\.[A-Z_]+|[A-Z_]+")
 
     def __init__(self, sql_text=None):
-
         self.sql_text = sql_text.upper() if sql_text else ""
 
         self.features = {
             "has_select_star": False,
             "join_count": 0,
+            "join_types": set(),
+
             "non_sargable_functions": [],
 
-            # extended rule detection
             "has_exists": False,
             "has_not_exists": False,
             "has_having": False,
             "has_window_function": False,
             "has_cross_join": False,
-            "has_cartesian_join": False,
+
             "has_order_by": False,
             "has_distinct": False,
             "has_subquery": False,
+            "subquery_depth": 0,
+
             "has_group_by": False,
             "has_aggregation": False,
             "has_derived_table": False,
             "has_where": False,
-            "has_correlated_subquery": False
+            "has_correlated_subquery": False,
+            
+            "has_join_predicate": False,
+            "join_columns": [],
+            "where_columns": [],
+            "has_selective_predicate": False,
+            "has_range_predicate": False
         }
 
-    # ---------------------------------
-    # SELECT *
-    # ---------------------------------
+        self.current_depth = 0
 
+        # Correlation tracking
+        self.outer_tables = set()
+        self.current_tables = set()
+        self.in_subquery = False
+        self.correlated_detected = False
+
+    # ---------------------------------
     def visitSelect_list_elem(self, ctx):
         if ctx.getText() == "*":
             self.features["has_select_star"] = True
         return self.visitChildren(ctx)
 
     # ---------------------------------
-    # JOIN COUNT
-    # ---------------------------------
+    def visitQuery_specification(self, ctx):
+        if ctx.DISTINCT():
+            self.features["has_distinct"] = True
+        return self.visitChildren(ctx)
 
+    # ---------------------------------
+    def visitSearch_condition(self, ctx):
+        self.features["has_where"] = True
+
+        text = ctx.getText().upper()
+
+        # Detect non-sargable functions
+        for func in self.NON_SARGABLE_FUNCTIONS:
+            if f"{func}(" in text:
+                self.features["non_sargable_functions"].append(func)
+
+        # TRUE filtering predicates (WHERE only)
+        if "=" in text or " IN " in text:
+            self.features["has_selective_predicate"] = True
+
+        if ">" in text or "<" in text or "BETWEEN" in text:
+            self.features["has_range_predicate"] = True
+
+        return self.visitChildren(ctx)
+
+    # ---------------------------------
     def visitJoin_part(self, ctx):
         self.features["join_count"] += 1
-        return self.visitChildren(ctx)
 
-    # ---------------------------------
-    # NON-SARGABLE DETECTION
-    # ---------------------------------
+        text = ctx.getText().upper()
 
-    def visitSearch_condition(self, ctx):
-
-            text = ctx.getText().upper()
-            pattern = r"([A-Z_]+)\(([^)]+)\)"
-
-            matches = re.findall(pattern, text)
-
-            for func, arg in matches:
-
-                if func in self.NON_SARGABLE_FUNCTIONS and "." in arg:
-                    self.features["non_sargable_functions"].append(func)
-
-            return self.visitChildren(ctx)
-
-    # ---------------------------------
-    # TABLE SOURCE (no join counting)
-    # ---------------------------------
-
-    def visitTable_source_item(self, ctx):
-        return self.visitChildren(ctx)
-
-    # ---------------------------------
-    # FEATURE EXTRACTION FINAL PASS
-    # ---------------------------------
-
-    def extract(self, tree):
-
-        # run AST visitor
-        self.visit(tree)
-
-        text = self.sql_text.upper()
-
-        # EXISTS
-        if re.search(r"\bEXISTS\s*\(", text):
-            self.features["has_exists"] = True
-    
-        # NOT EXISTS
-        if re.search(r"\bNOT\s+EXISTS\s*\(", text):
-            self.features["has_not_exists"] = True
-
-        # HAVING
-        if re.search(r"\bHAVING\b", text):
-            self.features["has_having"] = True
-
-        # WINDOW FUNCTION
-        if re.search(r"\bOVER\s*\(", text):
-            self.features["has_window_function"] = True
-
-        # CROSS JOIN
-        if re.search(r"\bCROSS\s+JOIN\b", text):
+        if "LEFT" in text:
+            self.features["join_types"].add("LEFT")
+        elif "RIGHT" in text:
+            self.features["join_types"].add("RIGHT")
+        elif "FULL" in text:
+            self.features["join_types"].add("FULL")
+        elif "CROSS" in text:
             self.features["has_cross_join"] = True
+            self.features["join_types"].add("CROSS")
+        else:
+            self.features["join_types"].add("INNER")
 
-        # CARTESIAN JOIN (comma joins)
-        if re.search(r"\bFROM\b\s+[A-Z_]+(\s+[A-Z_]+)?\s*,", text):
-            self.features["has_cartesian_join"] = True
-            
-        # ORDER BY
-        if re.search(r"\bORDER\s+BY\b", text):
-            self.features["has_order_by"] = True
+        # detect join predicates
+        if " ON " in text:
+            self.features["has_join_predicate"] = True
 
-        # DISTINCT
-        if re.search(r"\bSELECT\s+DISTINCT\b", text):
-            self.features["has_distinct"] = True
+            # crude extraction of join columns
+            parts = text.split("ON")
+            if len(parts) > 1:
+                condition = parts[1]
+                self.features["join_columns"].append(condition.strip())
+                
+        return self.visitChildren(ctx)
 
-        # ANY SUBQUERY
-        if re.search(r"\(\s*SELECT", text):
-            self.features["has_subquery"] = True
-            
-        # GROUP BY
-        if re.search(r"\bGROUP\s+BY\b", text):
-            self.features["has_group_by"] = True
+    # ---------------------------------
+    def visitGroup_by_clause(self, ctx):
+        self.features["has_group_by"] = True
+        return self.visitChildren(ctx)
 
-        # DERIVED TABLE
-        if re.search(r"FROM\s*\(", text):
+    def visitHaving_clause(self, ctx):
+        self.features["has_having"] = True
+        return self.visitChildren(ctx)
+
+    def visitOrder_by_clause(self, ctx):
+        self.features["has_order_by"] = True
+        return self.visitChildren(ctx)
+
+    # ---------------------------------
+    def visitFunction_call(self, ctx):
+        func_name = ctx.getText().split("(")[0].upper()
+
+        if func_name in self.AGGREGATE_FUNCTIONS:
+            self.features["has_aggregation"] = True
+
+        return self.visitChildren(ctx)
+
+    # ---------------------------------
+    def visitPredicate(self, ctx):
+        text = f" {ctx.getText().upper()} "
+
+        if "NOT EXISTS" in text:
+            self.features["has_not_exists"] = True
+        elif "EXISTS" in text:
+            self.features["has_exists"] = True
+
+        return self.visitChildren(ctx)
+    
+    # ---------------------------------
+    def visitSubquery(self, ctx):
+        self.features["has_subquery"] = True
+
+        self.current_depth += 1
+        self.in_subquery = True
+
+        self.features["subquery_depth"] = max(
+            self.features["subquery_depth"],
+            self.current_depth
+        )
+
+        self.visitChildren(ctx)
+
+        self.current_depth -= 1
+
+        if self.current_depth == 0:
+            self.in_subquery = False
+
+        return None
+
+    # ---------------------------------
+    def visitTable_source_item(self, ctx):
+        text = ctx.getText().upper()
+
+        parts = text.split()
+        if len(parts) >= 2:
+            alias = parts[-1]
+            self.current_tables.add(alias)
+
+            if not self.in_subquery:
+                self.outer_tables.add(alias)
+
+        if text.startswith("(") and "SELECT" in text:
             self.features["has_derived_table"] = True
 
-        # AGGREGATE FUNCTIONS
-        if re.search(r"\b(SUM|COUNT|AVG|MIN|MAX)\s*\(", text):
-            self.features["has_aggregation"] = True
+        return self.visitChildren(ctx)
+
+    # ---------------------------------
+    def visitFull_column_name(self, ctx):
+        text = ctx.getText().upper()
+
+
+        # track WHERE columns
+        if "." in text:
+            self.features["where_columns"].append(text)
             
-        # WHERE
-        if re.search(r"\bWHERE\b", text):
-            self.features["has_where"] = True
-    
-        # CORRELATED SUBQUERY
-        if re.search(r"\bSELECT\b.*\bWHERE\b.*\bSELECT\b", text):
-            outer_columns = re.findall(self.COLUMN_PATTERN, text)
+            alias = text.split(".")[0].strip()
 
-            for col in outer_columns:
-                pattern = r"\bSELECT\b.*\bWHERE\b.*" + col
-                if re.search(pattern, text):
-                    self.features["has_correlated_subquery"] = True
-                    break
-                    
-        # ---------------------------------
-        # DEBUG: Print detected features
-        # ---------------------------------
+            # PRIMARY detection
+            if self.in_subquery and alias in self.outer_tables:
+                self.correlated_detected = True
+            
+            # FALLBACK detection (robust to alias issues)
+            elif self.in_subquery:
+                for outer in self.outer_tables:
+                    if outer in text:
+                        self.correlated_detected = True
+                        break
 
-        #debug_features = {k: v for k, v in self.features.items() if v}
+        return self.visitChildren(ctx)
 
-        #if debug_features:
-        #    print("\n[FeatureExtractor DEBUG]")
-        #    print(debug_features)
-    
+    # ---------------------------------
+    def visitOver_clause(self, ctx):
+        self.features["has_window_function"] = True
+        return self.visitChildren(ctx)
+
+    # ---------------------------------
+    def extract(self, tree):
+
+        self.visit(tree)
+
+        self.features["join_types"] = list(self.features["join_types"])
+
+        # FINAL correlated assignment
+        self.features["has_correlated_subquery"] = self.correlated_detected
+
         return self.features

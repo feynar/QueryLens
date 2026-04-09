@@ -1,0 +1,35 @@
+Week 20 — Recommendation & Query Rewrite Engine Integration
+
+Hours Logged: 28
+
+Objective
+
+Extend QueryLens from detection and validation into actionable optimization by generating recommendations and automated query rewrites.
+
+Activities
+
+Designed and implemented a recommendation engine that maps detected SQL anti-patterns to actionable optimization suggestions. Developed rule-to-recommendation mappings for key performance issues including SELECT *, non-sargable predicates, missing indexes, and inefficient joins.
+
+Implemented a query rewrite engine capable of generating optimized query variants for selected anti-patterns. This includes:
+
+Rewriting SELECT * into explicit column projections
+Transforming non-sargable predicates into sargable equivalents
+Suggesting index-aware query patterns
+Improving JOIN filtering strategies
+
+Developed a rule enrichment layer to augment static analysis findings with contextual metadata, including optimization hints, severity levels, and rewrite eligibility.
+
+Integrated recommendation and rewrite outputs into the existing analysis pipeline, enabling QueryLens to produce both diagnostic and prescriptive results.
+
+Validated generated recommendations and rewritten queries against the experimental workload to ensure semantic correctness and alignment with execution plan improvements.
+
+Outcome
+
+QueryLens now supports end-to-end SQL performance analysis, extending beyond detection and validation to include actionable recommendations and automated query optimization. This significantly enhances the practical applicability of the system.
+
+Evidence
+src/analysis/recommendation_engine.py
+src/analysis/rewrite_engine.py
+src/analysis/rule_enricher.py
+src/run_full_analysis.py
+Updated analysis artifacts with recommendation outputs

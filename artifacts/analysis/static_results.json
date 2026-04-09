@@ -1,22 +1,850 @@
 [
     {
-        "query_id": "Q1_Sargable_seek",
-        "issue_type": "SELECT_STAR"
+        "query_id": "Q01_SelectStar_Customers_FullScan",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
     },
     {
-        "query_id": "Q2_NonSargable_scan",
-        "issue_type": "SELECT_STAR"
+        "query_id": "Q01_SelectStar_Customers_FullScan",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
     },
     {
-        "query_id": "Q2_NonSargable_scan",
-        "issue_type": "NON_SARGABLE_PREDICATE"
+        "query_id": "Q03_NonSargable_DateFunction_Customers_Scan",
+        "rule": "non_sargable_predicate",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Non-SARGable predicate",
+            "impact": "Prevents index seeks and forces scans",
+            "recommendation": "Avoid functions on indexed columns"
+        },
+        "details": {
+            "issue": "Non-SARGable predicate",
+            "impact": "Prevents index seeks and forces scans",
+            "recommendation": "Avoid functions on indexed columns"
+        }
     },
     {
-        "query_id": "Q4_Merge_Join_Sort",
-        "issue_type": "COMPLEX_JOIN"
+        "query_id": "Q04_FunctionPredicate_Customers_Scan",
+        "rule": "non_sargable_predicate",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Non-SARGable predicate",
+            "impact": "Prevents index seeks and forces scans",
+            "recommendation": "Avoid functions on indexed columns"
+        },
+        "details": {
+            "issue": "Non-SARGable predicate",
+            "impact": "Prevents index seeks and forces scans",
+            "recommendation": "Avoid functions on indexed columns"
+        }
     },
     {
-        "query_id": "Q5_Explicit_sort",
-        "issue_type": "SELECT_STAR"
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
+    },
+    {
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
+        "rule": "order_by_no_index",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        },
+        "details": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        }
+    },
+    {
+        "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
+    },
+    {
+        "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
+        "rule": "order_by_no_index",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        },
+        "details": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        }
+    },
+    {
+        "query_id": "Q07_CustomersOrders_BasicJoin",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q07_CustomersOrders_BasicJoin",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q09_Join_WithSelectiveFilter",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q09_Join_WithSelectiveFilter",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "rule": "complex_join",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Multiple joins detected",
+            "impact": "High memory and CPU usage",
+            "recommendation": "Ensure join columns are indexed"
+        },
+        "details": {
+            "issue": "Multiple joins detected",
+            "impact": "High memory and CPU usage",
+            "recommendation": "Ensure join columns are indexed"
+        }
+    },
+    {
+        "query_id": "Q10_FullSchema_MultiJoin",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q11_GlobalAggregation_Orders",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q13_HighSelectivity_OrderLookup",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q14_LowSelectivity_DateRange",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q17_ProductPrice_FilterJoin",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q17_ProductPrice_FilterJoin",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "rule": "complex_join",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Multiple joins detected",
+            "impact": "High memory and CPU usage",
+            "recommendation": "Ensure join columns are indexed"
+        },
+        "details": {
+            "issue": "Multiple joins detected",
+            "impact": "High memory and CPU usage",
+            "recommendation": "Ensure join columns are indexed"
+        }
+    },
+    {
+        "query_id": "Q20_WideSchema_SelectStar",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q21_Exists",
+        "rule": "exists_subquery",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "EXISTS subquery used",
+            "impact": "May affect performance",
+            "recommendation": "Ensure subquery is efficient"
+        },
+        "details": {
+            "issue": "EXISTS subquery used",
+            "impact": "May affect performance",
+            "recommendation": "Ensure subquery is efficient"
+        }
+    },
+    {
+        "query_id": "Q22_Not_Exists",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q22_Not_Exists",
+        "rule": "exists_subquery",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "EXISTS subquery used",
+            "impact": "May affect performance",
+            "recommendation": "Ensure subquery is efficient"
+        },
+        "details": {
+            "issue": "EXISTS subquery used",
+            "impact": "May affect performance",
+            "recommendation": "Ensure subquery is efficient"
+        }
+    },
+    {
+        "query_id": "Q23_Left_Join",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q23_Left_Join",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        }
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "rule": "basic_join",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        },
+        "details": {
+            "issue": "Join detected",
+            "impact": "May produce large intermediate results",
+            "recommendation": "Ensure joins are selective and indexed"
+        }
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "rule": "cross_join",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "CROSS JOIN detected",
+            "impact": "Produces very large result sets",
+            "recommendation": "Ensure this is intentional"
+        },
+        "details": {
+            "issue": "CROSS JOIN detected",
+            "impact": "Produces very large result sets",
+            "recommendation": "Ensure this is intentional"
+        }
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "rule": "order_by_no_index",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        },
+        "details": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        }
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "rule": "derived_table",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Derived table used",
+            "impact": "May reduce optimizer efficiency",
+            "recommendation": "Simplify query if possible"
+        },
+        "details": {
+            "issue": "Derived table used",
+            "impact": "May reduce optimizer efficiency",
+            "recommendation": "Simplify query if possible"
+        }
+    },
+    {
+        "query_id": "Q28_Window",
+        "rule": "missing_where",
+        "confidence": "low",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        },
+        "details": {
+            "issue": "No WHERE clause",
+            "impact": "Full table scan possible",
+            "recommendation": "Add filtering conditions"
+        }
+    },
+    {
+        "query_id": "Q28_Window",
+        "rule": "order_by_no_index",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        },
+        "details": {
+            "issue": "ORDER BY without filtering",
+            "impact": "Expensive sort operation",
+            "recommendation": "Add index or filter rows before sorting"
+        }
+    },
+    {
+        "query_id": "Q28_Window",
+        "rule": "window_function",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Window function used",
+            "impact": "Requires sorting and memory",
+            "recommendation": "Ensure proper indexing"
+        },
+        "details": {
+            "issue": "Window function used",
+            "impact": "Requires sorting and memory",
+            "recommendation": "Ensure proper indexing"
+        }
+    },
+    {
+        "query_id": "Q29_Multi_Condition_Where",
+        "rule": "select_star",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        },
+        "details": {
+            "issue": "SELECT * used",
+            "impact": "May cause unnecessary I/O and prevent index usage",
+            "recommendation": "Select only required columns instead of using SELECT *"
+        }
     }
 ]

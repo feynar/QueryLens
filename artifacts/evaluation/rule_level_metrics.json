@@ -12,7 +12,7 @@
         }
     },
     "missing_where": {
-        "total_static": 11,
+        "total_static": 7,
         "runtime_verifiable_static": 0,
         "confirmed": 0,
         "precision": null,
@@ -23,31 +23,7 @@
             "low": 0
         }
     },
-    "complex_join": {
-        "total_static": 3,
-        "runtime_verifiable_static": 3,
-        "confirmed": 3,
-        "precision": 1.0,
-        "coverage": 1.0,
-        "confidence_distribution": {
-            "high": 3,
-            "medium": 0,
-            "low": 0
-        }
-    },
-    "aggregate_function": {
-        "total_static": 2,
-        "runtime_verifiable_static": 0,
-        "confirmed": 0,
-        "precision": null,
-        "coverage": 0.0,
-        "confidence_distribution": {
-            "high": 0,
-            "medium": 0,
-            "low": 0
-        }
-    },
-    "order_by_no_index": {
+    "non_sargable_predicate": {
         "total_static": 2,
         "runtime_verifiable_static": 2,
         "confirmed": 2,
@@ -59,14 +35,50 @@
             "low": 0
         }
     },
-    "group_by_aggregation": {
-        "total_static": 1,
+    "order_by_no_index": {
+        "total_static": 4,
+        "runtime_verifiable_static": 4,
+        "confirmed": 4,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "confidence_distribution": {
+            "high": 4,
+            "medium": 0,
+            "low": 0
+        }
+    },
+    "basic_join": {
+        "total_static": 11,
         "runtime_verifiable_static": 0,
         "confirmed": 0,
         "precision": null,
         "coverage": 0.0,
         "confidence_distribution": {
             "high": 0,
+            "medium": 0,
+            "low": 0
+        }
+    },
+    "missing_index": {
+        "total_static": 12,
+        "runtime_verifiable_static": 12,
+        "confirmed": 10,
+        "precision": 0.833,
+        "coverage": 1.0,
+        "confidence_distribution": {
+            "high": 0,
+            "medium": 10,
+            "low": 0
+        }
+    },
+    "complex_join": {
+        "total_static": 2,
+        "runtime_verifiable_static": 2,
+        "confirmed": 2,
+        "precision": 1.0,
+        "coverage": 1.0,
+        "confidence_distribution": {
+            "high": 2,
             "medium": 0,
             "low": 0
         }
@@ -78,20 +90,8 @@
         "precision": 1.0,
         "coverage": 1.0,
         "confidence_distribution": {
-            "high": 0,
-            "medium": 2,
-            "low": 0
-        }
-    },
-    "not_exists_subquery": {
-        "total_static": 1,
-        "runtime_verifiable_static": 1,
-        "confirmed": 1,
-        "precision": 1.0,
-        "coverage": 1.0,
-        "confidence_distribution": {
-            "high": 0,
-            "medium": 1,
+            "high": 2,
+            "medium": 0,
             "low": 0
         }
     },
@@ -104,30 +104,6 @@
         "confidence_distribution": {
             "high": 0,
             "medium": 1,
-            "low": 0
-        }
-    },
-    "having_clause": {
-        "total_static": 1,
-        "runtime_verifiable_static": 1,
-        "confirmed": 1,
-        "precision": 1.0,
-        "coverage": 1.0,
-        "confidence_distribution": {
-            "high": 0,
-            "medium": 1,
-            "low": 0
-        }
-    },
-    "subquery_usage": {
-        "total_static": 2,
-        "runtime_verifiable_static": 0,
-        "confirmed": 0,
-        "precision": null,
-        "coverage": 0.0,
-        "confidence_distribution": {
-            "high": 0,
-            "medium": 0,
             "low": 0
         }
     },

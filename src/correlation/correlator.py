@@ -64,12 +64,20 @@ def extract_runtime_features(plan_findings):
         "has_scan": scan_count > 0,
         "has_seek": "Index Seek" in operators,
         "has_sort": "Sort" in operators,
-        "has_hash_join": any("JOIN" in (l or "").upper() for l in logical_ops),
+        "has_hash_join": any("HASH MATCH" in o.upper() for o in operators),
         "has_hash_agg": any("AGGREGATE" in (l or "").upper() for l in logical_ops),
         "has_nested_loop": any("Nested Loops" in o for o in operators),
         "has_merge_join": any("Merge Join" in o for o in operators),
         "has_window": any(o in ["Segment", "Sequence Project"] for o in operators),
-        "is_large": max_rows > HIGH_ROW_THRESHOLD
+        "is_large": max_rows > HIGH_ROW_THRESHOLD,
+        
+        "has_key_lookup": any("KEY LOOKUP" in o.upper() for o in operators),
+
+        # Missing index detection (from plan warnings)
+        "has_missing_index": any(
+            "MISSING INDEX" in (op.get("operator", "") or "").upper()
+            for op in plan_findings
+        ),
     }
 
     return features
@@ -162,13 +170,30 @@ def correlate(static_findings, plan_findings):
         # ---------------------------------
         elif rule in ["exists_subquery", "not_exists_subquery"]:
 
+            # Hash Join (common semi-join strategy)
             if runtime["has_hash_join"]:
                 score += 0.5
-                reasons.append("Hash Join suggests subquery execution overhead")
+                reasons.append("Hash Join suggests semi-join execution for EXISTS")
 
-            elif runtime["has_nested_loop"]:
+            # Nested Loop (correlated execution)
+            if runtime["has_nested_loop"]:
                 score += 0.4
-                reasons.append("Nested Loop suggests row-by-row execution")
+                reasons.append("Nested Loop suggests row-by-row EXISTS evaluation")
+
+            # Merge Join support
+            if runtime["has_merge_join"]:
+                score += 0.4
+                reasons.append("Merge Join can implement EXISTS efficiently")
+
+            # Aggregation signal (semi-join / DISTINCT behavior)
+            if runtime["has_hash_agg"]:
+                score += 0.2
+                reasons.append("Aggregation suggests semi-join or deduplication behavior")
+
+            # large datasets
+            if runtime["is_large"]:
+                score += 0.1
+                reasons.append("Large dataset increases subquery impact")
 
         # ---------------------------------
         # WINDOW FUNCTION
@@ -198,9 +223,71 @@ def correlate(static_findings, plan_findings):
                 reasons.append("Join operator confirms cross/cartesian join")
 
         # ---------------------------------
+        # CORRELATED SUBQUERY
+        # ---------------------------------
+        elif rule == "correlated_subquery":
+
+            if runtime["has_nested_loop"]:
+                score += 0.6
+                reasons.append("Nested Loop indicates row-by-row correlated execution")
+
+            if runtime["is_large"]:
+                score += 0.2
+                reasons.append("High row count amplifies correlated subquery cost")
+
+        # ---------------------------------
+        # KEY LOOKUP (HIGH IMPACT)
+        # ---------------------------------
+        elif rule == "key_lookup":
+
+            if runtime["has_key_lookup"]:
+                score += 0.8
+                reasons.append("Key Lookup detected (expensive row-by-row lookup)")
+
+                if runtime["is_large"]:
+                    score += 0.2
+                    reasons.append("High row count amplifies lookup cost")
+
+        # ---------------------------------
+        # MISSING INDEX (IMPROVED — HIGH PRECISION)
+        # ---------------------------------
+        elif rule == "missing_index":
+
+            # STRONG SIGNAL 1 — SQL Server recommendation
+            if runtime["has_missing_index"]:
+                score += 0.9
+                reasons.append("SQL Server missing index recommendation detected")
+
+            # STRONG SIGNAL 2 — Key Lookup (classic missing covering index)
+            if runtime["has_key_lookup"]:
+                score += 0.7
+                reasons.append("Key Lookup suggests missing covering index")
+
+            if runtime["scan_count"] >= MIN_SCAN_COUNT and not runtime["has_seek"]:
+                score += 0.4
+                reasons.append("Multiple scans without seek suggests missing index")
+                
+            # HARD NEGATIVE: seek + no lookup = good index
+            if runtime["has_seek"] and not runtime["has_key_lookup"]:
+                score -= 0
+                reasons.append("Efficient index usage detected (no missing index)")
+
+            # Only amplify if we already have strong evidence
+            if score >= 0.6 and runtime["is_large"]:
+                score += 0.2
+                reasons.append("Large dataset increases index benefit")
+                
+        # ---------------------------------
         # Final classification
         # ---------------------------------
 
+        score = min(score, 1.0)
+
+        # Suppress weak signals (NEW)
+        if score < 0.3:
+            score = 0
+            reasons = ["Insufficient runtime evidence"]
+            
         confirmed = score > 0.3
         confidence = score_to_confidence(score)
 
