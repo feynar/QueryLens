@@ -1,12 +1,14 @@
 """
-Execution Plan Analyzer Responsibilities:
+QueryLens — Execution Plan Analyzer
 
-1. Parse SQL Server XML plan files (.sqlplan)
-2. Extract:
-    - physical operators
-    - estimated rows
-    - subtree cost
-3. Convert operators → runtime issue signals
+Responsibilities:
+    1. Parse SQL Server XML plan files (.sqlplan)
+    2. Extract key plan attributes such as:
+        - physical operators
+        - logical operators
+        - estimated rows
+        - subtree cost
+    3. Convert operators into normalized runtime issue signals
 
 Used by:
     - correlation engine
@@ -22,17 +24,27 @@ ARTIFACTS = PROJECT_ROOT / "artifacts"
 
 
 def parse_plan(file_path):
-    # Read raw bytes
+    """
+    Parses a SQL Server .sqlplan XML file into a list of operator-level findings.
+
+    Extracts:
+        - physical operator
+        - logical operator
+        - estimated rows
+        - estimated subtree cost
+        - missing-index warning signal
+    """
+    # Read the raw plan bytes first so decoding can be handled safely.
     with open(file_path, "rb") as f:
         raw = f.read()
 
-    # Decode safely
+    # SQL Server plans are often UTF-16, but fall back to UTF-8 if needed.
     try:
         xml_text = raw.decode("utf-16")
     except UnicodeError:
         xml_text = raw.decode("utf-8", errors="ignore")
-
-    # Remove XML declaration if present
+        
+    # Remove the XML declaration if present before parsing.
     if xml_text.startswith("<?xml"):
         xml_text = xml_text.split("?>", 1)[1]
 
@@ -48,9 +60,7 @@ def parse_plan(file_path):
         physical_op = relop.get("PhysicalOp", "")
         logical_op = relop.get("LogicalOp", "")
 
-        # ----------------------------
-        # Missing Index detection (NEW)
-        # ----------------------------
+        # Missing-index hints can appear as plan warnings inside a RelOp subtree.
         missing_index = relop.find(".//p:MissingIndex", ns)
         if missing_index is not None:
             physical_op += " | MISSING INDEX"
@@ -65,13 +75,13 @@ def parse_plan(file_path):
 
     return findings
 
-# -------------------------------------------------
-# Week 10: Operator → runtime issue classification
-# -------------------------------------------------
 def classify_runtime_issues(plan_rows):
     """
-    Converts raw operators into runtime performance evidence.
-    Extended Week 16 to support EXISTS, WINDOW, HAVING, CROSS JOIN.
+    Converts raw plan operators into normalized runtime evidence categories.
+
+    These issue labels are used by downstream evaluation and reporting logic.
+    Extended to support EXISTS / NOT EXISTS, window functions, HAVING,
+    and CROSS JOIN-related signals.
     """
 
     runtime_issues = []
@@ -86,7 +96,7 @@ def classify_runtime_issues(plan_rows):
             runtime_issues.append({"issue_type": "FULL_SCAN"})
 
         # -------------------------
-        # JOIN detection
+        # JOIN and HASH AGGREGATE detection
         # -------------------------
         elif "HASH MATCH" in op:
             logical = (row.get("logical_op") or "").upper()
@@ -109,7 +119,7 @@ def classify_runtime_issues(plan_rows):
             runtime_issues.append({"issue_type": "SORT"})
 
         # -------------------------
-        # WINDOW function detection (NEW)
+        # WINDOW function detection
         # -------------------------
         elif "SEGMENT" in op:
             runtime_issues.append({"issue_type": "WINDOW_FUNCTION"})
@@ -118,7 +128,7 @@ def classify_runtime_issues(plan_rows):
             runtime_issues.append({"issue_type": "WINDOW_FUNCTION"})
 
         # -------------------------
-        # Aggregation evidence (HAVING support)
+        # Aggregation evidence
         # -------------------------
         elif "STREAM AGGREGATE" in op:
             runtime_issues.append({"issue_type": "AGGREGATION"})
@@ -134,14 +144,16 @@ def classify_runtime_issues(plan_rows):
 
 def analyze_plan_file(plan_path):
     """
-    Required by full_pipeline_evaluator.
-    Returns runtime evidence in normalized format.
+    Parses a plan file and returns normalized runtime issue evidence.
+
+    This is a convenience wrapper used by pipeline-level evaluation code.
     """
 
     raw_rows = parse_plan(plan_path)
     return classify_runtime_issues(raw_rows)
     
 def save_results(results):
+    """Saves parsed runtime plan results to the analysis artifacts directory."""
     out_dir = ARTIFACTS / "analysis"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "plan_results.json"

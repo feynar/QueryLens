@@ -1,5 +1,0 @@
-QueryLens Expanded Runtime Evaluation
-====================================
-Total Static Warnings: 11
-Confirmed Warnings: 9
-Confirmation Rate: 0.818

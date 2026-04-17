@@ -1,15 +1,16 @@
 """
 QueryLens — Static/Runtime Correlation Engine
-Links SQL anti-patterns to execution plan operators.
 
-Correlation Engine Logic:
+Links SQL anti-patterns detected during static analysis to execution plan
+evidence observed at runtime.
 
-Maps static SQL anti-patterns → execution plan evidence.
+Correlation engine logic:
+    static SQL anti-patterns -> execution plan evidence
 
-Example:
-    SELECT * → Index Scan
-    Non-sargable predicate → Table Scan
-    ORDER BY without index → Sort operator
+Examples:
+    SELECT * -> Index Scan
+    Non-sargable predicate -> Table Scan
+    ORDER BY without index -> Sort operator
 
 Produces:
     - confirmation flag
@@ -17,7 +18,9 @@ Produces:
     - explanation (reason)
 """
 
-from src.analysis.threshold_config import (
+from src.config.runtime_rules import RUNTIME_VERIFIABLE_RULES
+
+from src.config.threshold_config import (
     HIGH_ROW_THRESHOLD,
     MIN_SCAN_COUNT
 )
@@ -40,7 +43,9 @@ def normalize_static(finding):
 # ----------------------------
 
 def extract_runtime_features(plan_findings):
+    """Summarizes raw execution plan operators into correlation-ready runtime features."""
 
+    # Collapse raw plan operators into boolean signals used by the scoring rules.
     operators = []
     logical_ops = []
     rows = []
@@ -73,7 +78,7 @@ def extract_runtime_features(plan_findings):
         
         "has_key_lookup": any("KEY LOOKUP" in o.upper() for o in operators),
 
-        # Missing index detection (from plan warnings)
+        # Missing-index evidence can also come from SQL Server plan warnings.
         "has_missing_index": any(
             "MISSING INDEX" in (op.get("operator", "") or "").upper()
             for op in plan_findings
@@ -102,7 +107,8 @@ def score_to_confidence(score):
 # ----------------------------
 
 def correlate(static_findings, plan_findings):
-
+    """Correlates static findings against runtime plan evidence and returns scored results."""
+    
     runtime = extract_runtime_features(plan_findings)
     results = []
 
@@ -170,27 +176,26 @@ def correlate(static_findings, plan_findings):
         # ---------------------------------
         elif rule in ["exists_subquery", "not_exists_subquery"]:
 
-            # Hash Join (common semi-join strategy)
+            # Hash Join is a common implementation strategy for subquery logic.
             if runtime["has_hash_join"]:
                 score += 0.5
-                reasons.append("Hash Join suggests semi-join execution for EXISTS")
+                reasons.append("Hash Join suggests efficient subquery execution")
 
-            # Nested Loop (correlated execution)
+            # Nested Loops often reflect row-by-row subquery evaluation.
             if runtime["has_nested_loop"]:
                 score += 0.4
-                reasons.append("Nested Loop suggests row-by-row EXISTS evaluation")
+                reasons.append("Nested Loop suggests row-by-row subquery evaluation")
 
-            # Merge Join support
+            # Merge Join can also support efficient subquery execution.
             if runtime["has_merge_join"]:
                 score += 0.4
-                reasons.append("Merge Join can implement EXISTS efficiently")
+                reasons.append("Merge Join can implement subquery logic efficiently")
 
-            # Aggregation signal (semi-join / DISTINCT behavior)
+            # Aggregation can indicate semi-join or deduplication behavior.
             if runtime["has_hash_agg"]:
                 score += 0.2
                 reasons.append("Aggregation suggests semi-join or deduplication behavior")
 
-            # large datasets
             if runtime["is_large"]:
                 score += 0.1
                 reasons.append("Large dataset increases subquery impact")
@@ -253,26 +258,29 @@ def correlate(static_findings, plan_findings):
         # ---------------------------------
         elif rule == "missing_index":
 
-            # STRONG SIGNAL 1 — SQL Server recommendation
+            # Strong signal 1: SQL Server explicitly recommends an index.
             if runtime["has_missing_index"]:
                 score += 0.9
                 reasons.append("SQL Server missing index recommendation detected")
 
-            # STRONG SIGNAL 2 — Key Lookup (classic missing covering index)
+            # Strong signal 2: Key Lookup often implies a missing covering index.
             if runtime["has_key_lookup"]:
                 score += 0.7
-                reasons.append("Key Lookup suggests missing covering index")
+
+                if runtime["max_rows"] > HIGH_ROW_THRESHOLD:
+                    score += 0.2
+                    reasons.append("High-volume key lookup strongly indicates missing covering index")
 
             if runtime["scan_count"] >= MIN_SCAN_COUNT and not runtime["has_seek"]:
                 score += 0.4
                 reasons.append("Multiple scans without seek suggests missing index")
-                
-            # HARD NEGATIVE: seek + no lookup = good index
+
+            # Hard negative: a seek without a lookup usually indicates healthy index usage.
             if runtime["has_seek"] and not runtime["has_key_lookup"]:
-                score -= 0
+                score -= 0.4
                 reasons.append("Efficient index usage detected (no missing index)")
 
-            # Only amplify if we already have strong evidence
+            # Only amplify if strong evidence already exists.
             if score >= 0.6 and runtime["is_large"]:
                 score += 0.2
                 reasons.append("Large dataset increases index benefit")
@@ -283,8 +291,10 @@ def correlate(static_findings, plan_findings):
 
         score = min(score, 1.0)
 
-        # Suppress weak signals (NEW)
-        if score < 0.3:
+        # Weak scores are suppressed so low-evidence matches do not count as confirmed.
+        suppressed = score < 0.3
+        
+        if suppressed:
             score = 0
             reasons = ["Insufficient runtime evidence"]
             
@@ -293,11 +303,17 @@ def correlate(static_findings, plan_findings):
 
         if not reasons:
             reasons.append("No significant runtime evidence")
+            
+        # Only some rules are eligible for runtime validation.
+        is_validated = rule in RUNTIME_VERIFIABLE_RULES
 
         results.append({
             "query_id": query_id,
             "rule": rule,
             "confirmed": confirmed,
+            "suppressed": suppressed,
+            "validated": is_validated,
+            "validation_type": "runtime" if is_validated else "static",
             "confidence": confidence,
             "score": round(score, 2),
             "evidence": {
@@ -307,5 +323,5 @@ def correlate(static_findings, plan_findings):
             },
             "reason": "; ".join(reasons)
         })
-
+        
     return results

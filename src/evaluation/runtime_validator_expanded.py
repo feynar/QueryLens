@@ -1,31 +1,22 @@
 """
-QueryLens Expanded Runtime Validation Evaluator (Week 14)
+QueryLens — Expanded Runtime Validation Evaluator
 
-Runs runtime validation on the expanded workload.
+Runs runtime validation over the expanded workload by comparing
+static rule detections against execution plan evidence.
+
+Outputs:
+    - per-query rule instances with confirmation / confidence
+    - per-query confirmation metrics
+    - global confirmation metrics
 """
 
 import os
 import json
 
+from src.config.runtime_rules import RUNTIME_VERIFIABLE_RULES
 from src.analysis.static_analyzer import analyze_sql
-from src.analysis.prototype_plan_analyzer import parse_plan
+from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate, normalize_static
-
-
-# Only rules that can be validated from execution plans
-RUNTIME_VERIFIABLE_RULES = {
-    "select_star",
-    "non_sargable_predicate",
-    "complex_join",
-    "order_by_no_index",
-    "cross_join",
-    "exists_subquery",
-    "not_exists_subquery",
-    "window_function",
-    "having_clause",
-    "cartesian_join",
-    "missing_index"
-}
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
@@ -34,12 +25,21 @@ OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "evaluation", "expanded_ru
 
 
 def find_plan_file(sql_path):
+    """Returns the matching .sqlplan path for a SQL file if it exists."""    
     base = os.path.splitext(sql_path)[0]
     plan_path = base + ".sqlplan"
     return plan_path if os.path.exists(plan_path) else None
 
 
 def evaluate_query(sql_path):
+    """
+    Evaluates one SQL query by combining:
+        - static analysis
+        - runtime plan parsing
+        - correlation between static and runtime evidence
+
+    Returns a per-query summary including rule instances and confirmation metrics.
+    """    
     sql_name = os.path.basename(sql_path)
 
     # ----------------------------
@@ -50,6 +50,8 @@ def evaluate_query(sql_path):
     # ----------------------------
     # Runtime analysis
     # ----------------------------
+    # Use the matching execution plan when available; otherwise treat
+    # runtime evidence as absent for this query.    
     plan_path = find_plan_file(sql_path)
 
     if plan_path:
@@ -60,6 +62,8 @@ def evaluate_query(sql_path):
     # ----------------------------
     # Correlation
     # ----------------------------
+    # Correlate static detections with runtime evidence and capture
+    # confirmation / confidence at the rule level.    
     correlations = correlate(static_findings, runtime_findings)
 
     correlation_map = {
@@ -74,6 +78,8 @@ def evaluate_query(sql_path):
     # ----------------------------
     # Build rule instances
     # ----------------------------
+    # Construct a normalized per-rule view so reporting can distinguish
+    # runtime-verifiable rules from static-only rules.    
     rule_instances = []
 
     for finding in static_findings:
@@ -93,6 +99,8 @@ def evaluate_query(sql_path):
     # ----------------------------
     # Metrics (ONLY verifiable rules)
     # ----------------------------
+    # Confirmation metrics are computed only over rules that are eligible
+    # for runtime validation.    
     verifiable_instances = [
         r for r in rule_instances if r["runtime_verifiable"]
     ]
@@ -110,6 +118,10 @@ def evaluate_query(sql_path):
 
 
 def run_evaluation():
+    """
+    Runs expanded runtime validation across the full workload and writes
+    the resulting report to the evaluation artifacts directory.
+    """    
     results = []
 
     for file in os.listdir(PLAN_DIR):

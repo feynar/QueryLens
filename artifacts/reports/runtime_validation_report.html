@@ -1,0 +1,2306 @@
+
+    <html>
+    <head>
+        <title>QueryLens Runtime Validation Report</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                color: #222;
+                background: #fff;
+            }
+
+            h1 {
+                color: #2c3e50;
+                margin-bottom: 8px;
+            }
+
+            h2 {
+                margin-top: 30px;
+                color: #2c3e50;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 6px;
+            }
+
+            h4 {
+                margin-top: 18px;
+                color: #444;
+            }
+
+            p {
+                max-width: 1000px;
+                line-height: 1.5;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 12px;
+                margin-bottom: 20px;
+            }
+
+            th, td {
+                border: 1px solid #ccc;
+                padding: 10px;
+                text-align: left;
+                vertical-align: top;
+            }
+
+            th {
+                background-color: #f4f4f4;
+            }
+
+            details.query-details {
+                margin-top: 18px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background: #fafafa;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            details.query-details summary {
+                cursor: pointer;
+                padding: 14px 18px;
+                font-weight: bold;
+                color: #34495e;
+                background: #f0f3f5;
+                list-style: none;
+            }
+
+            details.query-details summary::-webkit-details-marker {
+                display: none;
+            }
+
+            details.query-details summary::before {
+                content: "▶ ";
+                font-size: 12px;
+            }
+
+            details.query-details[open] summary::before {
+                content: "▼ ";
+            }
+
+            .query-section {
+                padding: 18px;
+                background: #fafafa;
+            }
+
+            .recommendation-box {
+                background: #fff;
+                border: 1px solid #e3e3e3;
+                border-radius: 6px;
+                padding: 10px;
+            }
+
+            .rewrite-box {
+                background: #fff;
+                border: 1px solid #e3e3e3;
+                border-radius: 6px;
+                padding: 10px;
+                margin-bottom: 12px;
+            }
+
+            pre {
+                background: #f7f7f7;
+                border: 1px solid #ddd;
+                padding: 10px;
+                overflow-x: auto;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+
+            .metric-list p {
+                margin: 6px 0;
+            }
+
+            .summary-line {
+                margin: 10px 0 6px 0;
+                padding: 8px 10px;
+                border-radius: 6px;
+                display: inline-block;
+            }
+
+            .summary-good {
+                background-color: #d4edda;
+            }
+
+            .summary-mixed {
+                background-color: #fff3cd;
+            }
+
+            .summary-bad {
+                background-color: #f8d7da;
+            }
+
+            .summary-neutral {
+                background-color: #e2e3e5;
+            }
+
+            .confirmed-high {
+                background-color: #8fd19e;
+                font-weight: bold;
+            }
+
+            .confirmed-medium {
+                background-color: #c3e6cb;
+                font-weight: bold;
+            }
+
+            .confirmed-low {
+                background-color: #e2f0d9;
+                font-weight: bold;
+            }
+
+            .not-confirmed {
+                background-color: #f8d7da;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>QueryLens Validation-Aware Analysis Report</h1>
+
+        <p>
+            This report summarizes runtime validation results for QueryLens by comparing
+            runtime-verifiable static warnings against SQL Server execution plan evidence.
+        </p>
+
+        <p>
+            It includes global metrics, per-query summaries, detailed rule findings,
+            plain-language recommendations, and rewrite suggestions.
+        </p>
+
+        <h2>Global Metrics</h2>
+        <div class="metric-list">
+            <p><b>Total Runtime-Verifiable Static Warnings:</b> 34</p>
+            <p><b>Total Confirmed Warnings:</b> 31</p>
+            <p><b>Confirmation Rate:</b> 0.912</p>
+        </div>
+
+        <h2>Per-Query Summary</h2>
+        <table>
+            <tr>
+                <th>Query</th>
+                <th>Runtime-Verifiable Warnings</th>
+                <th>Confirmed Warnings</th>
+                <th>Confirmation Rate</th>
+            </tr>
+            
+        <tr class="summary-good">
+            <td>Q01_SelectStar_Customers_FullScan.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-neutral">
+            <td>Q02_Sargable_DateRange_Customers_Seek.sql</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q03_NonSargable_DateFunction_Customers_Scan.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q04_FunctionPredicate_Customers_Scan.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q05_OrderBy_IndexedColumn_Orders.sql</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q06_OrderBy_NonIndexed_Customers_Sort.sql</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q07_CustomersOrders_BasicJoin.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q08_CustomersOrders_AggregateJoin.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-bad">
+            <td>Q09_Join_WithSelectiveFilter.sql</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0.0</td>
+        </tr>
+        
+
+        <tr class="summary-mixed">
+            <td>Q10_FullSchema_MultiJoin.sql</td>
+            <td>2</td>
+            <td>1</td>
+            <td>0.5</td>
+        </tr>
+        
+
+        <tr class="summary-neutral">
+            <td>Q11_GlobalAggregation_Orders.sql</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q12_GroupBy_ProductCategory.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-bad">
+            <td>Q13_HighSelectivity_OrderLookup.sql</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q14_LowSelectivity_DateRange.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q15_Join_WithExplicitSort.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q16_FilteredAggregation_CustomerOrders.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q17_ProductPrice_FilterJoin.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q18_ComputedAggregation_Revenue.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q19_ProductJoin_NonIndexedSort.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q20_WideSchema_SelectStar.sql</td>
+            <td>3</td>
+            <td>3</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q21_Exists.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q22_Not_Exists.sql</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q23_Left_Join.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q24_Cross_Join.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-neutral">
+            <td>Q25_Group_By.sql</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q26_Top_Order_By.sql</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q27_Derived_Table.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q28_Window.sql</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-good">
+            <td>Q29_Multi_Condition_Where.sql</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
+        </tr>
+        
+
+        <tr class="summary-neutral">
+            <td>Q30_Correlated_Subquery.sql</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        
+        </table>
+
+        <h2>Detailed Rule Findings</h2>
+        
+        <details class="query-details">
+            <summary>Q01_SelectStar_Customers_FullScan.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+            <details class="query-details">
+                <summary>Q02_Sargable_DateRange_Customers_Seek.sql</summary>
+                <div class="query-section">
+                    <p class="summary-line summary-neutral">
+                        <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                    </p>
+
+                    <p>
+                        Static Warnings: 0 |
+                        Confirmed: 0 |
+                        Rate: 0
+                    </p>
+
+                    <p><b>No runtime-verifiable findings.</b></p>
+                    <p>
+                        This query triggered only static analysis rules that cannot be validated
+                        using execution plan evidence, or no rules were detected.
+                    </p>
+
+                    <h4>Recommendations</h4>
+                    <p>None</p>
+
+                    <h4>Rewrite Suggestions</h4>
+                    <p>None</p>
+                </div>
+            </details>
+            
+
+        <details class="query-details">
+            <summary>Q03_NonSargable_DateFunction_Customers_Scan.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>non_sargable_predicate</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan detected (expected for non-sargable predicate); Large row count amplifies inefficiency</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Non-SARGable predicate</p>
+        <p><b>Impact:</b> Prevents index seeks and forces scans</p>
+        <p><b>Recommendation:</b> Avoid functions on indexed columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> non_sargable_predicate</p>
+            <p><b>Issue:</b> Function applied to indexed column</p>
+            <p><b>Suggestion:</b> Rewrite predicate to be sargable</p>
+            <p><b>Example:</b></p>
+            <pre>WHERE OrderDate &gt;= &#x27;2023-01-01&#x27; AND OrderDate &lt; &#x27;2024-01-01&#x27;</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q04_FunctionPredicate_Customers_Scan.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>non_sargable_predicate</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan detected (expected for non-sargable predicate)</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Non-SARGable predicate</p>
+        <p><b>Impact:</b> Prevents index seeks and forces scans</p>
+        <p><b>Recommendation:</b> Avoid functions on indexed columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> non_sargable_predicate</p>
+            <p><b>Issue:</b> Function applied to indexed column</p>
+            <p><b>Suggestion:</b> Rewrite predicate to be sargable</p>
+            <p><b>Example:</b></p>
+            <pre>WHERE OrderDate &gt;= &#x27;2023-01-01&#x27; AND OrderDate &lt; &#x27;2024-01-01&#x27;</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q05_OrderBy_IndexedColumn_Orders.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 2 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-high">
+                <td>order_by_no_index</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Sort operator confirms missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> ORDER BY without filtering</p>
+        <p><b>Impact:</b> Expensive sort operation</p>
+        <p><b>Recommendation:</b> Add index or filter rows before sorting</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+
+        <div class="rewrite-box">
+            <p><b>Rule:</b> order_by_no_index</p>
+            <p><b>Issue:</b> Sorting without index</p>
+            <p><b>Suggestion:</b> Add index on ORDER BY column</p>
+            <p><b>Example:</b></p>
+            <pre>CREATE INDEX idx_orders_date ON Orders(OrderDate)</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q06_OrderBy_NonIndexed_Customers_Sort.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 2 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-high">
+                <td>order_by_no_index</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Sort operator confirms missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> ORDER BY without filtering</p>
+        <p><b>Impact:</b> Expensive sort operation</p>
+        <p><b>Recommendation:</b> Add index or filter rows before sorting</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+
+        <div class="rewrite-box">
+            <p><b>Rule:</b> order_by_no_index</p>
+            <p><b>Issue:</b> Sorting without index</p>
+            <p><b>Suggestion:</b> Add index on ORDER BY column</p>
+            <p><b>Example:</b></p>
+            <pre>CREATE INDEX idx_orders_date ON Orders(OrderDate)</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q07_CustomersOrders_BasicJoin.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q08_CustomersOrders_AggregateJoin.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q09_Join_WithSelectiveFilter.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-bad">
+                    <b>Summary:</b> 0 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 0 |
+                    Rate: 0.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_index</td>
+                <td>False</td>
+                <td>none</td>
+                <td>runtime</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q10_FullSchema_MultiJoin.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-mixed">
+                    <b>Summary:</b> 1 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 1 |
+                    Rate: 0.5
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>complex_join</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Join operator confirms complexity; Join cost amplified by dataset size</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Multiple joins detected</p>
+        <p><b>Impact:</b> High memory and CPU usage</p>
+        <p><b>Recommendation:</b> Ensure join columns are indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_index</td>
+                <td>False</td>
+                <td>none</td>
+                <td>runtime</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> complex_join</p>
+            <p><b>Issue:</b> Too many joins</p>
+            <p><b>Suggestion:</b> Break query into smaller parts or use temp tables</p>
+            <p><b>Example:</b></p>
+            <pre>Use intermediate #temp tables for large joins</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q11_GlobalAggregation_Orders.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-neutral">
+                    <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 0 |
+                    Confirmed: 0 |
+                    Rate: 0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q12_GroupBy_ProductCategory.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q13_HighSelectivity_OrderLookup.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-bad">
+                    <b>Summary:</b> 0 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 0 |
+                    Rate: 0.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>select_star</td>
+                <td>False</td>
+                <td>none</td>
+                <td>runtime</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q14_LowSelectivity_DateRange.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q15_Join_WithExplicitSort.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q16_FilteredAggregation_CustomerOrders.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q17_ProductPrice_FilterJoin.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q18_ComputedAggregation_Revenue.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q19_ProductJoin_NonIndexedSort.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q20_WideSchema_SelectStar.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 3 / 3 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 3 |
+                    Confirmed: 3 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-high">
+                <td>complex_join</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Join operator confirms complexity; Join cost amplified by dataset size</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Multiple joins detected</p>
+        <p><b>Impact:</b> High memory and CPU usage</p>
+        <p><b>Recommendation:</b> Ensure join columns are indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+
+        <div class="rewrite-box">
+            <p><b>Rule:</b> complex_join</p>
+            <p><b>Issue:</b> Too many joins</p>
+            <p><b>Suggestion:</b> Break query into smaller parts or use temp tables</p>
+            <p><b>Example:</b></p>
+            <pre>Use intermediate #temp tables for large joins</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q21_Exists.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>exists_subquery</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Merge Join can implement EXISTS efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> EXISTS subquery used</p>
+        <p><b>Impact:</b> May affect performance</p>
+        <p><b>Recommendation:</b> Ensure subquery is efficient</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q22_Not_Exists.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 2 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-high">
+                <td>exists_subquery</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Merge Join can implement EXISTS efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> EXISTS subquery used</p>
+        <p><b>Impact:</b> May affect performance</p>
+        <p><b>Recommendation:</b> Ensure subquery is efficient</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q23_Left_Join.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>missing_index</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Multiple scans without seek suggests missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q24_Cross_Join.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>basic_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Join detected</p>
+        <p><b>Impact:</b> May produce large intermediate results</p>
+        <p><b>Recommendation:</b> Ensure joins are selective and indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>cross_join</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Join operator confirms cross/cartesian join</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> CROSS JOIN detected</p>
+        <p><b>Impact:</b> Produces very large result sets</p>
+        <p><b>Recommendation:</b> Ensure this is intentional</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> cross_join</p>
+            <p><b>Issue:</b> Cartesian product</p>
+            <p><b>Suggestion:</b> Add join condition or convert to INNER JOIN</p>
+            <p><b>Example:</b></p>
+            <pre>FROM A JOIN B ON A.id = B.id</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+            <details class="query-details">
+                <summary>Q25_Group_By.sql</summary>
+                <div class="query-section">
+                    <p class="summary-line summary-neutral">
+                        <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                    </p>
+
+                    <p>
+                        Static Warnings: 0 |
+                        Confirmed: 0 |
+                        Rate: 0
+                    </p>
+
+                    <p><b>No runtime-verifiable findings.</b></p>
+                    <p>
+                        This query triggered only static analysis rules that cannot be validated
+                        using execution plan evidence, or no rules were detected.
+                    </p>
+
+                    <h4>Recommendations</h4>
+                    <p>None</p>
+
+                    <h4>Rewrite Suggestions</h4>
+                    <p>None</p>
+                </div>
+            </details>
+            
+
+        <details class="query-details">
+            <summary>Q26_Top_Order_By.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 2 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-high">
+                <td>order_by_no_index</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Sort operator confirms missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> ORDER BY without filtering</p>
+        <p><b>Impact:</b> Expensive sort operation</p>
+        <p><b>Recommendation:</b> Add index or filter rows before sorting</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+
+        <div class="rewrite-box">
+            <p><b>Rule:</b> order_by_no_index</p>
+            <p><b>Issue:</b> Sorting without index</p>
+            <p><b>Suggestion:</b> Add index on ORDER BY column</p>
+            <p><b>Example:</b></p>
+            <pre>CREATE INDEX idx_orders_date ON Orders(OrderDate)</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q27_Derived_Table.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>derived_table</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Derived table used</p>
+        <p><b>Impact:</b> May reduce optimizer efficiency</p>
+        <p><b>Recommendation:</b> Simplify query if possible</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q28_Window.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 2 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>missing_where</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> No WHERE clause</p>
+        <p><b>Impact:</b> Full table scan possible</p>
+        <p><b>Recommendation:</b> Add filtering conditions</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-high">
+                <td>order_by_no_index</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Sort operator confirms missing index</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> ORDER BY without filtering</p>
+        <p><b>Impact:</b> Expensive sort operation</p>
+        <p><b>Recommendation:</b> Add index or filter rows before sorting</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="confirmed-medium">
+                <td>window_function</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Window operator or sort detected</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Window function used</p>
+        <p><b>Impact:</b> Requires sorting and memory</p>
+        <p><b>Recommendation:</b> Ensure proper indexing</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> order_by_no_index</p>
+            <p><b>Issue:</b> Sorting without index</p>
+            <p><b>Suggestion:</b> Add index on ORDER BY column</p>
+            <p><b>Example:</b></p>
+            <pre>CREATE INDEX idx_orders_date ON Orders(OrderDate)</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q29_Multi_Condition_Where.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-high">
+                <td>select_star</td>
+                <td>True</td>
+                <td>high</td>
+                <td>runtime</td>
+                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> SELECT * used</p>
+        <p><b>Impact:</b> May cause unnecessary I/O and prevent index usage</p>
+        <p><b>Recommendation:</b> Select only required columns instead of using SELECT *</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> select_star</p>
+            <p><b>Issue:</b> Using SELECT *</p>
+            <p><b>Suggestion:</b> Replace SELECT * with explicit column names</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT col1, col2 FROM table_name</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+            <details class="query-details">
+                <summary>Q30_Correlated_Subquery.sql</summary>
+                <div class="query-section">
+                    <p class="summary-line summary-neutral">
+                        <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                    </p>
+
+                    <p>
+                        Static Warnings: 0 |
+                        Confirmed: 0 |
+                        Rate: 0
+                    </p>
+
+                    <p><b>No runtime-verifiable findings.</b></p>
+                    <p>
+                        This query triggered only static analysis rules that cannot be validated
+                        using execution plan evidence, or no rules were detected.
+                    </p>
+
+                    <h4>Recommendations</h4>
+                    <p>None</p>
+
+                    <h4>Rewrite Suggestions</h4>
+                    <p>None</p>
+                </div>
+            </details>
+            
+    </body>
+    </html>
+    

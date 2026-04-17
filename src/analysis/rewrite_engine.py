@@ -1,18 +1,32 @@
+"""
+QueryLens — Rewrite Engine
+
+Generates example SQL rewrite suggestions based on triggered rules.
+
+For each supported rule, returns a structured suggestion containing:
+    - rule: the rule label
+    - issue: short description of the detected pattern
+    - suggestion: recommended rewrite direction
+    - example: sample SQL illustrating the rewrite
+"""
+
 import re
 
 
 def suggest_rewrites(sql_text, triggered_rules, features):
     """
     Returns a list of rewrite suggestions based on triggered rules.
-    Each suggestion contains:
-    - rule
-    - original snippet (optional)
-    - rewritten suggestion
+
+    The current implementation generates rule-based rewrite guidance rather
+    than performing automatic SQL transformation. The sql_text and features
+    parameters are accepted so the function can be extended later with more
+    context-aware rewrites.
     """
 
     suggestions = []
     sql_upper = sql_text.upper()
 
+    # Extract the set of triggered rule labels for quick membership checks.
     rules = {r["rule"] for r in triggered_rules}
 
     # ---------------------------------

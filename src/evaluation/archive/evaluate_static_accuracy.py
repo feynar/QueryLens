@@ -1,8 +1,13 @@
 """
-QueryLens — Static Analysis Accuracy Evaluator (Week 9)
+QueryLens — Static Analysis Accuracy Evaluator
 
-Compares AST-based detections against ground truth labels.
-Produces quantitative accuracy metrics for research evaluation.
+Compares AST-based static detections against ground-truth labels
+and computes quantitative evaluation metrics.
+
+Outputs:
+    - per-query expected vs detected issues
+    - true positives, false positives, and false negatives
+    - global precision, recall, and F1 score
 """
 
 import os
@@ -17,12 +22,21 @@ OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "evaluation", "static_accu
 
 
 def load_ground_truth():
+    """Loads the ground-truth label file used for static accuracy evaluation."""
     with open(GROUND_TRUTH_PATH, "r") as f:
         return json.load(f)
 
 
 def evaluate_query(sql_path, expected_issues):
+    """
+    Evaluates one SQL file against its expected ground-truth issue labels.
+
+    Returns:
+        dict: expected issues, detected issues, and per-query TP / FP / FN counts
+    """
     results = analyze_sql(sql_path)
+
+    # Normalize detected issue labels into a sorted list for comparison.
     detected = sorted(r["issue_type"] for r in results)
 
     expected = sorted(expected_issues)
@@ -42,6 +56,9 @@ def evaluate_query(sql_path, expected_issues):
 
 
 def compute_global_metrics(rows):
+    """
+    Aggregates per-query counts into dataset-level precision, recall, and F1.
+    """
     total_tp = sum(r["true_positive"] for r in rows)
     total_fp = sum(r["false_positive"] for r in rows)
     total_fn = sum(r["false_negative"] for r in rows)
@@ -65,6 +82,10 @@ def compute_global_metrics(rows):
 
 
 def run_evaluation():
+    """
+    Runs static accuracy evaluation across the labeled dataset and writes
+    the resulting report to the evaluation artifacts directory.
+    """
     ground_truth = load_ground_truth()
 
     results = []
@@ -72,8 +93,9 @@ def run_evaluation():
     for file_name, expected in ground_truth.items():
         sql_path = os.path.join(DATASET_DIR, file_name)
 
+        # Skip ground-truth entries whose SQL files are missing.
         if not os.path.exists(sql_path):
-            print(f"⚠ Skipping missing file: {file_name}")
+            print(f"Skipping missing file: {file_name}")
             continue
 
         results.append(evaluate_query(sql_path, expected))
@@ -90,7 +112,7 @@ def run_evaluation():
     with open(OUTPUT_PATH, "w") as f:
         json.dump(report, f, indent=4)
 
-    print("✔ Static accuracy evaluation complete")
+    print("Static accuracy evaluation complete")
     print(json.dumps(metrics, indent=4))
 
 

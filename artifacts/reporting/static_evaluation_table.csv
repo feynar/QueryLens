@@ -1,2 +1,0 @@
-query,expected,detected,true_positive,false_positive,false_negative
-test_queries_static.sql,COMPLEX_JOIN;NON_SARGABLE_PREDICATE;SELECT_STAR,COMPLEX_JOIN;NON_SARGABLE_PREDICATE;SELECT_STAR,3,0,0

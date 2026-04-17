@@ -1,5 +1,23 @@
-def generate_recommendation(rule, confidence):
+"""
+QueryLens — Recommendation Engine
 
+Maps detected SQL anti-pattern rules to human-readable guidance.
+
+For each supported rule, returns:
+    - issue: short description of the detected pattern
+    - impact: likely performance consequence
+    - recommendation: suggested mitigation or improvement
+"""
+
+def generate_recommendation(rule, confidence):
+    """
+    Returns a structured recommendation object for a detected rule.
+
+    The confidence parameter is accepted for compatibility with the rest
+    of the pipeline, although the current recommendations are rule-based
+    and do not vary by confidence level.
+    """
+    
     if rule == "select_star":
         return {
             "issue": "SELECT * used",
@@ -91,6 +109,7 @@ def generate_recommendation(rule, confidence):
             "recommendation": "Create index on filter/join columns"
         }
 
+    # Default response for unsupported or unrecognized rule labels.
     return {
         "issue": "Unknown",
         "impact": "N/A",

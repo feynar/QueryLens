@@ -1,8 +1,14 @@
 """
-QueryLens — Runtime Behavior Summary Generator (Week 15)
+QueryLens — Runtime Behavior Summary Generator
 
 Analyzes execution plan operators across the expanded workload
 and produces distribution statistics for research reporting.
+
+Outputs:
+    - per-query operator summaries
+    - per-query static and confirmed warning counts
+    - global operator distribution
+    - overall confirmation rate across the workload
 """
 
 import os
@@ -10,7 +16,7 @@ import json
 from collections import Counter
 
 from src.analysis.static_analyzer import analyze_sql
-from src.analysis.prototype_plan_analyzer import parse_plan
+from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate
 
 
@@ -19,11 +25,11 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..
 PLAN_DIR = os.path.join(PROJECT_ROOT, "plans_expanded")
 OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "eval", "runtime_behavior_summary.json")
 
-
-# -------------------------------------------------
-# Extract operators from plan
-# -------------------------------------------------
 def extract_operator_stats(plan_findings):
+    """
+    Extracts high-level operator signals and a raw operator list
+    from parsed execution plan findings.
+    """    
     operators = [op.get("operator", "Unknown") for op in plan_findings]
 
     stats = {
@@ -37,10 +43,14 @@ def extract_operator_stats(plan_findings):
     return stats
 
 
-# -------------------------------------------------
-# Analyze one query
-# -------------------------------------------------
 def analyze_query(sql_path):
+    """
+    Analyzes one query by combining:
+        - static analysis
+        - execution plan parsing
+        - correlation results
+        - operator-level runtime statistics
+    """
     static_findings = analyze_sql(sql_path)
 
     plan_path = os.path.splitext(sql_path)[0] + ".sqlplan"
@@ -49,6 +59,7 @@ def analyze_query(sql_path):
     operator_stats = extract_operator_stats(plan_findings)
     correlations = correlate(static_findings, plan_findings)
 
+    # Count only runtime-confirmed correlations for the per-query summary.
     confirmed = [c for c in correlations if c["confirmed"]]
 
     return {
@@ -62,11 +73,17 @@ def analyze_query(sql_path):
         "has_sort": operator_stats["has_sort"]
     }
 
-
-# -------------------------------------------------
-# Aggregate statistics across workload
-# -------------------------------------------------
 def compute_global_summary(rows):
+    """
+    Aggregates per-query runtime summaries into dataset-level statistics.
+
+    Computes:
+        - total queries
+        - total static warnings
+        - total confirmed warnings
+        - confirmation rate
+        - operator frequency distribution
+    """    
     operator_counter = Counter()
 
     total_queries = len(rows)
@@ -86,11 +103,11 @@ def compute_global_summary(rows):
 
     return summary
 
-
-# -------------------------------------------------
-# Main execution
-# -------------------------------------------------
 def run_summary():
+    """
+    Runs runtime behavior summarization across the expanded workload
+    and writes the results to a JSON artifact.
+    """
     results = []
 
     for file in os.listdir(PLAN_DIR):
@@ -110,7 +127,7 @@ def run_summary():
     with open(OUTPUT_PATH, "w") as f:
         json.dump(output, f, indent=4)
 
-    print("✔ Runtime behavior summary generated")
+    print("Runtime behavior summary generated")
     print(json.dumps(summary, indent=4))
 
 

@@ -1,0 +1,499 @@
+[
+    {
+        "query_id": "Q01_SelectStar_Customers_FullScan",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 50000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "select_star",
+                "issue": "Using SELECT *",
+                "suggestion": "Replace SELECT * with explicit column names",
+                "example": "SELECT col1, col2 FROM table_name"
+            }
+        ]
+    },
+    {
+        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Parallelism",
+                "Sort",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "select_star",
+                "issue": "Using SELECT *",
+                "suggestion": "Replace SELECT * with explicit column names",
+                "example": "SELECT col1, col2 FROM table_name"
+            },
+            {
+                "rule": "order_by_no_index",
+                "issue": "Sorting without index",
+                "suggestion": "Add index on ORDER BY column",
+                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
+            }
+        ]
+    },
+    {
+        "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Sort",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 50000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "select_star",
+                "issue": "Using SELECT *",
+                "suggestion": "Replace SELECT * with explicit column names",
+                "example": "SELECT col1, col2 FROM table_name"
+            },
+            {
+                "rule": "order_by_no_index",
+                "issue": "Sorting without index",
+                "suggestion": "Add index on ORDER BY column",
+                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
+            }
+        ]
+    },
+    {
+        "query_id": "Q07_CustomersOrders_BasicJoin",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Merge Join",
+                "Clustered Index Scan",
+                "Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q08_CustomersOrders_AggregateJoin",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Hash Match",
+                "Index Scan",
+                "Compute Scalar",
+                "Hash Match",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q09_Join_WithSelectiveFilter",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Hash Match",
+                "Index Seek",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q11_GlobalAggregation_Orders",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Compute Scalar",
+                "Stream Aggregate",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q12_GroupBy_ProductCategory",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Compute Scalar",
+                "Stream Aggregate",
+                "Sort",
+                "Merge Join",
+                "Stream Aggregate",
+                "Index Scan",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 400000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q15_Join_WithExplicitSort",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Parallelism",
+                "Sort",
+                "Hash Match",
+                "Parallelism",
+                "Index Scan",
+                "Parallelism",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q16_FilteredAggregation_CustomerOrders",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Hash Match",
+                "Index Scan",
+                "Compute Scalar",
+                "Hash Match",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q17_ProductPrice_FilterJoin",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Hash Match",
+                "Clustered Index Scan",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 400000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q18_ComputedAggregation_Revenue",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Parallelism",
+                "Hash Match",
+                "Index Scan",
+                "Compute Scalar",
+                "Hash Match",
+                "Hash Match",
+                "Index Scan",
+                "Compute Scalar",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 400000.0,
+            "scan_count": 3
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q19_ProductJoin_NonIndexedSort",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Parallelism",
+                "Sort",
+                "Hash Match",
+                "Parallelism",
+                "Clustered Index Scan",
+                "Parallelism",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 400000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q23_Left_Join",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Hash Match",
+                "Index Scan",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 160099.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": []
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Top",
+                "Nested Loops",
+                "Index Scan",
+                "Index Scan"
+            ],
+            "max_estimated_rows": 1000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "cross_join",
+                "issue": "Cartesian product",
+                "suggestion": "Add join condition or convert to INNER JOIN",
+                "example": "FROM A JOIN B ON A.id = B.id"
+            }
+        ]
+    },
+    {
+        "query_id": "Q24_Cross_Join",
+        "rule": "basic_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Top",
+                "Nested Loops",
+                "Index Scan",
+                "Index Scan"
+            ],
+            "max_estimated_rows": 1000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "cross_join",
+                "issue": "Cartesian product",
+                "suggestion": "Add join condition or convert to INNER JOIN",
+                "example": "FROM A JOIN B ON A.id = B.id"
+            }
+        ]
+    },
+    {
+        "query_id": "Q26_Top_Order_By",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Top",
+                "Parallelism",
+                "Sort",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "select_star",
+                "issue": "Using SELECT *",
+                "suggestion": "Replace SELECT * with explicit column names",
+                "example": "SELECT col1, col2 FROM table_name"
+            },
+            {
+                "rule": "order_by_no_index",
+                "issue": "Sorting without index",
+                "suggestion": "Add index on ORDER BY column",
+                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
+            }
+        ]
+    },
+    {
+        "query_id": "Q27_Derived_Table",
+        "rule": "derived_table",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Filter",
+                "Compute Scalar",
+                "Hash Match",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "select_star",
+                "issue": "Using SELECT *",
+                "suggestion": "Replace SELECT * with explicit column names",
+                "example": "SELECT col1, col2 FROM table_name"
+            }
+        ]
+    },
+    {
+        "query_id": "Q28_Window",
+        "rule": "missing_where",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Parallelism",
+                "Window Aggregate",
+                "Sort",
+                "Clustered Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "order_by_no_index",
+                "issue": "Sorting without index",
+                "suggestion": "Add index on ORDER BY column",
+                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
+            }
+        ]
+    }
+]

@@ -1,7 +1,13 @@
 {
-    "static_warnings": 53,
-    "confirmed": 31,
-    "weighted_confirmed": 26.2,
-    "confirmation_rate": 0.585,
-    "weighted_confirmation_rate": 0.494
+    "total_static_warnings": 53,
+    "validated_warnings": 34,
+    "static_only_warnings": 19,
+    "runtime_confirmed": 31,
+    "runtime_suppressed": 3,
+    "agreement_rate": 0.912,
+    "weighted_agreement_rate": 0.771,
+    "notes": {
+        "definition": "Agreement between static analysis and runtime execution plans",
+        "limitation": "Does NOT represent true correctness due to lack of labeled ground truth"
+    }
 }

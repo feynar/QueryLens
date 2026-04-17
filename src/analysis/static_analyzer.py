@@ -1,7 +1,16 @@
 """
-QueryLens — AST Static SQL Analyzer (Week 8)
-Grammar-aware SQL detection using ANTLR parse tree.
-Produces same output format as legacy regex analyzer.
+QueryLens — AST Static SQL Analyzer
+
+Performs grammar-aware static SQL analysis using the ANTLR-generated
+T-SQL parse tree.
+
+Responsibilities:
+    - parse SQL into an AST
+    - extract structural features from the parse tree
+    - evaluate static anti-pattern rules
+    - attach recommendation metadata to each detected rule
+
+Produces the same output format as the earlier regex-based analyzer.
 """
 
 import os
@@ -11,11 +20,22 @@ from src.analysis.static_rules import evaluate_rules
 from src.analysis.recommendation_engine import generate_recommendation
 
 def analyze_sql(file_path):
+    """
+    Runs static analysis on a SQL file and returns structured rule findings.
 
-    # Parse AST
+    Each result includes:
+        - query_id
+        - rule
+        - confidence
+        - runtime_verifiable flag
+        - recommendation metadata
+    """
+    
+    # Parse the SQL file into an AST.
     tree, parser = parse_sql_file(file_path)
 
-    # Read SQL text directly
+    # Read the raw SQL text directly so feature extraction has access to
+    # the original query text in addition to the parse tree.
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             sql_text = f.read()
@@ -23,12 +43,14 @@ def analyze_sql(file_path):
         with open(file_path, "r", encoding="cp1252") as f:
             sql_text = f.read()
 
-    # Extract features
+    # Extract structural SQL features from the parse tree.
     extractor = FeatureExtractor(sql_text)
     features = extractor.extract(tree)
 
     query_id = os.path.splitext(os.path.basename(file_path))[0]
     
+
+    # Evaluate static rule detections from the extracted features.    
     rules = evaluate_rules(features)
 
     results = []
@@ -46,8 +68,11 @@ def analyze_sql(file_path):
 
     return results
 
-# Helper used by unit tests
 def analyze_with_ast_text(sql_text):
+    """
+    Helper used by tests to run static analysis directly on a SQL string
+    instead of a file.
+    """    
 
     tree, parser = parse_sql(sql_text)
 

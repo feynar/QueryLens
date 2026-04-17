@@ -12,7 +12,7 @@ import os
 import json
 
 from src.analysis.static_analyzer import analyze_sql
-from src.analysis.prototype_plan_analyzer import parse_plan
+from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate
 
 
