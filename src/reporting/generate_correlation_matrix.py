@@ -16,7 +16,7 @@ import csv
 import json
 
 from src.analysis.static_analyzer import analyze_sql
-from src.analysis.plan_analyzer import analyze_plan_file
+from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate
 
 
@@ -47,7 +47,7 @@ def collect_correlations():
         plan_path = find_plan_file(sql_path)
 
         static_findings = analyze_sql(sql_path)
-        runtime_findings = analyze_plan_file(plan_path) if plan_path else []
+        runtime_findings = parse_plan(plan_path) if plan_path else []
 
         correlations = correlate(static_findings, runtime_findings)
 

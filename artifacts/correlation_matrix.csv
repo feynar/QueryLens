@@ -1,3 +1,15 @@
 rule,total,confirmed,confirmation_rate
-select_star,3,0,0.0
-non_sargable_predicate,1,0,0.0
+select_star,10,9,0.9
+missing_where,7,0,0.0
+non_sargable_predicate,2,2,1.0
+order_by_no_index,4,4,1.0
+basic_join,11,0,0.0
+missing_index,13,10,0.769
+complex_join,3,2,0.667
+exists_subquery,1,1,1.0
+not_exists_subquery,1,1,1.0
+cross_join,1,1,1.0
+having_clause,1,1,1.0
+derived_table,1,0,0.0
+window_function,1,1,1.0
+correlated_subquery,1,0,0.0

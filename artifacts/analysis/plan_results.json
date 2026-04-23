@@ -824,5 +824,54 @@
         "logical_op": "Index Scan",
         "estimated_rows": 200000.0,
         "subtree_cost": 0.606986
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Nested Loops",
+        "logical_op": "Left Outer Join",
+        "estimated_rows": 2238.33,
+        "subtree_cost": 0.924861
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Nested Loops",
+        "logical_op": "Inner Join",
+        "estimated_rows": 265.42,
+        "subtree_cost": 0.0475297
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Nested Loops",
+        "logical_op": "Inner Join",
+        "estimated_rows": 9.63952,
+        "subtree_cost": 0.0112493
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Clustered Index Seek",
+        "logical_op": "Clustered Index Seek",
+        "estimated_rows": 3.38172,
+        "subtree_cost": 0.00328615
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Clustered Index Seek",
+        "logical_op": "Clustered Index Seek",
+        "estimated_rows": 2.85048,
+        "subtree_cost": 0.00792102
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Clustered Index Seek",
+        "logical_op": "Clustered Index Seek",
+        "estimated_rows": 27.5346,
+        "subtree_cost": 0.0351709
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "operator": "Clustered Index Seek",
+        "logical_op": "Clustered Index Seek",
+        "estimated_rows": 8.42681,
+        "subtree_cost": 0.867982
     }
 ]

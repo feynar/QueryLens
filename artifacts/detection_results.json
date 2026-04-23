@@ -1,0 +1,351 @@
+{
+    "evaluated_rules": [
+        "complex_join",
+        "correlated_subquery",
+        "cross_join",
+        "derived_table",
+        "exists_subquery",
+        "having_clause",
+        "non_sargable_predicate",
+        "not_exists_subquery",
+        "order_by_no_index",
+        "select_star",
+        "window_function"
+    ],
+    "per_query_results": [
+        {
+            "query": "Q01_SelectStar_Customers_FullScan.sql",
+            "expected": [
+                "select_star"
+            ],
+            "detected": [
+                "select_star"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q02_Sargable_DateRange_Customers_Seek.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q03_NonSargable_DateFunction_Customers_Scan.sql",
+            "expected": [
+                "non_sargable_predicate"
+            ],
+            "detected": [
+                "non_sargable_predicate"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q04_FunctionPredicate_Customers_Scan.sql",
+            "expected": [
+                "non_sargable_predicate"
+            ],
+            "detected": [
+                "non_sargable_predicate"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q05_OrderBy_IndexedColumn_Orders.sql",
+            "expected": [
+                "order_by_no_index",
+                "select_star"
+            ],
+            "detected": [
+                "order_by_no_index",
+                "select_star"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q06_OrderBy_NonIndexed_Customers_Sort.sql",
+            "expected": [
+                "order_by_no_index",
+                "select_star"
+            ],
+            "detected": [
+                "order_by_no_index",
+                "select_star"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q07_CustomersOrders_BasicJoin.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q08_CustomersOrders_AggregateJoin.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q09_Join_WithSelectiveFilter.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q10_FullSchema_MultiJoin.sql",
+            "expected": [
+                "complex_join"
+            ],
+            "detected": [
+                "complex_join"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q11_GlobalAggregation_Orders.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q12_GroupBy_ProductCategory.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q13_HighSelectivity_OrderLookup.sql",
+            "expected": [
+                "select_star"
+            ],
+            "detected": [
+                "select_star"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q14_LowSelectivity_DateRange.sql",
+            "expected": [
+                "select_star"
+            ],
+            "detected": [
+                "select_star"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q15_Join_WithExplicitSort.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q16_FilteredAggregation_CustomerOrders.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q17_ProductPrice_FilterJoin.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q18_ComputedAggregation_Revenue.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q19_ProductJoin_NonIndexedSort.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q20_WideSchema_SelectStar.sql",
+            "expected": [
+                "complex_join",
+                "select_star"
+            ],
+            "detected": [
+                "complex_join",
+                "select_star"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q21_Exists.sql",
+            "expected": [
+                "exists_subquery"
+            ],
+            "detected": [
+                "exists_subquery"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q22_Not_Exists.sql",
+            "expected": [
+                "not_exists_subquery",
+                "select_star"
+            ],
+            "detected": [
+                "not_exists_subquery",
+                "select_star"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q23_Left_Join.sql",
+            "expected": [],
+            "detected": [],
+            "true_positive": 0,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q24_Cross_Join.sql",
+            "expected": [
+                "cross_join"
+            ],
+            "detected": [
+                "cross_join"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q25_Group_By.sql",
+            "expected": [
+                "having_clause"
+            ],
+            "detected": [
+                "having_clause"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q26_Top_Order_By.sql",
+            "expected": [
+                "order_by_no_index",
+                "select_star"
+            ],
+            "detected": [
+                "order_by_no_index",
+                "select_star"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q27_Derived_Table.sql",
+            "expected": [
+                "derived_table",
+                "select_star"
+            ],
+            "detected": [
+                "derived_table",
+                "select_star"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q28_Window.sql",
+            "expected": [
+                "order_by_no_index",
+                "window_function"
+            ],
+            "detected": [
+                "order_by_no_index",
+                "window_function"
+            ],
+            "true_positive": 2,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q29_Multi_Condition_Where.sql",
+            "expected": [
+                "select_star"
+            ],
+            "detected": [
+                "select_star"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        },
+        {
+            "query": "Q30_Correlated_Subquery.sql",
+            "expected": [
+                "correlated_subquery"
+            ],
+            "detected": [
+                "correlated_subquery"
+            ],
+            "true_positive": 1,
+            "false_positive": 0,
+            "false_negative": 0
+        }
+    ],
+    "global_metrics": {
+        "total_true_positive": 25,
+        "total_false_positive": 0,
+        "total_false_negative": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0
+    }
+}

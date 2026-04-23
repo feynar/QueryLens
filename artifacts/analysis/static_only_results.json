@@ -495,5 +495,36 @@
                 "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
             }
         ]
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "rule": "correlated_subquery",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": false,
+        "validation_type": "static",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Compute Scalar",
+                "Hash Match",
+                "Index Scan",
+                "Compute Scalar",
+                "Stream Aggregate",
+                "Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 2
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "correlated_subquery",
+                "issue": "Correlated subquery detected",
+                "suggestion": "Rewrite as JOIN for better performance",
+                "example": "SELECT c.* FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID"
+            }
+        ]
     }
 ]

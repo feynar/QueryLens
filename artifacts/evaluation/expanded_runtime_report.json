@@ -799,7 +799,7 @@
                     "runtime_verifiable": true
                 },
                 {
-                    "rule": "exists_subquery",
+                    "rule": "not_exists_subquery",
                     "confirmed": true,
                     "confidence": "high",
                     "evidence": {
@@ -915,10 +915,27 @@
         },
         {
             "query": "Q25_Group_By.sql",
-            "rule_instances": [],
-            "static_warnings": 0,
-            "confirmed_warnings": 0,
-            "confirmation_rate": 0
+            "rule_instances": [
+                {
+                    "rule": "having_clause",
+                    "confirmed": true,
+                    "confidence": "medium",
+                    "evidence": {
+                        "operators": [
+                            "Filter",
+                            "Compute Scalar",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 1
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 1,
+            "confirmed_warnings": 1,
+            "confirmation_rate": 1.0
         },
         {
             "query": "Q26_Top_Order_By.sql",
@@ -1095,15 +1112,80 @@
         },
         {
             "query": "Q30_Correlated_Subquery.sql",
-            "rule_instances": [],
+            "rule_instances": [
+                {
+                    "rule": "correlated_subquery",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Compute Scalar",
+                            "Hash Match",
+                            "Index Scan",
+                            "Compute Scalar",
+                            "Stream Aggregate",
+                            "Index Scan"
+                        ],
+                        "max_estimated_rows": 200000.0,
+                        "scan_count": 2
+                    },
+                    "runtime_verifiable": false
+                }
+            ],
             "static_warnings": 0,
             "confirmed_warnings": 0,
             "confirmation_rate": 0
+        },
+        {
+            "query": "Q31_PaymentTransactionReport.sql",
+            "rule_instances": [
+                {
+                    "rule": "complex_join",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Nested Loops",
+                            "Nested Loops",
+                            "Nested Loops",
+                            "Clustered Index Seek",
+                            "Clustered Index Seek",
+                            "Clustered Index Seek",
+                            "Clustered Index Seek"
+                        ],
+                        "max_estimated_rows": 2238.33,
+                        "scan_count": 0
+                    },
+                    "runtime_verifiable": true
+                },
+                {
+                    "rule": "missing_index",
+                    "confirmed": false,
+                    "confidence": "none",
+                    "evidence": {
+                        "operators": [
+                            "Nested Loops",
+                            "Nested Loops",
+                            "Nested Loops",
+                            "Clustered Index Seek",
+                            "Clustered Index Seek",
+                            "Clustered Index Seek",
+                            "Clustered Index Seek"
+                        ],
+                        "max_estimated_rows": 2238.33,
+                        "scan_count": 0
+                    },
+                    "runtime_verifiable": true
+                }
+            ],
+            "static_warnings": 2,
+            "confirmed_warnings": 0,
+            "confirmation_rate": 0.0
         }
     ],
     "global_metrics": {
-        "total_static_warnings": 34,
-        "total_confirmed_warnings": 31,
-        "confirmation_rate": 0.912
+        "total_static_warnings": 37,
+        "total_confirmed_warnings": 32,
+        "confirmation_rate": 0.865
     }
 }

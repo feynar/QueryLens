@@ -1,0 +1,26 @@
+QueryLens Static Analysis Test Log
+=================================
+
+test_complex_join_detected (tests.test_ast_rules.TestASTRules.test_complex_join_detected) ... ok
+test_correlated_subquery_detected (tests.test_ast_rules.TestASTRules.test_correlated_subquery_detected) ... ok
+test_cross_join_detected (tests.test_ast_rules.TestASTRules.test_cross_join_detected) ... ok
+test_derived_table_detected (tests.test_ast_rules.TestASTRules.test_derived_table_detected) ... ok
+test_exists_detected (tests.test_ast_rules.TestASTRules.test_exists_detected) ... ok
+test_exists_not_flagged_when_absent (tests.test_ast_rules.TestASTRules.test_exists_not_flagged_when_absent) ... ok
+test_function_on_constant_not_flagged (tests.test_ast_rules.TestASTRules.test_function_on_constant_not_flagged) ... ok
+test_having_clause_detected (tests.test_ast_rules.TestASTRules.test_having_clause_detected) ... ok
+test_non_sargable_function_detected (tests.test_ast_rules.TestASTRules.test_non_sargable_function_detected) ... ok
+test_not_exists_detected (tests.test_ast_rules.TestASTRules.test_not_exists_detected) ... ok
+test_order_by_no_index_detected (tests.test_ast_rules.TestASTRules.test_order_by_no_index_detected) ... ok
+test_select_star_detected (tests.test_ast_rules.TestASTRules.test_select_star_detected) ... ok
+test_window_function_detected (tests.test_ast_rules.TestASTRules.test_window_function_detected) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.488s
+
+OK
+
+Ran 13 tests
+Failures: 0
+Errors: 0
+Successful: True

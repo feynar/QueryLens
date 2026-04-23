@@ -1,0 +1,5 @@
+metric,static_only,combined_analysis,improvement
+false_positives,57,20,64.912% reduction
+precision,0.000,0.649,64.912 percentage points
+confirmed_warnings,0,37,N/A
+total_static_warnings,57,57,N/A

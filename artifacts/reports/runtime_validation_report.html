@@ -173,9 +173,9 @@
 
         <h2>Global Metrics</h2>
         <div class="metric-list">
-            <p><b>Total Runtime-Verifiable Static Warnings:</b> 34</p>
-            <p><b>Total Confirmed Warnings:</b> 31</p>
-            <p><b>Confirmation Rate:</b> 0.912</p>
+            <p><b>Total Runtime-Verifiable Static Warnings:</b> 37</p>
+            <p><b>Total Confirmed Warnings:</b> 32</p>
+            <p><b>Confirmation Rate:</b> 0.865</p>
         </div>
 
         <h2>Per-Query Summary</h2>
@@ -379,11 +379,11 @@
         </tr>
         
 
-        <tr class="summary-neutral">
+        <tr class="summary-good">
             <td>Q25_Group_By.sql</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1.0</td>
         </tr>
         
 
@@ -424,6 +424,14 @@
             <td>0</td>
             <td>0</td>
             <td>0</td>
+        </tr>
+        
+
+        <tr class="summary-bad">
+            <td>Q31_PaymentTransactionReport.sql</td>
+            <td>2</td>
+            <td>0</td>
+            <td>0.0</td>
         </tr>
         
         </table>
@@ -1714,7 +1722,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Merge Join can implement EXISTS efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
+                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> EXISTS subquery used</p>
@@ -1771,16 +1779,16 @@
             </tr>
             
             <tr class="confirmed-high">
-                <td>exists_subquery</td>
+                <td>not_exists_subquery</td>
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Merge Join can implement EXISTS efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
+                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
                 <td>
     <div class="recommendation-box">
-        <p><b>Issue:</b> EXISTS subquery used</p>
-        <p><b>Impact:</b> May affect performance</p>
-        <p><b>Recommendation:</b> Ensure subquery is efficient</p>
+        <p><b>Issue:</b> Unknown</p>
+        <p><b>Impact:</b> N/A</p>
+        <p><b>Recommendation:</b> No recommendation available</p>
     </div>
     </td>
             </tr>
@@ -1946,33 +1954,51 @@
         </details>
         
 
-            <details class="query-details">
-                <summary>Q25_Group_By.sql</summary>
-                <div class="query-section">
-                    <p class="summary-line summary-neutral">
-                        <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
-                    </p>
+        <details class="query-details">
+            <summary>Q25_Group_By.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                </p>
 
-                    <p>
-                        Static Warnings: 0 |
-                        Confirmed: 0 |
-                        Rate: 0
-                    </p>
+                <p>
+                    Static Warnings: 1 |
+                    Confirmed: 1 |
+                    Rate: 1.0
+                </p>
 
-                    <p><b>No runtime-verifiable findings.</b></p>
-                    <p>
-                        This query triggered only static analysis rules that cannot be validated
-                        using execution plan evidence, or no rules were detected.
-                    </p>
-
-                    <h4>Recommendations</h4>
-                    <p>None</p>
-
-                    <h4>Rewrite Suggestions</h4>
-                    <p>None</p>
-                </div>
-            </details>
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="confirmed-medium">
+                <td>having_clause</td>
+                <td>True</td>
+                <td>medium</td>
+                <td>runtime</td>
+                <td>Hash Aggregate confirms HAVING</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Unknown</p>
+        <p><b>Impact:</b> N/A</p>
+        <p><b>Recommendation:</b> No recommendation available</p>
+    </div>
+    </td>
+            </tr>
             
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                <p>None</p>
+            </div>
+        </details>
+        
 
         <details class="query-details">
             <summary>Q26_Top_Order_By.sql</summary>
@@ -2274,33 +2300,128 @@
         </details>
         
 
-            <details class="query-details">
-                <summary>Q30_Correlated_Subquery.sql</summary>
-                <div class="query-section">
-                    <p class="summary-line summary-neutral">
-                        <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
-                    </p>
+        <details class="query-details">
+            <summary>Q30_Correlated_Subquery.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-neutral">
+                    <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                </p>
 
-                    <p>
-                        Static Warnings: 0 |
-                        Confirmed: 0 |
-                        Rate: 0
-                    </p>
+                <p>
+                    Static Warnings: 0 |
+                    Confirmed: 0 |
+                    Rate: 0
+                </p>
 
-                    <p><b>No runtime-verifiable findings.</b></p>
-                    <p>
-                        This query triggered only static analysis rules that cannot be validated
-                        using execution plan evidence, or no rules were detected.
-                    </p>
-
-                    <h4>Recommendations</h4>
-                    <p>None</p>
-
-                    <h4>Rewrite Suggestions</h4>
-                    <p>None</p>
-                </div>
-            </details>
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>correlated_subquery</td>
+                <td>False</td>
+                <td>none</td>
+                <td>static</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Correlated subquery detected</p>
+        <p><b>Impact:</b> Executed per row, can be slow</p>
+        <p><b>Recommendation:</b> Rewrite as JOIN if possible</p>
+    </div>
+    </td>
+            </tr>
             
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> correlated_subquery</p>
+            <p><b>Issue:</b> Correlated subquery detected</p>
+            <p><b>Suggestion:</b> Rewrite as JOIN for better performance</p>
+            <p><b>Example:</b></p>
+            <pre>SELECT c.* FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID</pre>
+        </div>
+        
+            </div>
+        </details>
+        
+
+        <details class="query-details">
+            <summary>Q31_PaymentTransactionReport.sql</summary>
+            <div class="query-section">
+                <p class="summary-line summary-bad">
+                    <b>Summary:</b> 0 / 2 rules confirmed by runtime evidence
+                </p>
+
+                <p>
+                    Static Warnings: 2 |
+                    Confirmed: 0 |
+                    Rate: 0.0
+                </p>
+
+                <table class="detail-table">
+                    <tr>
+                        <th>Rule</th>
+                        <th>Confirmed</th>
+                        <th>Confidence</th>
+                        <th>Validation Type</th>
+                        <th>Reason</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    
+            <tr class="not-confirmed">
+                <td>complex_join</td>
+                <td>False</td>
+                <td>none</td>
+                <td>runtime</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Multiple joins detected</p>
+        <p><b>Impact:</b> High memory and CPU usage</p>
+        <p><b>Recommendation:</b> Ensure join columns are indexed</p>
+    </div>
+    </td>
+            </tr>
+            
+            <tr class="not-confirmed">
+                <td>missing_index</td>
+                <td>False</td>
+                <td>none</td>
+                <td>runtime</td>
+                <td>Insufficient runtime evidence</td>
+                <td>
+    <div class="recommendation-box">
+        <p><b>Issue:</b> Missing index</p>
+        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
+        <p><b>Recommendation:</b> Create index on filter/join columns</p>
+    </div>
+    </td>
+            </tr>
+            
+                </table>
+
+                <h4>Rewrite Suggestions</h4>
+                
+        <div class="rewrite-box">
+            <p><b>Rule:</b> complex_join</p>
+            <p><b>Issue:</b> Too many joins</p>
+            <p><b>Suggestion:</b> Break query into smaller parts or use temp tables</p>
+            <p><b>Example:</b></p>
+            <pre>Use intermediate #temp tables for large joins</pre>
+        </div>
+        
+            </div>
+        </details>
+        
     </body>
     </html>
     

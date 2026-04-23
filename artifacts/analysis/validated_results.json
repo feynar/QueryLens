@@ -678,7 +678,7 @@
             "max_estimated_rows": 200000.0,
             "scan_count": 2
         },
-        "reason": "Merge Join can implement EXISTS efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact",
+        "reason": "Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact",
         "rewrites": []
     },
     {
@@ -712,7 +712,7 @@
     },
     {
         "query_id": "Q22_Not_Exists",
-        "rule": "exists_subquery",
+        "rule": "not_exists_subquery",
         "confirmed": true,
         "suppressed": false,
         "validated": true,
@@ -729,7 +729,7 @@
             "max_estimated_rows": 200000.0,
             "scan_count": 2
         },
-        "reason": "Merge Join can implement EXISTS efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact",
+        "reason": "Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact",
         "rewrites": [
             {
                 "rule": "select_star",
@@ -788,6 +788,28 @@
                 "example": "FROM A JOIN B ON A.id = B.id"
             }
         ]
+    },
+    {
+        "query_id": "Q25_Group_By",
+        "rule": "having_clause",
+        "confirmed": true,
+        "suppressed": false,
+        "validated": true,
+        "validation_type": "runtime",
+        "confidence": "medium",
+        "score": 0.5,
+        "evidence": {
+            "operators": [
+                "Filter",
+                "Compute Scalar",
+                "Stream Aggregate",
+                "Index Scan"
+            ],
+            "max_estimated_rows": 200000.0,
+            "scan_count": 1
+        },
+        "reason": "Hash Aggregate confirms HAVING",
+        "rewrites": []
     },
     {
         "query_id": "Q26_Top_Order_By",
@@ -969,6 +991,70 @@
                 "issue": "Using SELECT *",
                 "suggestion": "Replace SELECT * with explicit column names",
                 "example": "SELECT col1, col2 FROM table_name"
+            }
+        ]
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "rule": "complex_join",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": true,
+        "validation_type": "runtime",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Nested Loops",
+                "Nested Loops",
+                "Nested Loops",
+                "Clustered Index Seek",
+                "Clustered Index Seek",
+                "Clustered Index Seek",
+                "Clustered Index Seek"
+            ],
+            "max_estimated_rows": 2238.33,
+            "scan_count": 0
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "complex_join",
+                "issue": "Too many joins",
+                "suggestion": "Break query into smaller parts or use temp tables",
+                "example": "Use intermediate #temp tables for large joins"
+            }
+        ]
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "rule": "missing_index",
+        "confirmed": false,
+        "suppressed": true,
+        "validated": true,
+        "validation_type": "runtime",
+        "confidence": "none",
+        "score": 0,
+        "evidence": {
+            "operators": [
+                "Nested Loops",
+                "Nested Loops",
+                "Nested Loops",
+                "Clustered Index Seek",
+                "Clustered Index Seek",
+                "Clustered Index Seek",
+                "Clustered Index Seek"
+            ],
+            "max_estimated_rows": 2238.33,
+            "scan_count": 0
+        },
+        "reason": "Insufficient runtime evidence",
+        "rewrites": [
+            {
+                "rule": "complex_join",
+                "issue": "Too many joins",
+                "suggestion": "Break query into smaller parts or use temp tables",
+                "example": "Use intermediate #temp tables for large joins"
             }
         ]
     }

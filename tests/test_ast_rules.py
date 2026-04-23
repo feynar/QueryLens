@@ -91,6 +91,54 @@ class TestASTRules(unittest.TestCase):
         results = analyze_with_ast_text(sql)
         self.assertTrue(any(r["rule"] == "having_clause" for r in results))
 
+    def test_derived_table_detected(self):
+        sql = """
+        SELECT *
+        FROM (
+            SELECT CustomerID, SUM(OrderTotal) AS TotalSpent
+            FROM Orders
+            GROUP BY CustomerID
+        ) t
+        WHERE t.TotalSpent > 500;
+        """
+        results = analyze_with_ast_text(sql)
+        self.assertTrue(any(r["rule"] == "derived_table" for r in results))
 
+    def test_cross_join_detected(self):
+        sql = """
+        SELECT c.CustomerID, o.OrderID
+        FROM Customers c
+        CROSS JOIN Orders o;
+        """
+        results = analyze_with_ast_text(sql)
+        self.assertTrue(any(r["rule"] == "cross_join" for r in results))
+
+    def test_order_by_no_index_detected(self):
+        sql = """
+        SELECT *
+        FROM Customers
+        ORDER BY FirstName;
+        """
+        results = analyze_with_ast_text(sql)
+        self.assertTrue(any(r["rule"] == "order_by_no_index" for r in results))
+
+    def test_exists_not_flagged_when_absent(self):
+        sql = """
+        SELECT CustomerID
+        FROM Customers
+        WHERE CreatedDate >= '2024-01-01';
+        """
+        results = analyze_with_ast_text(sql)
+        self.assertFalse(any(r["rule"] == "exists_subquery" for r in results))
+        
+    def test_window_function_detected(self):
+        sql = """
+        SELECT CustomerID,
+               ROW_NUMBER() OVER (PARTITION BY CustomerID ORDER BY OrderDate) AS rn
+        FROM Orders;
+        """
+        results = analyze_with_ast_text(sql)
+        self.assertTrue(any(r["rule"] == "window_function" for r in results))        
+        
 if __name__ == "__main__":
     unittest.main()

@@ -17,7 +17,7 @@ from src.correlation.correlator import correlate
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PLAN_DIR = os.path.join(PROJECT_ROOT, "plans")
-OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "analysis", "validation_log.txt")
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "validation_log.txt")
 
 
 def find_plan(sql_path):

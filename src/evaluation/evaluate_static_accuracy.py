@@ -16,9 +16,25 @@ from src.analysis.static_analyzer import analyze_sql
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
+PLANS_DIR = os.path.join(PROJECT_ROOT, "plans")
 DATASET_DIR = os.path.join(PROJECT_ROOT, "datasets")
 GROUND_TRUTH_PATH = os.path.join(DATASET_DIR, "ground_truth_static.json")
-OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "evaluation", "static_accuracy_report.json")
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "detection_results.json")
+
+# Only evaluate the rules intentionally included in the labeled ground truth.
+EVALUATED_RULES = {
+    "select_star",
+    "non_sargable_predicate",
+    "complex_join",
+    "order_by_no_index",
+    "exists_subquery",
+    "not_exists_subquery",
+    "correlated_subquery",
+    "cross_join",
+    "having_clause",
+    "derived_table",
+    "window_function",
+}
 
 
 def load_ground_truth():
@@ -37,9 +53,15 @@ def evaluate_query(sql_path, expected_issues):
     results = analyze_sql(sql_path)
 
     # Normalize detected issue labels into a sorted list for comparison.
-    detected = sorted(r["issue_type"] for r in results)
+    detected = sorted(
+        r["rule"] for r in results
+        if r["rule"] in EVALUATED_RULES
+    )
 
-    expected = sorted(expected_issues)
+    expected = sorted(
+        rule for rule in expected_issues
+        if rule in EVALUATED_RULES
+    )
 
     tp = len(set(detected) & set(expected))
     fp = len(set(detected) - set(expected))
@@ -81,7 +103,7 @@ def compute_global_metrics(rows):
     }
 
 
-def run_evaluation():
+def run_static_accuracy_evaluation():
     """
     Runs static accuracy evaluation across the labeled dataset and writes
     the resulting report to the evaluation artifacts directory.
@@ -91,7 +113,7 @@ def run_evaluation():
     results = []
 
     for file_name, expected in ground_truth.items():
-        sql_path = os.path.join(DATASET_DIR, file_name)
+        sql_path = os.path.join(PLANS_DIR, file_name)
 
         # Skip ground-truth entries whose SQL files are missing.
         if not os.path.exists(sql_path):
@@ -103,6 +125,7 @@ def run_evaluation():
     metrics = compute_global_metrics(results)
 
     report = {
+        "evaluated_rules": sorted(EVALUATED_RULES),
         "per_query_results": results,
         "global_metrics": metrics
     }
@@ -117,4 +140,4 @@ def run_evaluation():
 
 
 if __name__ == "__main__":
-    run_evaluation()
+    run_static_accuracy_evaluation()

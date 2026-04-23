@@ -1,11 +1,155 @@
 QueryLens False Positive Analysis
 ================================
 
+Query: Q01_SelectStar_Customers_FullScan.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Clustered Index Scan'], 'max_estimated_rows': 50000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q05_OrderBy_IndexedColumn_Orders.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Parallelism', 'Sort', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q06_OrderBy_NonIndexed_Customers_Sort.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Sort', 'Clustered Index Scan'], 'max_estimated_rows': 50000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q07_CustomersOrders_BasicJoin.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Merge Join', 'Clustered Index Scan', 'Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q08_CustomersOrders_AggregateJoin.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Hash Match', 'Index Scan', 'Compute Scalar', 'Hash Match', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q09_Join_WithSelectiveFilter.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Hash Match', 'Index Seek', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+  Rule: missing_index
+  Confidence: none
+  Evidence: {'operators': ['Hash Match', 'Index Seek', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q10_FullSchema_MultiJoin.sql
+  Rule: missing_index
+  Confidence: none
+  Evidence: {'operators': ['Parallelism', 'Hash Match', 'Adaptive Join', 'Index Scan', 'Index Scan', 'Index Seek', 'Hash Match', 'Clustered Index Scan', 'Clustered Index Scan'], 'max_estimated_rows': 400000.0, 'scan_count': 4}
+  Reason: Insufficient runtime evidence
+
+Query: Q11_GlobalAggregation_Orders.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Compute Scalar', 'Stream Aggregate', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q12_GroupBy_ProductCategory.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Compute Scalar', 'Stream Aggregate', 'Sort', 'Merge Join', 'Stream Aggregate', 'Index Scan', 'Clustered Index Scan'], 'max_estimated_rows': 400000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q13_HighSelectivity_OrderLookup.sql
+  Rule: select_star
+  Confidence: none
+  Evidence: {'operators': ['Clustered Index Seek'], 'max_estimated_rows': 1.0, 'scan_count': 0}
+  Reason: Insufficient runtime evidence
+
+Query: Q15_Join_WithExplicitSort.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Parallelism', 'Sort', 'Hash Match', 'Parallelism', 'Index Scan', 'Parallelism', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q16_FilteredAggregation_CustomerOrders.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Hash Match', 'Index Scan', 'Compute Scalar', 'Hash Match', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q17_ProductPrice_FilterJoin.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Hash Match', 'Clustered Index Scan', 'Clustered Index Scan'], 'max_estimated_rows': 400000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q18_ComputedAggregation_Revenue.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Parallelism', 'Hash Match', 'Index Scan', 'Compute Scalar', 'Hash Match', 'Hash Match', 'Index Scan', 'Compute Scalar', 'Clustered Index Scan'], 'max_estimated_rows': 400000.0, 'scan_count': 3}
+  Reason: Insufficient runtime evidence
+
+Query: Q19_ProductJoin_NonIndexedSort.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Parallelism', 'Sort', 'Hash Match', 'Parallelism', 'Clustered Index Scan', 'Parallelism', 'Clustered Index Scan'], 'max_estimated_rows': 400000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q23_Left_Join.sql
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Hash Match', 'Index Scan', 'Clustered Index Scan'], 'max_estimated_rows': 160099.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q24_Cross_Join.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Top', 'Nested Loops', 'Index Scan', 'Index Scan'], 'max_estimated_rows': 1000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+  Rule: basic_join
+  Confidence: none
+  Evidence: {'operators': ['Top', 'Nested Loops', 'Index Scan', 'Index Scan'], 'max_estimated_rows': 1000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q26_Top_Order_By.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Top', 'Parallelism', 'Sort', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q27_Derived_Table.sql
+  Rule: derived_table
+  Confidence: none
+  Evidence: {'operators': ['Filter', 'Compute Scalar', 'Hash Match', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q28_Window.sql
+  Rule: missing_where
+  Confidence: none
+  Evidence: {'operators': ['Parallelism', 'Window Aggregate', 'Sort', 'Clustered Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 1}
+  Reason: Insufficient runtime evidence
+
+Query: Q30_Correlated_Subquery.sql
+  Rule: correlated_subquery
+  Confidence: none
+  Evidence: {'operators': ['Compute Scalar', 'Hash Match', 'Index Scan', 'Compute Scalar', 'Stream Aggregate', 'Index Scan'], 'max_estimated_rows': 200000.0, 'scan_count': 2}
+  Reason: Insufficient runtime evidence
+
+Query: Q31_PaymentTransactionReport.sql
+  Rule: complex_join
+  Confidence: none
+  Evidence: {'operators': ['Nested Loops', 'Nested Loops', 'Nested Loops', 'Clustered Index Seek', 'Clustered Index Seek', 'Clustered Index Seek', 'Clustered Index Seek'], 'max_estimated_rows': 2238.33, 'scan_count': 0}
+  Reason: Insufficient runtime evidence
+
+  Rule: missing_index
+  Confidence: none
+  Evidence: {'operators': ['Nested Loops', 'Nested Loops', 'Nested Loops', 'Clustered Index Seek', 'Clustered Index Seek', 'Clustered Index Seek', 'Clustered Index Seek'], 'max_estimated_rows': 2238.33, 'scan_count': 0}
+  Reason: Insufficient runtime evidence
+
 
 Summary
 -------
-Total static warnings evaluated: 4
-False positives detected: 0
-
-No false positives were observed in the runtime validation workload.
-All static warnings were supported by execution plan evidence.
+Total static warnings evaluated: 57
+False positives detected: 25

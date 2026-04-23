@@ -10,6 +10,7 @@ Pipeline stages:
     3. Correlation (link static warnings to runtime operators)
     4. Rewrite suggestion generation
     5. Metrics and report generation
+    6. Proposal-supporting artifact generation    
 
 Inputs:
     plans/*.sql
@@ -25,10 +26,16 @@ Outputs:
     artifacts/evaluation/expanded_runtime_report.json
     artifacts/evaluation/rule_level_metrics.json
     artifacts/reports/runtime_validation_report.html
+    artifacts/static_test_log.txt
+    artifacts/correlation_matrix.csv
+    artifacts/validation_log.txt
+    artifacts/performance_log.csv
 """
 
+import csv
 import json
 import os
+import time
 from pathlib import Path
 
 from src.analysis.static_analyzer import analyze_sql
@@ -38,10 +45,19 @@ from src.analysis.rule_enricher import enrich_rules
 from src.correlation.correlator import correlate
 from src.parser.feature_extractor import FeatureExtractor
 from src.parser.sql_parser import parse_sql
+from src.reporting.generate_comparison_artifacts import main as generate_comparison_artifacts
+
 from src.evaluation.runtime_validator_expanded import run_evaluation
-from src.metrics.global_metrics import generate_global_metrics
 from src.evaluation.generate_rule_level_metrics import generate_rule_level_metrics
+from src.evaluation.evaluate_static_accuracy import run_static_accuracy_evaluation
+
+from src.metrics.global_metrics import generate_global_metrics
+
 from src.reporting.html_report_generator import generate_report
+from src.reporting.generate_correlation_matrix import generate_matrix
+
+from src.tools.generate_static_test_log import generate_static_test_log
+from src.tools.false_positive_analyzer import run_analysis as run_false_positive_analysis
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1] 
 PLANS_FOLDER = PROJECT_ROOT / "plans"
@@ -53,6 +69,69 @@ def save_json(data, path):
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
 
+def measure_baseline_runtime(plans_folder):
+    """
+    Measures a lightweight baseline by only reading SQL files from disk.
+    This provides a simple comparison point for the full QueryLens pipeline.
+    """
+    start = time.time()
+    query_count = 0
+
+    for file in os.listdir(plans_folder):
+        if not file.endswith(".sql"):
+            continue
+
+        query_count += 1
+        sql_file = plans_folder / file
+
+        try:
+            with open(sql_file, "r", encoding="utf-8") as f:
+                _ = f.read()
+        except UnicodeDecodeError:
+            with open(sql_file, "r", encoding="cp1252") as f:
+                _ = f.read()
+
+    end = time.time()
+    return query_count, (end - start)
+    
+def write_performance_log(total_queries, baseline_seconds, querylens_seconds):
+    """
+    Writes a baseline-vs-QueryLens performance comparison log.
+
+    The baseline is a lightweight file-read pass over the workload.
+    QueryLens time is the full pipeline runtime.
+    """
+    output_path = ARTIFACTS / "performance_log.csv"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    overhead_percent = (
+        round(((querylens_seconds - baseline_seconds) / baseline_seconds) * 100, 3)
+        if baseline_seconds > 0 else 0
+    )
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "run_id",
+            "queries_processed",
+            "baseline_seconds",
+            "querylens_seconds",
+            "avg_baseline_seconds_per_query",
+            "avg_querylens_seconds_per_query",
+            "overhead_percent"
+        ])
+        writer.writerow([
+            1,
+            total_queries,
+            round(baseline_seconds, 4),
+            round(querylens_seconds, 4),
+            round(baseline_seconds / total_queries, 4) if total_queries else 0,
+            round(querylens_seconds / total_queries, 4) if total_queries else 0,
+            overhead_percent
+        ])
+
+    print(f"Performance log generated → {output_path}")
+    
 def main_batch(plans_folder):
     """
     Executes the full QueryLens batch pipeline over every SQL file in the plans folder.
@@ -69,7 +148,9 @@ def main_batch(plans_folder):
     evaluation metrics plus the final HTML report.
     """    
     print("\n=== Running QueryLens Batch Analysis ===")
-
+    baseline_query_count, baseline_seconds = measure_baseline_runtime(plans_folder)
+    pipeline_start = time.time()
+    
     all_static = []
     all_runtime = []
     all_correlated = []
@@ -148,9 +229,7 @@ def main_batch(plans_folder):
             # -------------------------
             all_static.extend(enriched_rules)
             all_runtime.extend(runtime_results)
-            
-            for r in correlation_results:
-                all_correlated.append(r)
+            all_correlated.extend(correlation_results)
                 
     # Split correlation output into runtime-validatable findings and static-only findings.
     validated_results = [r for r in all_correlated if r["validated"]]
@@ -192,12 +271,37 @@ def main_batch(plans_folder):
     generate_rule_level_metrics()
     generate_report()
 
+    # -------------------------
+    # PROPOSAL-SUPPORTING ARTIFACTS
+    # -------------------------
+    generate_static_test_log()
+    generate_matrix()
+    run_false_positive_analysis()
+    
+    # Static accuracy evaluation requires datasets/ground_truth_static.json.
+    # Leave enabled only if that file has been restored.
+    try:
+        run_static_accuracy_evaluation()
+    except FileNotFoundError:
+        print("Static accuracy evaluation skipped: ground_truth_static.json not found")
+
+    generate_comparison_artifacts()
+    
+    pipeline_end = time.time()
+    elapsed_seconds = pipeline_end - pipeline_start
+    write_performance_log(query_count, baseline_seconds, elapsed_seconds)
+    
     print("Batch analysis complete")
     print("Global evaluation metrics generated")
     print("Expanded runtime evaluation generated")
     print("Rule-level metrics generated")
     print("HTML report generated")
-    print("\n📊 Summary:")
+    print("Static test log generated")
+    print("Correlation matrix generated")
+    print("False positive validation log generated")
+    print("Baseline vs combined comparison artifacts generated")
+    
+    print("\n Summary:")
     print(f"Total queries processed: {query_count}")
     print(f"Total static findings: {len(all_static)}")
     print(f"Total runtime operators: {len(all_runtime)}")
@@ -212,6 +316,7 @@ def main_batch(plans_folder):
     print(f"Suppression rate: {suppression_rate}")
 
     print(f"High-confidence confirmations: {high_confidence_count}")
+    print(f"Total pipeline runtime (seconds): {round(elapsed_seconds, 4)}")    
 
 if __name__ == "__main__":
     main_batch(PLANS_FOLDER)

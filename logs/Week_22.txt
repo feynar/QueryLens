@@ -1,0 +1,36 @@
+Week 22 — Final Evaluation Alignment and Proposal Traceability
+
+Hours Logged: 24
+
+Objective
+
+Finalize QueryLens by aligning implementation artifacts with the approved project proposal, strengthening evaluation evidence, and confirming that the completed system satisfies the major project requirements.
+
+Activities
+
+Refined the final QueryLens evaluation pipeline to ensure that all major proposal deliverables were supported by traceable artifacts. Restored and updated the static accuracy evaluation workflow, including reconstruction of the ground-truth label file for the 30-query benchmark workload. Revised the evaluator to score only the labeled benchmark rule set, producing a clean static detection accuracy report with per-query results and global precision, recall, and F1 metrics.
+
+Expanded proposal-traceability artifact generation by integrating additional reporting steps into the full batch pipeline. Added automated generation of static_test_log.txt, correlation_matrix.csv, validation_log.txt, performance_log.csv, comparison_summary.csv, and combined_vs_baseline.png so that proposal evidence could be reproduced from a single execution command.
+
+Corrected the correlation matrix workflow to use raw execution plan parsing instead of normalized runtime issue labels, which restored accurate rule-level confirmation rates. Regenerated runtime validation outputs and verified that overall runtime agreement exceeded the proposal target. Generated final comparison artifacts showing that the combined static-and-runtime approach substantially reduced false positives relative to a static-only baseline and improved the precision of reported findings.
+
+Reviewed the completed repository structure against the original proposal and confirmed that the final system preserves all core promised functionality, including static analysis, execution-plan interpretation, cross-signal correlation, and human-readable reporting. 
+
+Outcome
+
+QueryLens now includes a finalized end-to-end analysis and evaluation workflow with proposal-aligned evidence artifacts, reproducible benchmark metrics, and professional artifact organization. The completed system satisfies the core project proposal and is ready for final report writing and submission.
+
+Evidence
+
+src/run_full_analysis.py
+src/evaluation/evaluate_static_accuracy.py
+src/reporting/generate_correlation_matrix.py
+src/reporting/generate_comparison_artifacts.py
+artifacts/detection_results.json
+artifacts/correlation_matrix.csv
+artifacts/comparison_summary.csv
+artifacts/combined_vs_baseline.png
+artifacts/performance_log.csv
+artifacts/static_test_log.txt
+artifacts/validation_log.txt
+artifacts/reports/runtime_validation_report.html

@@ -609,18 +609,18 @@
     },
     {
         "query_id": "Q22_Not_Exists",
-        "rule": "exists_subquery",
+        "rule": "not_exists_subquery",
         "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
-            "issue": "EXISTS subquery used",
-            "impact": "May affect performance",
-            "recommendation": "Ensure subquery is efficient"
+            "issue": "Unknown",
+            "impact": "N/A",
+            "recommendation": "No recommendation available"
         },
         "details": {
-            "issue": "EXISTS subquery used",
-            "impact": "May affect performance",
-            "recommendation": "Ensure subquery is efficient"
+            "issue": "Unknown",
+            "impact": "N/A",
+            "recommendation": "No recommendation available"
         }
     },
     {
@@ -701,6 +701,22 @@
             "issue": "CROSS JOIN detected",
             "impact": "Produces very large result sets",
             "recommendation": "Ensure this is intentional"
+        }
+    },
+    {
+        "query_id": "Q25_Group_By",
+        "rule": "having_clause",
+        "confidence": "medium",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Unknown",
+            "impact": "N/A",
+            "recommendation": "No recommendation available"
+        },
+        "details": {
+            "issue": "Unknown",
+            "impact": "N/A",
+            "recommendation": "No recommendation available"
         }
     },
     {
@@ -845,6 +861,54 @@
             "issue": "SELECT * used",
             "impact": "May cause unnecessary I/O and prevent index usage",
             "recommendation": "Select only required columns instead of using SELECT *"
+        }
+    },
+    {
+        "query_id": "Q30_Correlated_Subquery",
+        "rule": "correlated_subquery",
+        "confidence": "medium",
+        "runtime_verifiable": false,
+        "recommendation": {
+            "issue": "Correlated subquery detected",
+            "impact": "Executed per row, can be slow",
+            "recommendation": "Rewrite as JOIN if possible"
+        },
+        "details": {
+            "issue": "Correlated subquery detected",
+            "impact": "Executed per row, can be slow",
+            "recommendation": "Rewrite as JOIN if possible"
+        }
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "rule": "complex_join",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Multiple joins detected",
+            "impact": "High memory and CPU usage",
+            "recommendation": "Ensure join columns are indexed"
+        },
+        "details": {
+            "issue": "Multiple joins detected",
+            "impact": "High memory and CPU usage",
+            "recommendation": "Ensure join columns are indexed"
+        }
+    },
+    {
+        "query_id": "Q31_PaymentTransactionReport",
+        "rule": "missing_index",
+        "confidence": "high",
+        "runtime_verifiable": true,
+        "recommendation": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
+        },
+        "details": {
+            "issue": "Missing index",
+            "impact": "Query uses scans or inefficient access paths",
+            "recommendation": "Create index on filter/join columns"
         }
     }
 ]
