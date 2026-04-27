@@ -1,3 +1,14 @@
+"""
+QueryLens — Baseline vs Combined Comparison Artifact Generator
+
+Builds proposal-supporting comparison artifacts that quantify the
+difference between static-only analysis and validation-aware analysis.
+
+Outputs:
+    artifacts/comparison_summary.csv
+    artifacts/combined_vs_baseline.png
+"""
+
 import csv
 import json
 import os
@@ -14,8 +25,6 @@ STATIC_ONLY_RESULTS_PATH = PROJECT_ROOT / "artifacts" / "analysis" / "static_onl
 COMBINED_CHART_OUTPUT_PATH = PROJECT_ROOT / "artifacts" / "combined_vs_baseline.png"
 
 CSV_OUTPUT_PATH = PROJECT_ROOT / "artifacts" / "comparison_summary.csv"
-CHART1_OUTPUT_PATH = PROJECT_ROOT / "artifacts" / "combined_vs_baseline_false_positives.png"
-CHART2_OUTPUT_PATH = PROJECT_ROOT / "artifacts" / "combined_vs_baseline_precision.png"
 
 
 def load_json(path: Path):

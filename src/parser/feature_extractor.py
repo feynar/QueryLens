@@ -1,4 +1,6 @@
 """
+QueryLens — SQL Feature Extractor
+
 Extracts structural SQL features from the ANTLR parse tree.
 
 These features are later consumed by the static rule engine to detect

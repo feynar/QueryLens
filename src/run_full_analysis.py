@@ -10,7 +10,7 @@ Pipeline stages:
     3. Correlation (link static warnings to runtime operators)
     4. Rewrite suggestion generation
     5. Metrics and report generation
-    6. Proposal-supporting artifact generation    
+    6. Proposal-supporting artifact generation
 
 Inputs:
     plans/*.sql
@@ -26,9 +26,12 @@ Outputs:
     artifacts/evaluation/expanded_runtime_report.json
     artifacts/evaluation/rule_level_metrics.json
     artifacts/reports/runtime_validation_report.html
+    artifacts/detection_results.json
     artifacts/static_test_log.txt
     artifacts/correlation_matrix.csv
     artifacts/validation_log.txt
+    artifacts/comparison_summary.csv
+    artifacts/combined_vs_baseline.png
     artifacts/performance_log.csv
 """
 

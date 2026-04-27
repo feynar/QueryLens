@@ -13,7 +13,6 @@ Outputs:
 
 import os
 import csv
-import json
 
 from src.analysis.static_analyzer import analyze_sql
 from src.analysis.plan_analyzer import parse_plan
@@ -67,6 +66,7 @@ def aggregate_by_rule(correlations):
     """
     stats = {}
 
+    # Each correlation record represents one static finding evaluated against runtime evidence
     for c in correlations:
         rule = c["rule"]
 

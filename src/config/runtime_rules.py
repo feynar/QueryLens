@@ -25,6 +25,5 @@ RUNTIME_VERIFIABLE_RULES = {
     "window_function",
     "having_clause",
     "cartesian_join",
-    "missing_index",
-    "having_clause"
+    "missing_index"
 }
