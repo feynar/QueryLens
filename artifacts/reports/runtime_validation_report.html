@@ -173,9 +173,9 @@
 
         <h2>Global Metrics</h2>
         <div class="metric-list">
-            <p><b>Total Runtime-Verifiable Static Warnings:</b> 37</p>
+            <p><b>Total Runtime-Verifiable Static Warnings:</b> 35</p>
             <p><b>Total Confirmed Warnings:</b> 32</p>
-            <p><b>Confirmation Rate:</b> 0.865</p>
+            <p><b>Confirmation Rate:</b> 0.914</p>
         </div>
 
         <h2>Per-Query Summary</h2>
@@ -426,14 +426,6 @@
             <td>0</td>
         </tr>
         
-
-        <tr class="summary-bad">
-            <td>Q31_PaymentTransactionReport.sql</td>
-            <td>2</td>
-            <td>0</td>
-            <td>0.0</td>
-        </tr>
-        
         </table>
 
         <h2>Detailed Rule Findings</h2>
@@ -466,7 +458,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 50000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -563,7 +555,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan detected (expected for non-sargable predicate); Large row count amplifies inefficiency</td>
+                <td>Scan detected, which is expected for a non-sargable predicate; High actual row count amplifies non-sargable predicate impact; Actual runtime row evidence supports impact; max actual rows = 46302.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Non-SARGable predicate</p>
@@ -617,7 +609,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan detected (expected for non-sargable predicate)</td>
+                <td>Scan detected, which is expected for a non-sargable predicate</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Non-SARGable predicate</p>
@@ -671,7 +663,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 600000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -701,7 +693,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Sort operator confirms missing index</td>
+                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 600000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> ORDER BY without filtering</p>
@@ -764,7 +756,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 100000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -794,7 +786,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Sort operator confirms missing index</td>
+                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 100000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> ORDER BY without filtering</p>
@@ -872,7 +864,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 450000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -933,7 +925,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 400000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1040,7 +1032,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Join operator confirms complexity; Join cost amplified by dataset size</td>
+                <td>Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2051000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Multiple joins detected</p>
@@ -1170,7 +1162,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 404020.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1270,7 +1262,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1339,7 +1331,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 1100000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1400,7 +1392,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 400000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1461,7 +1453,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 725612.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1522,7 +1514,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 1650000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1583,7 +1575,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 2002000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1629,7 +1621,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 2251000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1644,7 +1636,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Join operator confirms complexity; Join cost amplified by dataset size</td>
+                <td>Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2251000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Multiple joins detected</p>
@@ -1659,7 +1651,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 2251000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1722,7 +1714,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
+                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 350000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> EXISTS subquery used</p>
@@ -1768,7 +1760,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 300000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1783,12 +1775,12 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; Large dataset increases subquery impact</td>
+                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 300000.0</td>
                 <td>
     <div class="recommendation-box">
-        <p><b>Issue:</b> Unknown</p>
-        <p><b>Impact:</b> N/A</p>
-        <p><b>Recommendation:</b> No recommendation available</p>
+        <p><b>Issue:</b> NOT EXISTS subquery used</p>
+        <p><b>Impact:</b> May require anti-semi join processing and can become expensive on large datasets</p>
+        <p><b>Recommendation:</b> Ensure the subquery join column is indexed and confirm the anti-join plan is efficient</p>
     </div>
     </td>
             </tr>
@@ -1852,7 +1844,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggests missing index</td>
+                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 370202.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1928,7 +1920,7 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Join operator confirms cross/cartesian join</td>
+                <td>Join operator confirms cross/cartesian join execution; Actual runtime rows were low, slightly reducing confirmation strength</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> CROSS JOIN detected</p>
@@ -1977,17 +1969,17 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>having_clause</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Hash Aggregate confirms HAVING</td>
+                <td>Aggregate operator confirms HAVING-related runtime work; Aggregation processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 250000.0</td>
                 <td>
     <div class="recommendation-box">
-        <p><b>Issue:</b> Unknown</p>
-        <p><b>Impact:</b> N/A</p>
-        <p><b>Recommendation:</b> No recommendation available</p>
+        <p><b>Issue:</b> HAVING clause used</p>
+        <p><b>Impact:</b> Filters after aggregation, which may require processing many rows before filtering</p>
+        <p><b>Recommendation:</b> Apply selective WHERE filters before GROUP BY where possible</p>
     </div>
     </td>
             </tr>
@@ -2028,7 +2020,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200100.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -2058,7 +2050,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Sort operator confirms missing index</td>
+                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 200100.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> ORDER BY without filtering</p>
@@ -2121,7 +2113,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 347941.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -2205,7 +2197,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Sort operator confirms missing index</td>
+                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> ORDER BY without filtering</p>
@@ -2215,12 +2207,12 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>window_function</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Window operator or sort detected</td>
+                <td>Window operator or sort detected; Window processing involved high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Window function used</p>
@@ -2274,7 +2266,7 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests wide row retrieval; Large dataset increases impact</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 11111.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -2323,12 +2315,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="confirmed-medium">
                 <td>correlated_subquery</td>
-                <td>False</td>
-                <td>none</td>
+                <td>True</td>
+                <td>medium</td>
                 <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>High actual row count amplifies correlated subquery cost; Actual runtime row evidence supports impact; max actual rows = 450000.0</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Correlated subquery detected</p>
@@ -2348,75 +2340,6 @@
             <p><b>Suggestion:</b> Rewrite as JOIN for better performance</p>
             <p><b>Example:</b></p>
             <pre>SELECT c.* FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID</pre>
-        </div>
-        
-            </div>
-        </details>
-        
-
-        <details class="query-details">
-            <summary>Q31_PaymentTransactionReport.sql</summary>
-            <div class="query-section">
-                <p class="summary-line summary-bad">
-                    <b>Summary:</b> 0 / 2 rules confirmed by runtime evidence
-                </p>
-
-                <p>
-                    Static Warnings: 2 |
-                    Confirmed: 0 |
-                    Rate: 0.0
-                </p>
-
-                <table class="detail-table">
-                    <tr>
-                        <th>Rule</th>
-                        <th>Confirmed</th>
-                        <th>Confidence</th>
-                        <th>Validation Type</th>
-                        <th>Reason</th>
-                        <th>Recommendation</th>
-                    </tr>
-                    
-            <tr class="not-confirmed">
-                <td>complex_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>runtime</td>
-                <td>Insufficient runtime evidence</td>
-                <td>
-    <div class="recommendation-box">
-        <p><b>Issue:</b> Multiple joins detected</p>
-        <p><b>Impact:</b> High memory and CPU usage</p>
-        <p><b>Recommendation:</b> Ensure join columns are indexed</p>
-    </div>
-    </td>
-            </tr>
-            
-            <tr class="not-confirmed">
-                <td>missing_index</td>
-                <td>False</td>
-                <td>none</td>
-                <td>runtime</td>
-                <td>Insufficient runtime evidence</td>
-                <td>
-    <div class="recommendation-box">
-        <p><b>Issue:</b> Missing index</p>
-        <p><b>Impact:</b> Query uses scans or inefficient access paths</p>
-        <p><b>Recommendation:</b> Create index on filter/join columns</p>
-    </div>
-    </td>
-            </tr>
-            
-                </table>
-
-                <h4>Rewrite Suggestions</h4>
-                
-        <div class="rewrite-box">
-            <p><b>Rule:</b> complex_join</p>
-            <p><b>Issue:</b> Too many joins</p>
-            <p><b>Suggestion:</b> Break query into smaller parts or use temp tables</p>
-            <p><b>Example:</b></p>
-            <pre>Use intermediate #temp tables for large joins</pre>
         </div>
         
             </div>

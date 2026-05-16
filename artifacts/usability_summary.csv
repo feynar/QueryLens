@@ -1,0 +1,8 @@
+reviewer_id,ease_of_use,report_readability,recommendation_quality,workflow_clarity,overall_usefulness,comments
+1,5,5,4,5,5,Clear report and easy workflow
+2,5,5,3,4,3,Would like execution timing shown
+3,5,4,5,5,5,Recommendations were understandable
+4,4,4,4,4,4,HTML report looked professional
+5,5,5,5,4,5,Easy to identify problematic queries
+,,,,,,
+Averages,4.6,4.6,4.2,4.4,4.4,

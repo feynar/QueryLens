@@ -613,14 +613,14 @@
         "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
-            "issue": "Unknown",
-            "impact": "N/A",
-            "recommendation": "No recommendation available"
+            "issue": "NOT EXISTS subquery used",
+            "impact": "May require anti-semi join processing and can become expensive on large datasets",
+            "recommendation": "Ensure the subquery join column is indexed and confirm the anti-join plan is efficient"
         },
         "details": {
-            "issue": "Unknown",
-            "impact": "N/A",
-            "recommendation": "No recommendation available"
+            "issue": "NOT EXISTS subquery used",
+            "impact": "May require anti-semi join processing and can become expensive on large datasets",
+            "recommendation": "Ensure the subquery join column is indexed and confirm the anti-join plan is efficient"
         }
     },
     {
@@ -709,14 +709,14 @@
         "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
-            "issue": "Unknown",
-            "impact": "N/A",
-            "recommendation": "No recommendation available"
+            "issue": "HAVING clause used",
+            "impact": "Filters after aggregation, which may require processing many rows before filtering",
+            "recommendation": "Apply selective WHERE filters before GROUP BY where possible"
         },
         "details": {
-            "issue": "Unknown",
-            "impact": "N/A",
-            "recommendation": "No recommendation available"
+            "issue": "HAVING clause used",
+            "impact": "Filters after aggregation, which may require processing many rows before filtering",
+            "recommendation": "Apply selective WHERE filters before GROUP BY where possible"
         }
     },
     {
@@ -877,38 +877,6 @@
             "issue": "Correlated subquery detected",
             "impact": "Executed per row, can be slow",
             "recommendation": "Rewrite as JOIN if possible"
-        }
-    },
-    {
-        "query_id": "Q31_PaymentTransactionReport",
-        "rule": "complex_join",
-        "confidence": "high",
-        "runtime_verifiable": true,
-        "recommendation": {
-            "issue": "Multiple joins detected",
-            "impact": "High memory and CPU usage",
-            "recommendation": "Ensure join columns are indexed"
-        },
-        "details": {
-            "issue": "Multiple joins detected",
-            "impact": "High memory and CPU usage",
-            "recommendation": "Ensure join columns are indexed"
-        }
-    },
-    {
-        "query_id": "Q31_PaymentTransactionReport",
-        "rule": "missing_index",
-        "confidence": "high",
-        "runtime_verifiable": true,
-        "recommendation": {
-            "issue": "Missing index",
-            "impact": "Query uses scans or inefficient access paths",
-            "recommendation": "Create index on filter/join columns"
-        },
-        "details": {
-            "issue": "Missing index",
-            "impact": "Query uses scans or inefficient access paths",
-            "recommendation": "Create index on filter/join columns"
         }
     }
 ]

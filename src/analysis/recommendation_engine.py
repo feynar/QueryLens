@@ -67,6 +67,13 @@ def generate_recommendation(rule, confidence):
             "recommendation": "Ensure proper indexing"
         }
 
+    if rule == "not_exists_subquery":
+        return {
+            "issue": "NOT EXISTS subquery used",
+            "impact": "May require anti-semi join processing and can become expensive on large datasets",
+            "recommendation": "Ensure the subquery join column is indexed and confirm the anti-join plan is efficient"
+        }
+        
     if rule == "exists_subquery":
         return {
             "issue": "EXISTS subquery used",
@@ -109,6 +116,13 @@ def generate_recommendation(rule, confidence):
             "recommendation": "Create index on filter/join columns"
         }
 
+    if rule == "having_clause":
+        return {
+            "issue": "HAVING clause used",
+            "impact": "Filters after aggregation, which may require processing many rows before filtering",
+            "recommendation": "Apply selective WHERE filters before GROUP BY where possible"
+        }
+        
     # Default response for unsupported or unrecognized rule labels.
     return {
         "issue": "Unknown",

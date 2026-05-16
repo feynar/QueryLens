@@ -17,6 +17,7 @@ Conducted an end-to-end execution of the QueryLens pipeline to confirm successfu
 Outcome:
 QueryLens is fully completed and submitted as a validation-aware SQL analysis system with reproducible evaluation results, supporting artifacts, and a professionally structured report aligned with course requirements.
 
+Evidence:
 Final project report document
 artifacts/reports/runtime_validation_report.html
 artifacts/comparison_summary.csv

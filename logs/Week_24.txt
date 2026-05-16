@@ -1,0 +1,42 @@
+Week 24 — Live SQL Server Integration and Runtime Statistics Enhancement
+
+Hours Logged: 18
+
+Objective
+
+Extend QueryLens with live SQL Server integration using pyodbc to support automated execution-plan generation and actual runtime statistics analysis, strengthening alignment between the implemented system and the approved project proposal.
+
+Activities
+
+Implemented a live database access layer using pyodbc to enable direct interaction with SQL Server from within the QueryLens analysis pipeline. Developed database connection and execution-plan capture modules capable of executing workload queries safely and automatically retrieving actual SQL Server execution plans using SET STATISTICS XML ON.
+
+Implemented a live execution-plan capture workflow that processes the benchmark workload queries, executes them against the QueryLens experimental database, and stores generated execution plans into a dedicated plans_live directory. Added validation safeguards restricting execution to read-only SELECT-style queries to prevent unsafe SQL operations during automated analysis. Archived deprecated runtime behavior summary components and removed obsolete workload artifacts no longer used by the finalized runtime validation pipeline.
+
+Extended the execution-plan analyzer to extract actual runtime statistics from SQL Server execution plans, including actual row counts and actual execution counts for runtime operators. Updated the correlation engine to incorporate actual runtime evidence into confirmation scoring, suppression logic, and confidence calibration. Refined runtime validation behavior so that large actual row counts strengthen confirmation confidence while low actual row counts reduce weak correlations.
+
+Integrated optional live execution-plan generation into the full batch analysis pipeline, enabling reproducible end-to-end evaluation using freshly generated runtime execution plans. Regenerated all evaluation artifacts using actual runtime statistics and verified successful generation of runtime validation reports, rule-level metrics, and updated correlation outputs.
+
+Completed structured usability evaluation by collecting reviewer feedback regarding workflow clarity, report readability, and recommendation usefulness. Generated a usability summary artifact documenting peer evaluation results and qualitative comments.
+
+Outcome
+
+QueryLens now supports live SQL Server integration with automated actual execution-plan retrieval and runtime statistics analysis. The system validates SQL performance warnings using actual execution evidence rather than estimated execution plans alone, significantly strengthening the realism and practical applicability of the analysis framework.
+
+The finalized system achieves runtime-supported validation using live SQL Server execution data while maintaining reproducible evaluation artifacts and professional reporting outputs.
+
+Evidence
+
+src/db/db_connection.py
+src/db/live_plan_capture.py
+src/config/db_config.py
+src/analysis/plan_analyzer.py
+src/analysis/recommendation_engine.py
+src/correlation/correlator.py
+src/reporting/generate_correlation_matrix.py
+src/run_full_analysis.py
+plans_live/*.sqlplan
+artifacts/live_capture_log.txt
+artifacts/usability_summary.csv
+artifacts/analysis/plan_results.json
+artifacts/correlation_matrix.csv
+artifacts/reports/runtime_validation_report.html

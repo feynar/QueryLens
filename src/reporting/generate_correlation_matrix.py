@@ -69,22 +69,33 @@ def aggregate_by_rule(correlations):
     # Each correlation record represents one static finding evaluated against runtime evidence
     for c in correlations:
         rule = c["rule"]
-
+        evidence = c.get("evidence", {})
+        has_actual = bool(evidence.get("has_actual_stats"))
+        
         if rule not in stats:
             stats[rule] = {
                 "rule": rule,
                 "total": 0,
-                "confirmed": 0
+                "confirmed": 0,
+                "with_actual_stats": 0
             }
 
+
         stats[rule]["total"] += 1
+
         if c["confirmed"]:
             stats[rule]["confirmed"] += 1
+
+        if has_actual:
+            stats[rule]["with_actual_stats"] += 1
 
     for rule in stats.values():
         total = rule["total"]
         confirmed = rule["confirmed"]
+        with_actual = rule["with_actual_stats"]
+
         rule["confirmation_rate"] = round(confirmed / total, 3) if total else 0
+        rule["actual_stats_coverage"] = round(with_actual / total, 3) if total else 0
 
     return list(stats.values())
 
@@ -96,8 +107,16 @@ def save_csv(rows):
     with open(OUTPUT_PATH, "w", newline="") as f:
         writer = csv.DictWriter(
             f,
-            fieldnames=["rule", "total", "confirmed", "confirmation_rate"]
+            fieldnames=[
+                "rule",
+                "total",
+                "confirmed",
+                "confirmation_rate",
+                "with_actual_stats",
+                "actual_stats_coverage"
+            ]
         )
+        
         writer.writeheader()
         writer.writerows(rows)
 

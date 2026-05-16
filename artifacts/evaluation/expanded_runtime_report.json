@@ -11,8 +11,16 @@
                         "operators": [
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 50000.0,
                         "max_estimated_rows": 50000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 50000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -24,8 +32,16 @@
                         "operators": [
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 50000.0,
                         "max_estimated_rows": 50000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 50000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 }
@@ -52,8 +68,16 @@
                         "operators": [
                             "Index Scan"
                         ],
+                        "max_rows": 46302.0,
                         "max_estimated_rows": 46439.0,
-                        "scan_count": 1
+                        "max_actual_rows": 46302.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -73,8 +97,16 @@
                         "operators": [
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 1.0,
                         "max_estimated_rows": 1.0,
-                        "scan_count": 1
+                        "max_actual_rows": 1.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": false,
+                        "estimate_is_large": false
                     },
                     "runtime_verifiable": true
                 }
@@ -96,8 +128,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 600000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 600000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -111,8 +151,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 600000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 600000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -126,8 +174,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 600000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 600000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -148,8 +204,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 100000.0,
                         "max_estimated_rows": 50000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 100000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 2,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -162,8 +226,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 100000.0,
                         "max_estimated_rows": 50000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 100000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 2,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -176,8 +248,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 100000.0,
                         "max_estimated_rows": 50000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 100000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 2,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -199,8 +279,16 @@
                             "Clustered Index Scan",
                             "Index Scan"
                         ],
+                        "max_rows": 450000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 450000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -214,8 +302,16 @@
                             "Clustered Index Scan",
                             "Index Scan"
                         ],
+                        "max_rows": 450000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 450000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -239,8 +335,16 @@
                             "Hash Match",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 400000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 400000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 5,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -256,8 +360,16 @@
                             "Hash Match",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 400000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 400000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 5,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -279,8 +391,16 @@
                             "Index Seek",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 450000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 450000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -294,8 +414,16 @@
                             "Index Seek",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 450000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 450000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -323,8 +451,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2051000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 4
+                        "max_actual_rows": 2051000.0,
+                        "scan_count": 4,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 9,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -344,8 +480,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2051000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 4
+                        "max_actual_rows": 2051000.0,
+                        "scan_count": 4,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 9,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -367,8 +511,16 @@
                             "Stream Aggregate",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 200001.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 200001.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 }
@@ -394,8 +546,16 @@
                             "Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 404020.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 404020.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 7,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -413,8 +573,16 @@
                             "Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 404020.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 404020.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 7,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -434,8 +602,16 @@
                         "operators": [
                             "Clustered Index Seek"
                         ],
+                        "max_rows": 1.0,
                         "max_estimated_rows": 1.0,
-                        "scan_count": 0
+                        "max_actual_rows": 1.0,
+                        "scan_count": 0,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": false,
+                        "estimate_is_large": false
                     },
                     "runtime_verifiable": true
                 }
@@ -455,8 +631,16 @@
                         "operators": [
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 200000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 200000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -482,8 +666,16 @@
                             "Parallelism",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 1100000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 1100000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 7,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -501,8 +693,16 @@
                             "Parallelism",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 1100000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 1100000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 7,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -526,8 +726,16 @@
                             "Hash Match",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 400000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 400000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 5,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -543,8 +751,16 @@
                             "Hash Match",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 400000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 400000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 5,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -566,8 +782,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 725612.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 725612.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -581,8 +805,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 725612.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 725612.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -610,8 +842,16 @@
                             "Compute Scalar",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 1650000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 3
+                        "max_actual_rows": 1650000.0,
+                        "scan_count": 3,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 9,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -631,8 +871,16 @@
                             "Compute Scalar",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 1650000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 3
+                        "max_actual_rows": 1650000.0,
+                        "scan_count": 3,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 9,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -658,8 +906,16 @@
                             "Parallelism",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2002000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 2002000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 7,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -677,8 +933,16 @@
                             "Parallelism",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2002000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 2002000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 7,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -705,8 +969,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2251000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 4
+                        "max_actual_rows": 2251000.0,
+                        "scan_count": 4,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 8,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -725,8 +997,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2251000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 4
+                        "max_actual_rows": 2251000.0,
+                        "scan_count": 4,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 8,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -745,8 +1025,16 @@
                             "Clustered Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 2251000.0,
                         "max_estimated_rows": 400000.0,
-                        "scan_count": 4
+                        "max_actual_rows": 2251000.0,
+                        "scan_count": 4,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 8,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -769,8 +1057,16 @@
                             "Stream Aggregate",
                             "Index Scan"
                         ],
+                        "max_rows": 350000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 350000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -793,8 +1089,16 @@
                             "Stream Aggregate",
                             "Index Scan"
                         ],
+                        "max_rows": 300000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 300000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -809,8 +1113,16 @@
                             "Stream Aggregate",
                             "Index Scan"
                         ],
+                        "max_rows": 300000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 300000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -832,8 +1144,16 @@
                             "Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 370202.0,
                         "max_estimated_rows": 160099.0,
-                        "scan_count": 2
+                        "max_actual_rows": 370202.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -847,8 +1167,16 @@
                             "Index Scan",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 370202.0,
                         "max_estimated_rows": 160099.0,
-                        "scan_count": 2
+                        "max_actual_rows": 370202.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 3,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -871,8 +1199,16 @@
                             "Index Scan",
                             "Index Scan"
                         ],
+                        "max_rows": 3001.0,
                         "max_estimated_rows": 1000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 3001.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": false,
+                        "estimate_is_large": false
                     },
                     "runtime_verifiable": false
                 },
@@ -887,8 +1223,16 @@
                             "Index Scan",
                             "Index Scan"
                         ],
+                        "max_rows": 3001.0,
                         "max_estimated_rows": 1000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 3001.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": false,
+                        "estimate_is_large": false
                     },
                     "runtime_verifiable": false
                 },
@@ -903,8 +1247,16 @@
                             "Index Scan",
                             "Index Scan"
                         ],
+                        "max_rows": 3001.0,
                         "max_estimated_rows": 1000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 3001.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": false,
+                        "estimate_is_large": false
                     },
                     "runtime_verifiable": true
                 }
@@ -919,7 +1271,7 @@
                 {
                     "rule": "having_clause",
                     "confirmed": true,
-                    "confidence": "medium",
+                    "confidence": "high",
                     "evidence": {
                         "operators": [
                             "Filter",
@@ -927,8 +1279,16 @@
                             "Stream Aggregate",
                             "Index Scan"
                         ],
+                        "max_rows": 250000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 250000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -951,8 +1311,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 200100.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 200100.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -967,8 +1335,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 200100.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 200100.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -983,8 +1359,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 200100.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 200100.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -1007,8 +1391,16 @@
                             "Hash Match",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 347941.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 347941.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
@@ -1023,8 +1415,16 @@
                             "Hash Match",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 347941.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 347941.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 }
@@ -1047,8 +1447,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 800000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 800000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 },
@@ -1063,15 +1471,23 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 800000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 800000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 },
                 {
                     "rule": "window_function",
                     "confirmed": true,
-                    "confidence": "medium",
+                    "confidence": "high",
                     "evidence": {
                         "operators": [
                             "Parallelism",
@@ -1079,8 +1495,16 @@
                             "Sort",
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 800000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 1
+                        "max_actual_rows": 800000.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 4,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -1100,8 +1524,16 @@
                         "operators": [
                             "Clustered Index Scan"
                         ],
+                        "max_rows": 11111.0,
                         "max_estimated_rows": 11124.9,
-                        "scan_count": 1
+                        "max_actual_rows": 11111.0,
+                        "scan_count": 1,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 1,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": true
                 }
@@ -1115,8 +1547,8 @@
             "rule_instances": [
                 {
                     "rule": "correlated_subquery",
-                    "confirmed": false,
-                    "confidence": "none",
+                    "confirmed": true,
+                    "confidence": "medium",
                     "evidence": {
                         "operators": [
                             "Compute Scalar",
@@ -1126,8 +1558,16 @@
                             "Stream Aggregate",
                             "Index Scan"
                         ],
+                        "max_rows": 450000.0,
                         "max_estimated_rows": 200000.0,
-                        "scan_count": 2
+                        "max_actual_rows": 450000.0,
+                        "scan_count": 2,
+                        "has_actual_stats": true,
+                        "actual_operator_count": 6,
+                        "actual_stats_coverage": 1.0,
+                        "actual_executed": true,
+                        "actual_is_large": true,
+                        "estimate_is_large": true
                     },
                     "runtime_verifiable": false
                 }
@@ -1135,57 +1575,11 @@
             "static_warnings": 0,
             "confirmed_warnings": 0,
             "confirmation_rate": 0
-        },
-        {
-            "query": "Q31_PaymentTransactionReport.sql",
-            "rule_instances": [
-                {
-                    "rule": "complex_join",
-                    "confirmed": false,
-                    "confidence": "none",
-                    "evidence": {
-                        "operators": [
-                            "Nested Loops",
-                            "Nested Loops",
-                            "Nested Loops",
-                            "Clustered Index Seek",
-                            "Clustered Index Seek",
-                            "Clustered Index Seek",
-                            "Clustered Index Seek"
-                        ],
-                        "max_estimated_rows": 2238.33,
-                        "scan_count": 0
-                    },
-                    "runtime_verifiable": true
-                },
-                {
-                    "rule": "missing_index",
-                    "confirmed": false,
-                    "confidence": "none",
-                    "evidence": {
-                        "operators": [
-                            "Nested Loops",
-                            "Nested Loops",
-                            "Nested Loops",
-                            "Clustered Index Seek",
-                            "Clustered Index Seek",
-                            "Clustered Index Seek",
-                            "Clustered Index Seek"
-                        ],
-                        "max_estimated_rows": 2238.33,
-                        "scan_count": 0
-                    },
-                    "runtime_verifiable": true
-                }
-            ],
-            "static_warnings": 2,
-            "confirmed_warnings": 0,
-            "confirmation_rate": 0.0
         }
     ],
     "global_metrics": {
-        "total_static_warnings": 37,
+        "total_static_warnings": 35,
         "total_confirmed_warnings": 32,
-        "confirmation_rate": 0.865
+        "confirmation_rate": 0.914
     }
 }

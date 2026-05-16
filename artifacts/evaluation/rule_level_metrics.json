@@ -60,10 +60,10 @@
         }
     },
     "missing_index": {
-        "total_static": 13,
-        "runtime_verifiable_static": 13,
+        "total_static": 12,
+        "runtime_verifiable_static": 12,
         "confirmed": 10,
-        "precision": 0.769,
+        "precision": 0.833,
         "coverage": 1.0,
         "confidence_distribution": {
             "high": 0,
@@ -72,10 +72,10 @@
         }
     },
     "complex_join": {
-        "total_static": 3,
-        "runtime_verifiable_static": 3,
+        "total_static": 2,
+        "runtime_verifiable_static": 2,
         "confirmed": 2,
-        "precision": 0.667,
+        "precision": 1.0,
         "coverage": 1.0,
         "confidence_distribution": {
             "high": 2,
@@ -126,8 +126,8 @@
         "precision": 1.0,
         "coverage": 1.0,
         "confidence_distribution": {
-            "high": 0,
-            "medium": 1,
+            "high": 1,
+            "medium": 0,
             "low": 0
         }
     },
@@ -150,8 +150,8 @@
         "precision": 1.0,
         "coverage": 1.0,
         "confidence_distribution": {
-            "high": 0,
-            "medium": 1,
+            "high": 1,
+            "medium": 0,
             "low": 0
         }
     },

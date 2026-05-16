@@ -48,37 +48,87 @@ def extract_runtime_features(plan_findings):
     # Collapse raw plan operators into boolean signals used by the scoring rules.
     operators = []
     logical_ops = []
-    rows = []
+    effective_rows = []
+    estimated_rows = []
+    actual_rows = []
 
+    actual_operator_count = 0
+    actual_executed = False
+    
     for op in plan_findings:
         physical = op.get("operator", "")
         logical = op.get("logical_op", "")
-
+   
+        est = float(op.get("estimated_rows") or 0)
+        actual = float(op.get("actual_rows") or 0)
+        actual_execs = float(op.get("actual_executions") or 0)
+        has_actual = bool(op.get("has_actual_runtime_stats"))
+        
         operators.append(physical)
         logical_ops.append(logical)
-        rows.append(op.get("estimated_rows", 0))
+        estimated_rows.append(est)
+        actual_rows.append(actual)
+        
+        if actual_execs > 0:
+            actual_executed = True
 
-    max_rows = max(rows, default=0)
-    scan_count = sum(o in ["Index Scan", "Clustered Index Scan"] for o in operators)
+        if has_actual:
+            actual_operator_count += 1
+            effective_rows.append(actual)
+        else:
+            effective_rows.append(est)
 
+    max_rows = max(effective_rows, default=0)
+    max_estimated_rows = max(estimated_rows, default=0)
+    max_actual_rows = max(actual_rows, default=0)
+    
+    scan_count = sum(
+        "SCAN" in (o or "").upper()
+        for o in operators
+    )
+    
+    has_actual_stats = actual_operator_count > 0
+    actual_is_large = max_actual_rows > HIGH_ROW_THRESHOLD if has_actual_stats else False
+    estimate_is_large = max_estimated_rows > HIGH_ROW_THRESHOLD
+    
     features = {
         "operators": operators,
         "logical_ops": logical_ops,
+
+        # Effective row count prefers actual rows, falls back to estimated rows.
         "max_rows": max_rows,
+        "max_estimated_rows": max_estimated_rows,
+        "max_actual_rows": max_actual_rows,
+
+
+        "has_actual_stats": has_actual_stats,
+        "actual_rows_available": has_actual_stats,
+        "actual_operator_count": actual_operator_count,
+        "actual_stats_coverage": round(
+            actual_operator_count / len(plan_findings), 3
+        ) if plan_findings else 0,
+
+        "actual_executed": actual_executed,
+        "actual_is_large": actual_is_large,
+        "estimate_is_large": estimate_is_large,
+
         "scan_count": scan_count,
         "has_scan": scan_count > 0,
-        "has_seek": "Index Seek" in operators,
-        "has_sort": "Sort" in operators,
-        "has_hash_join": any("HASH MATCH" in o.upper() for o in operators),
+        "has_seek": any("SEEK" in (o or "").upper() for o in operators),
+        "has_sort": any("SORT" in (o or "").upper() for o in operators),
+        "has_hash_join": any("HASH MATCH" in (o or "").upper() for o in operators),
         "has_hash_agg": any("AGGREGATE" in (l or "").upper() for l in logical_ops),
-        "has_nested_loop": any("Nested Loops" in o for o in operators),
-        "has_merge_join": any("Merge Join" in o for o in operators),
-        "has_window": any(o in ["Segment", "Sequence Project"] for o in operators),
-        "is_large": max_rows > HIGH_ROW_THRESHOLD,
-        
-        "has_key_lookup": any("KEY LOOKUP" in o.upper() for o in operators),
+        "has_nested_loop": any("NESTED LOOPS" in (o or "").upper() for o in operators),
+        "has_merge_join": any("MERGE JOIN" in (o or "").upper() for o in operators),
+        "has_window": any(
+            (o or "").upper() in ["SEGMENT", "SEQUENCE PROJECT", "WINDOW AGGREGATE"]
+            for o in operators
+        ),
 
-        # Missing-index evidence can also come from SQL Server plan warnings.
+        "is_large": max_rows > HIGH_ROW_THRESHOLD,
+
+        "has_key_lookup": any("KEY LOOKUP" in (o or "").upper() for o in operators),
+
         "has_missing_index": any(
             "MISSING INDEX" in (op.get("operator", "") or "").upper()
             for op in plan_findings
@@ -102,6 +152,16 @@ def score_to_confidence(score):
     return "none"
 
 
+def add_row_volume_reason(runtime, reasons, estimated_message, actual_message):
+    """
+    Adds a row-volume explanation that distinguishes actual runtime evidence
+    from estimated-plan fallback evidence.
+    """
+    if runtime["has_actual_stats"]:
+        reasons.append(actual_message)
+    else:
+        reasons.append(estimated_message)
+        
 # ----------------------------
 # Correlation logic
 # ----------------------------
@@ -126,15 +186,20 @@ def correlate(static_findings, plan_findings):
 
             if runtime["has_scan"]:
                 score += 0.7
-                reasons.append("Scan detected (expected for non-sargable predicate)")
+                reasons.append("Scan detected, which is expected for a non-sargable predicate")
 
                 if runtime["is_large"]:
                     score += 0.2
-                    reasons.append("Large row count amplifies inefficiency")
+                    add_row_volume_reason(
+                        runtime,
+                        reasons,
+                        "High estimated row count amplifies non-sargable predicate impact",
+                        "High actual row count amplifies non-sargable predicate impact"
+                    )
 
             if runtime["has_seek"]:
                 score -= 0.6
-                reasons.append("Index Seek contradicts non-sargable expectation")
+                reasons.append("Index Seek contradicts non-sargable scan expectation")
 
         # ---------------------------------
         # SELECT *
@@ -143,11 +208,16 @@ def correlate(static_findings, plan_findings):
 
             if runtime["has_scan"]:
                 score += 0.5
-                reasons.append("Scan suggests wide row retrieval")
+                reasons.append("Scan suggests broad row retrieval")
 
                 if runtime["is_large"]:
                     score += 0.2
-                    reasons.append("Large dataset increases impact")
+                    add_row_volume_reason(
+                        runtime,
+                        reasons,
+                        "High estimated row count increases SELECT * impact",
+                        "High actual row count increases SELECT * impact"
+                    )
 
         # ---------------------------------
         # COMPLEX JOIN
@@ -156,11 +226,16 @@ def correlate(static_findings, plan_findings):
 
             if runtime["has_hash_join"] or runtime["has_merge_join"]:
                 score += 0.5
-                reasons.append("Join operator confirms complexity")
+                reasons.append("Join operator confirms multi-table runtime complexity")
 
                 if runtime["is_large"]:
                     score += 0.2
-                    reasons.append("Join cost amplified by dataset size")
+                    add_row_volume_reason(
+                        runtime,
+                        reasons,
+                        "High estimated row count amplifies join cost",
+                        "High actual row count amplifies join cost"
+                    )
 
         # ---------------------------------
         # ORDER BY NO INDEX
@@ -168,8 +243,15 @@ def correlate(static_findings, plan_findings):
         elif rule == "order_by_no_index":
 
             if runtime["has_sort"]:
-                score += 0.6
-                reasons.append("Sort operator confirms missing index")
+                score += 0.5
+                reasons.append("Sort operator detected")
+
+                if runtime["has_actual_stats"] and runtime["actual_is_large"]:
+                    score += 0.2
+                    reasons.append("Sort processed high actual row volume")
+                elif runtime["estimate_is_large"]:
+                    score += 0.1
+                    reasons.append("Sort estimated high row volume")
 
         # ---------------------------------
         # EXISTS / NOT EXISTS
@@ -198,7 +280,12 @@ def correlate(static_findings, plan_findings):
 
             if runtime["is_large"]:
                 score += 0.1
-                reasons.append("Large dataset increases subquery impact")
+                add_row_volume_reason(
+                    runtime,
+                    reasons,
+                    "High estimated row count increases subquery impact",
+                    "High actual row count increases subquery impact"
+                )
 
         # ---------------------------------
         # WINDOW FUNCTION
@@ -209,6 +296,10 @@ def correlate(static_findings, plan_findings):
                 score += 0.5
                 reasons.append("Window operator or sort detected")
 
+                if runtime["has_actual_stats"] and runtime["actual_is_large"]:
+                    score += 0.1
+                    reasons.append("Window processing involved high actual row volume")
+                    
         # ---------------------------------
         # HAVING
         # ---------------------------------
@@ -216,7 +307,12 @@ def correlate(static_findings, plan_findings):
 
             if runtime["has_hash_agg"]:
                 score += 0.5
-                reasons.append("Hash Aggregate confirms HAVING")
+                reasons.append("Aggregate operator confirms HAVING-related runtime work")
+
+                if runtime["has_actual_stats"] and runtime["actual_is_large"]:
+                    score += 0.1
+                    reasons.append("Aggregation processed high actual row volume")
+
 
         # ---------------------------------
         # CROSS / CARTESIAN JOIN
@@ -225,7 +321,11 @@ def correlate(static_findings, plan_findings):
 
             if runtime["has_hash_join"] or runtime["has_nested_loop"]:
                 score += 0.4
-                reasons.append("Join operator confirms cross/cartesian join")
+                reasons.append("Join operator confirms cross/cartesian join execution")
+
+                if runtime["has_actual_stats"] and runtime["actual_is_large"]:
+                    score += 0.2
+                    reasons.append("Cross/cartesian join produced high actual row volume")
 
         # ---------------------------------
         # CORRELATED SUBQUERY
@@ -238,7 +338,12 @@ def correlate(static_findings, plan_findings):
 
             if runtime["is_large"]:
                 score += 0.2
-                reasons.append("High row count amplifies correlated subquery cost")
+                add_row_volume_reason(
+                    runtime,
+                    reasons,
+                    "High estimated row count amplifies correlated subquery cost",
+                    "High actual row count amplifies correlated subquery cost"
+                )
 
         # ---------------------------------
         # KEY LOOKUP (HIGH IMPACT)
@@ -247,11 +352,16 @@ def correlate(static_findings, plan_findings):
 
             if runtime["has_key_lookup"]:
                 score += 0.8
-                reasons.append("Key Lookup detected (expensive row-by-row lookup)")
+                reasons.append("Key Lookup detected, indicating row-by-row lookup behavior")
 
                 if runtime["is_large"]:
                     score += 0.2
-                    reasons.append("High row count amplifies lookup cost")
+                    add_row_volume_reason(
+                        runtime,
+                        reasons,
+                        "High estimated row count amplifies lookup cost",
+                        "High actual row count amplifies lookup cost"
+                    )
 
         # ---------------------------------
         # MISSING INDEX (IMPROVED — HIGH PRECISION)
@@ -266,30 +376,59 @@ def correlate(static_findings, plan_findings):
             # Strong signal 2: Key Lookup often implies a missing covering index.
             if runtime["has_key_lookup"]:
                 score += 0.7
-
+                reasons.append("Key Lookup suggests a possible missing covering index")
+                
                 if runtime["max_rows"] > HIGH_ROW_THRESHOLD:
                     score += 0.2
-                    reasons.append("High-volume key lookup strongly indicates missing covering index")
+                    add_row_volume_reason(
+                        runtime,
+                        reasons,
+                        "High estimated row volume strengthens missing-index evidence",
+                        "High actual row volume strengthens missing-index evidence"
+                    )
 
             if runtime["scan_count"] >= MIN_SCAN_COUNT and not runtime["has_seek"]:
                 score += 0.4
-                reasons.append("Multiple scans without seek suggests missing index")
+                reasons.append("Multiple scans without seek suggest missing index opportunity")
 
             # Hard negative: a seek without a lookup usually indicates healthy index usage.
             if runtime["has_seek"] and not runtime["has_key_lookup"]:
                 score -= 0.4
-                reasons.append("Efficient index usage detected (no missing index)")
+                reasons.append("Efficient index usage detected without key lookup")
 
             # Only amplify if strong evidence already exists.
             if score >= 0.6 and runtime["is_large"]:
                 score += 0.2
-                reasons.append("Large dataset increases index benefit")
-                
+                add_row_volume_reason(
+                    runtime,
+                    reasons,
+                    "Large estimated dataset increases possible index benefit",
+                    "Large actual dataset increases possible index benefit"
+                )
+
+        # ---------------------------------
+        # Actual runtime suppression / boost
+        # ---------------------------------
+        if runtime["has_actual_stats"]:
+
+            if runtime["actual_executed"] and not runtime["actual_is_large"]:
+                if score < 0.5:
+                    score -= 0.1
+                    reasons.append(
+                        "Actual runtime rows were low, slightly reducing confirmation strength"
+                    )
+
+            if runtime["actual_is_large"] and score > 0:
+                score += 0.1
+                reasons.append(
+                    f"Actual runtime row evidence supports impact; max actual rows = {runtime['max_actual_rows']}"
+                )
+            
         # ---------------------------------
         # Final classification
         # ---------------------------------
 
-        score = min(score, 1.0)
+        score = max(0.0, min(score, 1.0))
 
         # Weak scores are suppressed so low-evidence matches do not count as confirmed.
         suppressed = score < 0.3
@@ -318,8 +457,16 @@ def correlate(static_findings, plan_findings):
             "score": round(score, 2),
             "evidence": {
                 "operators": runtime["operators"],
-                "max_estimated_rows": runtime["max_rows"],
-                "scan_count": runtime["scan_count"]
+                "max_rows": runtime["max_rows"],
+                "max_estimated_rows": runtime["max_estimated_rows"],
+                "max_actual_rows": runtime["max_actual_rows"],
+                "scan_count": runtime["scan_count"],
+                "has_actual_stats": runtime["has_actual_stats"],
+                "actual_operator_count": runtime["actual_operator_count"],
+                "actual_stats_coverage": runtime["actual_stats_coverage"],
+                "actual_executed": runtime["actual_executed"],
+                "actual_is_large": runtime["actual_is_large"],
+                "estimate_is_large": runtime["estimate_is_large"]                
             },
             "reason": "; ".join(reasons)
         })

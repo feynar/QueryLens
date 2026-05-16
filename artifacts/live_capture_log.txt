@@ -1,0 +1,35 @@
+Captured actual plan: Q01_SelectStar_Customers_FullScan.sqlplan
+Captured actual plan: Q02_Sargable_DateRange_Customers_Seek.sqlplan
+Captured actual plan: Q03_NonSargable_DateFunction_Customers_Scan.sqlplan
+Captured actual plan: Q04_FunctionPredicate_Customers_Scan.sqlplan
+Captured actual plan: Q05_OrderBy_IndexedColumn_Orders.sqlplan
+Captured actual plan: Q06_OrderBy_NonIndexed_Customers_Sort.sqlplan
+Captured actual plan: Q07_CustomersOrders_BasicJoin.sqlplan
+Captured actual plan: Q08_CustomersOrders_AggregateJoin.sqlplan
+Captured actual plan: Q09_Join_WithSelectiveFilter.sqlplan
+Captured actual plan: Q10_FullSchema_MultiJoin.sqlplan
+Captured actual plan: Q11_GlobalAggregation_Orders.sqlplan
+Captured actual plan: Q12_GroupBy_ProductCategory.sqlplan
+Captured actual plan: Q13_HighSelectivity_OrderLookup.sqlplan
+Captured actual plan: Q14_LowSelectivity_DateRange.sqlplan
+Captured actual plan: Q15_Join_WithExplicitSort.sqlplan
+Captured actual plan: Q16_FilteredAggregation_CustomerOrders.sqlplan
+Captured actual plan: Q17_ProductPrice_FilterJoin.sqlplan
+Captured actual plan: Q18_ComputedAggregation_Revenue.sqlplan
+Captured actual plan: Q19_ProductJoin_NonIndexedSort.sqlplan
+Captured actual plan: Q20_WideSchema_SelectStar.sqlplan
+Captured actual plan: Q21_Exists.sqlplan
+Captured actual plan: Q22_Not_Exists.sqlplan
+Captured actual plan: Q23_Left_Join.sqlplan
+Captured actual plan: Q24_Cross_Join.sqlplan
+Captured actual plan: Q25_Group_By.sqlplan
+Captured actual plan: Q26_Top_Order_By.sqlplan
+Captured actual plan: Q27_Derived_Table.sqlplan
+Captured actual plan: Q28_Window.sqlplan
+Captured actual plan: Q29_Multi_Condition_Where.sqlplan
+Captured actual plan: Q30_Correlated_Subquery.sqlplan
+
+Summary
+-------
+Successful captures: 30
+Failed or skipped captures: 0

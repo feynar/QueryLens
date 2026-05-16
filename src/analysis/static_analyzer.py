@@ -57,7 +57,7 @@ def analyze_sql(file_path):
     for r in rules:
         results.append({
             "query_id": query_id,
-            "rule": r["rule"],  # ✅ standardized
+            "rule": r["rule"],  
             "confidence": r["confidence"],
             "runtime_verifiable": r["runtime_verifiable"],
             "recommendation": generate_recommendation(

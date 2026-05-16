@@ -7,6 +7,8 @@ Responsibilities:
         - physical operators
         - logical operators
         - estimated rows
+        - actual rows
+        - actual executions
         - subtree cost
     3. Convert operators into normalized runtime issue signals
 
@@ -31,9 +33,12 @@ def parse_plan(file_path):
         - physical operator
         - logical operator
         - estimated rows
+        - actual rows
+        - actual executions
         - estimated subtree cost
         - missing-index warning signal
     """
+    
     # Read the raw plan bytes first so decoding can be handled safely.
     with open(file_path, "rb") as f:
         raw = f.read()
@@ -65,12 +70,30 @@ def parse_plan(file_path):
         if missing_index is not None:
             physical_op += " | MISSING INDEX"
 
+        runtime_counters = relop.findall(
+            ".//p:RunTimeInformation/p:RunTimeCountersPerThread",
+            ns
+        )
+
+        actual_rows = 0.0
+        actual_executions = 0.0
+
+        for counter in runtime_counters:
+            actual_rows += float(counter.get("ActualRows") or 0)
+            actual_executions += float(counter.get("ActualExecutions") or 0)
+
+        has_actual_runtime_stats = len(runtime_counters) > 0
+
         findings.append({
             "query_id": query_id,
             "operator": physical_op,
             "logical_op": logical_op,
             "estimated_rows": float(relop.get("EstimateRows") or 0),
-            "subtree_cost": float(relop.get("EstimatedTotalSubtreeCost") or 0)
+            "subtree_cost": float(relop.get("EstimatedTotalSubtreeCost") or 0),
+
+            "actual_rows": actual_rows,
+            "actual_executions": actual_executions,
+            "has_actual_runtime_stats": has_actual_runtime_stats
         })
 
     return findings
@@ -78,16 +101,13 @@ def parse_plan(file_path):
 def classify_runtime_issues(plan_rows):
     """
     Converts raw plan operators into normalized runtime evidence categories.
-
-    These issue labels are used by downstream evaluation and reporting logic.
-    Extended to support EXISTS / NOT EXISTS, window functions, HAVING,
-    and CROSS JOIN-related signals.
     """
 
     runtime_issues = []
 
     for row in plan_rows:
-        op = (row.get("operator") or "").upper()
+        op = (row.get("operator") or "").upper()        
+        logical = (row.get("logical_op") or "").upper()
 
         # -------------------------
         # SCAN detection
@@ -99,8 +119,6 @@ def classify_runtime_issues(plan_rows):
         # JOIN and HASH AGGREGATE detection
         # -------------------------
         elif "HASH MATCH" in op:
-            logical = (row.get("logical_op") or "").upper()
-
             if "JOIN" in logical:
                 runtime_issues.append({"issue_type": "HASH_JOIN"})
             elif "AGGREGATE" in logical:
@@ -121,10 +139,7 @@ def classify_runtime_issues(plan_rows):
         # -------------------------
         # WINDOW function detection
         # -------------------------
-        elif "SEGMENT" in op:
-            runtime_issues.append({"issue_type": "WINDOW_FUNCTION"})
-
-        elif "SEQUENCE PROJECT" in op:
+        elif "SEGMENT" in op or "SEQUENCE PROJECT" in op:
             runtime_issues.append({"issue_type": "WINDOW_FUNCTION"})
 
         # -------------------------
@@ -133,13 +148,18 @@ def classify_runtime_issues(plan_rows):
         elif "STREAM AGGREGATE" in op:
             runtime_issues.append({"issue_type": "AGGREGATION"})
 
-
         # -------------------------
         # KEY LOOKUP detection
         # -------------------------
         elif "KEY LOOKUP" in op:
             runtime_issues.append({"issue_type": "KEY_LOOKUP"})
 
+        # -------------------------
+        # MISSING INDEX detection
+        # -------------------------
+        if "MISSING INDEX" in op:
+            runtime_issues.append({"issue_type": "MISSING_INDEX"})
+            
     return runtime_issues
 
 def analyze_plan_file(plan_path):
@@ -152,13 +172,33 @@ def analyze_plan_file(plan_path):
     raw_rows = parse_plan(plan_path)
     return classify_runtime_issues(raw_rows)
     
-def save_results(results):
-    """Saves parsed runtime plan results to the analysis artifacts directory."""
-    out_dir = ARTIFACTS / "analysis"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / "plan_results.json"
+def save_plan_results(plan_files, output_path=None):
+    """
+    Parses multiple .sqlplan files and saves combined operator-level results.
+    """
 
-    with open(out_path, "w") as f:
-        json.dump(results, f, indent=4)
+    all_results = []
 
-    print(f"Runtime plan results saved to {out_path}")
+    for plan_file in plan_files:
+        all_results.extend(parse_plan(plan_file))
+
+    if output_path is None:
+        output_path = ARTIFACTS / "analysis" / "plan_results.json"
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(all_results, f, indent=4)
+
+    return all_results
+
+
+if __name__ == "__main__":
+    plans_dir = PROJECT_ROOT / "plans"
+    plan_files = sorted(plans_dir.glob("*.sqlplan"))
+
+    results = save_plan_results(plan_files)
+
+    print(f"Parsed {len(plan_files)} plan files")
+    print(f"Extracted {len(results)} runtime operators")

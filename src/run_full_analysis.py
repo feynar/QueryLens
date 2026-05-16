@@ -5,13 +5,14 @@ Runs the complete end-to-end analysis workflow over all SQL queries
 and execution plans in the plans/ directory.
 
 Pipeline stages:
-    1. Static analysis (AST-based rule detection)
-    2. Execution plan parsing (runtime evidence extraction)
-    3. Correlation (link static warnings to runtime operators)
-    4. Rewrite suggestion generation
-    5. Metrics and report generation
-    6. Proposal-supporting artifact generation
-
+    1. Optional live execution-plan capture using pyodbc
+    2. Static analysis
+    3. Execution plan parsing
+    4. Correlation
+    5. Rewrite suggestion generation
+    6. Metrics and report generation
+    7. Proposal-supporting artifact generation
+    
 Inputs:
     plans/*.sql
     plans/*.sqlplan
@@ -62,13 +63,22 @@ from src.reporting.generate_correlation_matrix import generate_matrix
 from src.tools.generate_static_test_log import generate_static_test_log
 from src.tools.false_positive_analyzer import run_analysis as run_false_positive_analysis
 
+from src.db.live_plan_capture import capture_all_plans
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1] 
+
 PLANS_FOLDER = PROJECT_ROOT / "plans"
+LIVE_PLANS_FOLDER = PROJECT_ROOT / "plans_live"
 ARTIFACTS = PROJECT_ROOT / "artifacts"
+
+# Set to True to generate fresh actual execution plans using pyodbc.
+# Set to False to use saved .sqlplan files from plans/.
+USE_LIVE_CAPTURE = True
 
 def save_json(data, path):
     """Writes JSON output to disk, creating parent directories if needed."""    
     path.parent.mkdir(parents=True, exist_ok=True)
+    
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
 
@@ -135,6 +145,22 @@ def write_performance_log(total_queries, baseline_seconds, querylens_seconds):
 
     print(f"Performance log generated → {output_path}")
     
+
+def get_plan_file(base, plans_folder):
+    """
+    Returns the execution plan path for the current query.
+
+    Live mode:
+        plans_live/<query>.sqlplan
+
+    Offline mode:
+        plans/<query>.sqlplan
+    """
+    if USE_LIVE_CAPTURE:
+        return LIVE_PLANS_FOLDER / f"{base}.sqlplan"
+
+    return plans_folder / f"{base}.sqlplan"
+    
 def main_batch(plans_folder):
     """
     Executes the full QueryLens batch pipeline over every SQL file in the plans folder.
@@ -151,6 +177,16 @@ def main_batch(plans_folder):
     evaluation metrics plus the final HTML report.
     """    
     print("\n=== Running QueryLens Batch Analysis ===")
+    
+    if USE_LIVE_CAPTURE:
+        print("\n=== Live capture enabled ===")
+        print("Generating fresh actual execution plans using pyodbc...")
+        capture_all_plans()
+        print("Live execution-plan capture complete\n")
+    else:
+        print("\n=== Offline mode enabled ===")
+        print("Using saved .sqlplan files from plans/\n")
+        
     baseline_query_count, baseline_seconds = measure_baseline_runtime(plans_folder)
     pipeline_start = time.time()
     
@@ -242,7 +278,6 @@ def main_batch(plans_folder):
     save_json(all_correlated, ARTIFACTS / "analysis/correlation_output.json")
     save_json(validated_results, ARTIFACTS / "analysis/validated_results.json")
     save_json(non_validated_results, ARTIFACTS / "analysis/static_only_results.json")
-    
     save_json(all_runtime, ARTIFACTS / "analysis/plan_results.json")
     save_json(all_static, ARTIFACTS / "analysis/static_results.json")
 
@@ -292,6 +327,7 @@ def main_batch(plans_folder):
     
     pipeline_end = time.time()
     elapsed_seconds = pipeline_end - pipeline_start
+    
     write_performance_log(query_count, baseline_seconds, elapsed_seconds)
     
     print("Batch analysis complete")
@@ -311,13 +347,10 @@ def main_batch(plans_folder):
     print(f"Total correlated findings: {len(all_correlated)}")
     print(f"Validated findings: {len(validated_results)}")
     print(f"Static-only findings: {len(non_validated_results)}")
-
     print(f"Runtime-supported findings: {confirmed_count}")
     print(f"Runtime agreement rate: {confirmation_rate}")
-
     print(f"Suppressed findings: {suppressed_count}")
     print(f"Suppression rate: {suppression_rate}")
-
     print(f"High-confidence confirmations: {high_confidence_count}")
     print(f"Total pipeline runtime (seconds): {round(elapsed_seconds, 4)}")    
 
