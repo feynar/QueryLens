@@ -51,6 +51,7 @@ def extract_runtime_features(plan_findings):
     effective_rows = []
     estimated_rows = []
     actual_rows = []
+    actual_executions = []
 
     actual_operator_count = 0
     actual_executed = False
@@ -62,6 +63,7 @@ def extract_runtime_features(plan_findings):
         est = float(op.get("estimated_rows") or 0)
         actual = float(op.get("actual_rows") or 0)
         actual_execs = float(op.get("actual_executions") or 0)
+        actual_executions.append(actual_execs)
         has_actual = bool(op.get("has_actual_runtime_stats"))
         
         operators.append(physical)
@@ -81,12 +83,20 @@ def extract_runtime_features(plan_findings):
     max_rows = max(effective_rows, default=0)
     max_estimated_rows = max(estimated_rows, default=0)
     max_actual_rows = max(actual_rows, default=0)
+    max_actual_executions = max(actual_executions, default=0)
+    total_actual_executions = sum(actual_executions)
     
     scan_count = sum(
         "SCAN" in (o or "").upper()
         for o in operators
     )
     
+    seek_count = sum("SEEK" in (o or "").upper() for o in operators)
+    sort_count = sum("SORT" in (o or "").upper() for o in operators)
+    hash_join_count = sum("HASH MATCH" in (o or "").upper() for o in operators)
+    nested_loop_count = sum("NESTED LOOPS" in (o or "").upper() for o in operators)
+    key_lookup_count = sum("KEY LOOKUP" in (o or "").upper() for o in operators)
+
     has_actual_stats = actual_operator_count > 0
     actual_is_large = max_actual_rows > HIGH_ROW_THRESHOLD if has_actual_stats else False
     estimate_is_large = max_estimated_rows > HIGH_ROW_THRESHOLD
@@ -99,7 +109,8 @@ def extract_runtime_features(plan_findings):
         "max_rows": max_rows,
         "max_estimated_rows": max_estimated_rows,
         "max_actual_rows": max_actual_rows,
-
+        "max_actual_executions": max_actual_executions,
+        "total_actual_executions": total_actual_executions,
 
         "has_actual_stats": has_actual_stats,
         "actual_rows_available": has_actual_stats,
@@ -133,6 +144,12 @@ def extract_runtime_features(plan_findings):
             "MISSING INDEX" in (op.get("operator", "") or "").upper()
             for op in plan_findings
         ),
+        
+        "seek_count": seek_count,
+        "sort_count": sort_count,
+        "hash_join_count": hash_join_count,
+        "nested_loop_count": nested_loop_count,
+        "key_lookup_count": key_lookup_count,
     }
 
     return features
@@ -161,7 +178,30 @@ def add_row_volume_reason(runtime, reasons, estimated_message, actual_message):
         reasons.append(actual_message)
     else:
         reasons.append(estimated_message)
-        
+
+def build_evidence(runtime):
+    """Builds consistent evidence payload for correlation results."""
+    return {
+        "operators": runtime["operators"],
+        "max_rows": runtime["max_rows"],
+        "max_estimated_rows": runtime["max_estimated_rows"],
+        "max_actual_rows": runtime["max_actual_rows"],
+        "scan_count": runtime["scan_count"],
+        "has_actual_stats": runtime["has_actual_stats"],
+        "actual_operator_count": runtime["actual_operator_count"],
+        "actual_stats_coverage": runtime["actual_stats_coverage"],
+        "actual_executed": runtime["actual_executed"],
+        "actual_is_large": runtime["actual_is_large"],
+        "estimate_is_large": runtime["estimate_is_large"],
+        "max_actual_executions": runtime["max_actual_executions"],
+        "total_actual_executions": runtime["total_actual_executions"],
+        "seek_count": runtime["seek_count"],
+        "sort_count": runtime["sort_count"],
+        "hash_join_count": runtime["hash_join_count"],
+        "nested_loop_count": runtime["nested_loop_count"],
+        "key_lookup_count": runtime["key_lookup_count"]
+    }
+    
 # ----------------------------
 # Correlation logic
 # ----------------------------
@@ -179,6 +219,25 @@ def correlate(static_findings, plan_findings):
         score = 0.0
         reasons = []
 
+        # ---------------------------------
+        # STATIC-ONLY ADVISORY RULES
+        # ---------------------------------
+        if rule not in RUNTIME_VERIFIABLE_RULES:
+            results.append({
+                "query_id": query_id,
+                "rule": rule,
+                "confirmed": None,
+                "suppressed": False,
+                "validated": False,
+                "validation_type": "static-only",
+                "confidence": "n/a",
+                "score": None,
+                "evidence": build_evidence(runtime),
+                "reason": "Advisory static rule; runtime confirmation not applicable"
+            })
+
+            continue
+            
         # ---------------------------------
         # NON-SARGABLE
         # ---------------------------------
@@ -207,17 +266,20 @@ def correlate(static_findings, plan_findings):
         elif rule == "select_star":
 
             if runtime["has_scan"]:
-                score += 0.5
+                score += 0.4
                 reasons.append("Scan suggests broad row retrieval")
 
-                if runtime["is_large"]:
+                if runtime["has_actual_stats"] and runtime["actual_is_large"]:
+                    score += 0.4
+                    reasons.append("High actual row count increases SELECT * impact")
+
+                elif runtime["estimate_is_large"]:
                     score += 0.2
-                    add_row_volume_reason(
-                        runtime,
-                        reasons,
-                        "High estimated row count increases SELECT * impact",
-                        "High actual row count increases SELECT * impact"
-                    )
+                    reasons.append("High estimated row count increases SELECT * impact")
+
+            elif runtime["has_seek"] and runtime["has_actual_stats"] and not runtime["actual_is_large"]:
+                score -= 0.2
+                reasons.append("SELECT * used, but actual runtime impact was low")
 
         # ---------------------------------
         # COMPLEX JOIN
@@ -364,47 +426,33 @@ def correlate(static_findings, plan_findings):
                     )
 
         # ---------------------------------
-        # MISSING INDEX (IMPROVED — HIGH PRECISION)
+        # MISSING INDEX
         # ---------------------------------
         elif rule == "missing_index":
 
-            # Strong signal 1: SQL Server explicitly recommends an index.
             if runtime["has_missing_index"]:
                 score += 0.9
                 reasons.append("SQL Server missing index recommendation detected")
 
-            # Strong signal 2: Key Lookup often implies a missing covering index.
             if runtime["has_key_lookup"]:
                 score += 0.7
                 reasons.append("Key Lookup suggests a possible missing covering index")
-                
-                if runtime["max_rows"] > HIGH_ROW_THRESHOLD:
-                    score += 0.2
-                    add_row_volume_reason(
-                        runtime,
-                        reasons,
-                        "High estimated row volume strengthens missing-index evidence",
-                        "High actual row volume strengthens missing-index evidence"
-                    )
 
-            if runtime["scan_count"] >= MIN_SCAN_COUNT and not runtime["has_seek"]:
-                score += 0.4
-                reasons.append("Multiple scans without seek suggest missing index opportunity")
+            if runtime["has_scan"] and runtime["actual_is_large"]:
+                score += 0.5
+                reasons.append("High actual row scan suggests missing or ineffective index")
 
-            # Hard negative: a seek without a lookup usually indicates healthy index usage.
-            if runtime["has_seek"] and not runtime["has_key_lookup"]:
-                score -= 0.4
-                reasons.append("Efficient index usage detected without key lookup")
+            elif runtime["has_scan"] and runtime["estimate_is_large"]:
+                score += 0.3
+                reasons.append("High estimated row scan suggests missing or ineffective index")
 
-            # Only amplify if strong evidence already exists.
-            if score >= 0.6 and runtime["is_large"]:
+            if runtime["scan_count"] >= MIN_SCAN_COUNT:
                 score += 0.2
-                add_row_volume_reason(
-                    runtime,
-                    reasons,
-                    "Large estimated dataset increases possible index benefit",
-                    "Large actual dataset increases possible index benefit"
-                )
+                reasons.append("Multiple scan operators increase missing-index likelihood")
+
+            if runtime["has_seek"] and not runtime["has_scan"] and not runtime["has_key_lookup"]:
+                score -= 0.4
+                reasons.append("Efficient seek-only access reduces missing-index likelihood")
 
         # ---------------------------------
         # Actual runtime suppression / boost
@@ -443,31 +491,16 @@ def correlate(static_findings, plan_findings):
         if not reasons:
             reasons.append("No significant runtime evidence")
             
-        # Only some rules are eligible for runtime validation.
-        is_validated = rule in RUNTIME_VERIFIABLE_RULES
-
         results.append({
             "query_id": query_id,
             "rule": rule,
             "confirmed": confirmed,
             "suppressed": suppressed,
-            "validated": is_validated,
-            "validation_type": "runtime" if is_validated else "static",
+            "validated": True,
+            "validation_type": "runtime",
             "confidence": confidence,
             "score": round(score, 2),
-            "evidence": {
-                "operators": runtime["operators"],
-                "max_rows": runtime["max_rows"],
-                "max_estimated_rows": runtime["max_estimated_rows"],
-                "max_actual_rows": runtime["max_actual_rows"],
-                "scan_count": runtime["scan_count"],
-                "has_actual_stats": runtime["has_actual_stats"],
-                "actual_operator_count": runtime["actual_operator_count"],
-                "actual_stats_coverage": runtime["actual_stats_coverage"],
-                "actual_executed": runtime["actual_executed"],
-                "actual_is_large": runtime["actual_is_large"],
-                "estimate_is_large": runtime["estimate_is_large"]                
-            },
+            "evidence": build_evidence(runtime),
             "reason": "; ".join(reasons)
         })
         

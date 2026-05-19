@@ -14,6 +14,7 @@ import os
 from src.analysis.static_analyzer import analyze_sql
 from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate
+from src.db.index_metadata_loader import load_index_metadata
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PLAN_DIR = os.path.join(PROJECT_ROOT, "plans")
@@ -27,12 +28,12 @@ def find_plan(sql_path):
     return plan_path if os.path.exists(plan_path) else None
 
 
-def analyze_query(sql_path):
+def analyze_query(sql_path, index_metadata=None):
     """
     Runs static analysis, runtime parsing, and correlation for one query,
     then returns the subset of findings that were not confirmed at runtime.
     """    
-    static_findings = analyze_sql(sql_path)
+    static_findings = analyze_sql(sql_path, index_metadata=index_metadata)
 
     plan_path = find_plan(sql_path)
     runtime_findings = parse_plan(plan_path) if plan_path else []
@@ -40,12 +41,15 @@ def analyze_query(sql_path):
     correlations = correlate(static_findings, runtime_findings)
     
     # Unconfirmed findings are treated here as false-positive candidates.
-    unconfirmed = [c for c in correlations if not c["confirmed"]]
+    unconfirmed = [
+        c for c in correlations
+        if c.get("validation_type") == "runtime" and not c.get("confirmed")
+    ]
 
     return unconfirmed
 
 
-def run_analysis():
+def run_analysis(index_metadata=None):
     """
     Evaluates all SQL files in the workload and writes a diagnostic log
     describing static findings that were not confirmed by runtime evidence.
@@ -57,6 +61,12 @@ def run_analysis():
     total_static = 0
     total_false_positives = 0
 
+    if index_metadata is None:
+        try:
+            index_metadata = load_index_metadata(save_to_file=True)
+        except Exception:
+            index_metadata = {}
+        
     for file in os.listdir(PLAN_DIR):
         if not file.endswith(".sql"):
             continue
@@ -64,10 +74,10 @@ def run_analysis():
         sql_path = os.path.join(PLAN_DIR, file)
 
         # Count static warnings separately for summary statistics.
-        static_findings = analyze_sql(sql_path)
+        static_findings = analyze_sql(sql_path, index_metadata=index_metadata)
         total_static += len(static_findings)
 
-        unconfirmed = analyze_query(sql_path)
+        unconfirmed = analyze_query(sql_path, index_metadata=index_metadata)
 
         if not unconfirmed:
             continue

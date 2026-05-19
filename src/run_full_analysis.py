@@ -64,6 +64,7 @@ from src.tools.generate_static_test_log import generate_static_test_log
 from src.tools.false_positive_analyzer import run_analysis as run_false_positive_analysis
 
 from src.db.live_plan_capture import capture_all_plans
+from src.db.index_metadata_loader import load_index_metadata
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1] 
 
@@ -186,6 +187,15 @@ def main_batch(plans_folder):
     else:
         print("\n=== Offline mode enabled ===")
         print("Using saved .sqlplan files from plans/\n")
+
+    print("\n=== Loading SQL Server index metadata ===")
+    
+    try:
+        index_metadata = load_index_metadata(save_to_file=True)
+        print("Index metadata loaded")
+    except Exception as ex:
+        index_metadata = {}
+        print(f"Index metadata unavailable; continuing without index metadata: {ex}")
         
     baseline_query_count, baseline_seconds = measure_baseline_runtime(plans_folder)
     pipeline_start = time.time()
@@ -200,14 +210,14 @@ def main_batch(plans_folder):
             query_count += 1
             base = file.replace(".sql", "")
             sql_file = plans_folder / f"{base}.sql"
-            plan_file = plans_folder / f"{base}.sqlplan"
+            plan_file = get_plan_file(base, plans_folder)
 
             print(f"→ Processing: {base}")
 
             # -------------------------
             # 1. STATIC ANALYSIS
             # -------------------------
-            static_results = analyze_sql(str(sql_file))
+            static_results = analyze_sql(str(sql_file), index_metadata=index_metadata)
 
             # Read SQL text directly so feature extraction and rewrite generation
             # operate on the original query text.
@@ -305,7 +315,7 @@ def main_batch(plans_folder):
         ARTIFACTS / "evaluation/evaluation_metrics.json"
     )
     
-    run_evaluation()
+    run_evaluation(index_metadata=index_metadata)
     generate_rule_level_metrics()
     generate_report()
 
@@ -313,8 +323,8 @@ def main_batch(plans_folder):
     # PROPOSAL-SUPPORTING ARTIFACTS
     # -------------------------
     generate_static_test_log()
-    generate_matrix()
-    run_false_positive_analysis()
+    generate_matrix(index_metadata=index_metadata)
+    run_false_positive_analysis(index_metadata=index_metadata)
     
     # Static accuracy evaluation requires datasets/ground_truth_static.json.
     # Leave enabled only if that file has been restored.

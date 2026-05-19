@@ -7,7 +7,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Clustered Index Scan"
@@ -21,7 +21,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 1.0,
+            "total_actual_executions": 1.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 50000.0",
         "rewrites": [
@@ -55,7 +62,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 1.0,
+            "total_actual_executions": 1.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan detected, which is expected for a non-sargable predicate; High actual row count amplifies non-sargable predicate impact; Actual runtime row evidence supports impact; max actual rows = 46302.0",
         "rewrites": [
@@ -89,7 +103,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": false,
-            "estimate_is_large": false
+            "estimate_is_large": false,
+            "max_actual_executions": 1.0,
+            "total_actual_executions": 1.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan detected, which is expected for a non-sargable predicate",
         "rewrites": [
@@ -109,7 +130,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -125,7 +146,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 17.0,
+            "total_actual_executions": 41.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 600000.0",
         "rewrites": [
@@ -134,54 +162,6 @@
                 "issue": "Using SELECT *",
                 "suggestion": "Replace SELECT * with explicit column names",
                 "example": "SELECT col1, col2 FROM table_name"
-            },
-            {
-                "rule": "order_by_no_index",
-                "issue": "Sorting without index",
-                "suggestion": "Add index on ORDER BY column",
-                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
-            }
-        ]
-    },
-    {
-        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
-        "rule": "order_by_no_index",
-        "confirmed": true,
-        "suppressed": false,
-        "validated": true,
-        "validation_type": "runtime",
-        "confidence": "high",
-        "score": 0.8,
-        "evidence": {
-            "operators": [
-                "Parallelism",
-                "Sort",
-                "Clustered Index Scan"
-            ],
-            "max_rows": 600000.0,
-            "max_estimated_rows": 200000.0,
-            "max_actual_rows": 600000.0,
-            "scan_count": 1,
-            "has_actual_stats": true,
-            "actual_operator_count": 3,
-            "actual_stats_coverage": 1.0,
-            "actual_executed": true,
-            "actual_is_large": true,
-            "estimate_is_large": true
-        },
-        "reason": "Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 600000.0",
-        "rewrites": [
-            {
-                "rule": "select_star",
-                "issue": "Using SELECT *",
-                "suggestion": "Replace SELECT * with explicit column names",
-                "example": "SELECT col1, col2 FROM table_name"
-            },
-            {
-                "rule": "order_by_no_index",
-                "issue": "Sorting without index",
-                "suggestion": "Add index on ORDER BY column",
-                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
             }
         ]
     },
@@ -193,7 +173,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Sort",
@@ -208,7 +188,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 2.0,
+            "total_actual_executions": 3.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 100000.0",
         "rewrites": [
@@ -249,7 +236,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 2.0,
+            "total_actual_executions": 3.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 100000.0",
         "rewrites": [
@@ -274,8 +268,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Merge Join",
@@ -291,9 +285,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 3.0,
+            "total_actual_executions": 5.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 450000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 450000.0",
         "rewrites": []
     },
     {
@@ -303,8 +304,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Hash Match",
@@ -322,20 +323,27 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 5.0,
+            "total_actual_executions": 12.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 2,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 400000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 400000.0",
         "rewrites": []
     },
     {
         "query_id": "Q09_Join_WithSelectiveFilter",
         "rule": "missing_index",
-        "confirmed": false,
-        "suppressed": true,
+        "confirmed": true,
+        "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "none",
-        "score": 0,
+        "confidence": "high",
+        "score": 0.6,
         "evidence": {
             "operators": [
                 "Hash Match",
@@ -351,9 +359,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 3.0,
+            "total_actual_executions": 5.0,
+            "seek_count": 1,
+            "sort_count": 0,
+            "hash_join_count": 1,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Insufficient runtime evidence",
+        "reason": "High actual row scan suggests missing or ineffective index; Actual runtime row evidence supports impact; max actual rows = 450000.0",
         "rewrites": []
     },
     {
@@ -386,7 +401,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 57.0,
+            "total_actual_executions": 193.0,
+            "seek_count": 1,
+            "sort_count": 0,
+            "hash_join_count": 2,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2051000.0",
         "rewrites": [
@@ -401,12 +423,12 @@
     {
         "query_id": "Q10_FullSchema_MultiJoin",
         "rule": "missing_index",
-        "confirmed": false,
-        "suppressed": true,
+        "confirmed": true,
+        "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "none",
-        "score": 0,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -428,9 +450,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 57.0,
+            "total_actual_executions": 193.0,
+            "seek_count": 1,
+            "sort_count": 0,
+            "hash_join_count": 2,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Insufficient runtime evidence",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 2051000.0",
         "rewrites": [
             {
                 "rule": "complex_join",
@@ -447,8 +476,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Compute Scalar",
@@ -468,9 +497,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 6.0,
+            "total_actual_executions": 25.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 404020.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 404020.0",
         "rewrites": []
     },
     {
@@ -495,7 +531,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": false,
-            "estimate_is_large": false
+            "estimate_is_large": false,
+            "max_actual_executions": 1.0,
+            "total_actual_executions": 1.0,
+            "seek_count": 1,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Insufficient runtime evidence",
         "rewrites": [
@@ -515,7 +558,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Clustered Index Scan"
@@ -529,7 +572,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 1.0,
+            "total_actual_executions": 1.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200000.0",
         "rewrites": [
@@ -548,8 +598,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -569,9 +619,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 49.0,
+            "total_actual_executions": 185.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 1,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 1100000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 1100000.0",
         "rewrites": []
     },
     {
@@ -581,8 +638,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Hash Match",
@@ -600,9 +657,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 5.0,
+            "total_actual_executions": 12.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 2,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 400000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 400000.0",
         "rewrites": []
     },
     {
@@ -612,8 +676,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Hash Match",
@@ -629,9 +693,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 3.0,
+            "total_actual_executions": 5.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 1,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 725612.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 725612.0",
         "rewrites": []
     },
     {
@@ -641,8 +712,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -664,9 +735,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 65.0,
+            "total_actual_executions": 289.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 3,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 1650000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 1650000.0",
         "rewrites": []
     },
     {
@@ -676,8 +754,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -697,9 +775,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 49.0,
+            "total_actual_executions": 185.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 1,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 2002000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 2002000.0",
         "rewrites": []
     },
     {
@@ -710,7 +795,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -731,7 +816,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 57.0,
+            "total_actual_executions": 209.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 3,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 2251000.0",
         "rewrites": [
@@ -778,7 +870,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 57.0,
+            "total_actual_executions": 209.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 3,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2251000.0",
         "rewrites": [
@@ -803,8 +902,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Parallelism",
@@ -825,9 +924,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 57.0,
+            "total_actual_executions": 209.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 3,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 2251000.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 2251000.0",
         "rewrites": [
             {
                 "rule": "select_star",
@@ -868,7 +974,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 4.0,
+            "total_actual_executions": 8.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 350000.0",
         "rewrites": []
@@ -881,7 +994,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Merge Join",
@@ -898,7 +1011,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 4.0,
+            "total_actual_executions": 8.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 300000.0",
         "rewrites": [
@@ -935,7 +1055,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 4.0,
+            "total_actual_executions": 8.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 300000.0",
         "rewrites": [
@@ -954,8 +1081,8 @@
         "suppressed": false,
         "validated": true,
         "validation_type": "runtime",
-        "confidence": "medium",
-        "score": 0.5,
+        "confidence": "high",
+        "score": 0.8,
         "evidence": {
             "operators": [
                 "Hash Match",
@@ -971,9 +1098,16 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 3.0,
+            "total_actual_executions": 5.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 1,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
-        "reason": "Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 370202.0",
+        "reason": "High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 370202.0",
         "rewrites": []
     },
     {
@@ -1001,7 +1135,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": false,
-            "estimate_is_large": false
+            "estimate_is_large": false,
+            "max_actual_executions": 4.0,
+            "total_actual_executions": 9.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 1,
+            "key_lookup_count": 0
         },
         "reason": "Join operator confirms cross/cartesian join execution; Actual runtime rows were low, slightly reducing confirmation strength",
         "rewrites": [
@@ -1038,7 +1179,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 3.0,
+            "total_actual_executions": 8.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Aggregate operator confirms HAVING-related runtime work; Aggregation processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 250000.0",
         "rewrites": []
@@ -1051,7 +1199,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Top",
@@ -1068,7 +1216,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 18.0,
+            "total_actual_executions": 59.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200100.0",
         "rewrites": [
@@ -1111,7 +1266,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 18.0,
+            "total_actual_executions": 59.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 200100.0",
         "rewrites": [
@@ -1137,7 +1299,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Filter",
@@ -1154,7 +1316,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 4.0,
+            "total_actual_executions": 10.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 1,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 347941.0",
         "rewrites": [
@@ -1163,43 +1332,6 @@
                 "issue": "Using SELECT *",
                 "suggestion": "Replace SELECT * with explicit column names",
                 "example": "SELECT col1, col2 FROM table_name"
-            }
-        ]
-    },
-    {
-        "query_id": "Q28_Window",
-        "rule": "order_by_no_index",
-        "confirmed": true,
-        "suppressed": false,
-        "validated": true,
-        "validation_type": "runtime",
-        "confidence": "high",
-        "score": 0.8,
-        "evidence": {
-            "operators": [
-                "Parallelism",
-                "Window Aggregate",
-                "Sort",
-                "Clustered Index Scan"
-            ],
-            "max_rows": 800000.0,
-            "max_estimated_rows": 200000.0,
-            "max_actual_rows": 800000.0,
-            "scan_count": 1,
-            "has_actual_stats": true,
-            "actual_operator_count": 4,
-            "actual_stats_coverage": 1.0,
-            "actual_executed": true,
-            "actual_is_large": true,
-            "estimate_is_large": true
-        },
-        "reason": "Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0",
-        "rewrites": [
-            {
-                "rule": "order_by_no_index",
-                "issue": "Sorting without index",
-                "suggestion": "Add index on ORDER BY column",
-                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
             }
         ]
     },
@@ -1228,17 +1360,17 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 25.0,
+            "total_actual_executions": 73.0,
+            "seek_count": 0,
+            "sort_count": 1,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Window operator or sort detected; Window processing involved high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0",
-        "rewrites": [
-            {
-                "rule": "order_by_no_index",
-                "issue": "Sorting without index",
-                "suggestion": "Add index on ORDER BY column",
-                "example": "CREATE INDEX idx_orders_date ON Orders(OrderDate)"
-            }
-        ]
+        "rewrites": []
     },
     {
         "query_id": "Q29_Multi_Condition_Where",
@@ -1248,7 +1380,7 @@
         "validated": true,
         "validation_type": "runtime",
         "confidence": "high",
-        "score": 0.8,
+        "score": 0.9,
         "evidence": {
             "operators": [
                 "Clustered Index Scan"
@@ -1262,7 +1394,14 @@
             "actual_stats_coverage": 1.0,
             "actual_executed": true,
             "actual_is_large": true,
-            "estimate_is_large": true
+            "estimate_is_large": true,
+            "max_actual_executions": 1.0,
+            "total_actual_executions": 1.0,
+            "seek_count": 0,
+            "sort_count": 0,
+            "hash_join_count": 0,
+            "nested_loop_count": 0,
+            "key_lookup_count": 0
         },
         "reason": "Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 11111.0",
         "rewrites": [

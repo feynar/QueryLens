@@ -17,6 +17,7 @@ from src.config.runtime_rules import RUNTIME_VERIFIABLE_RULES
 from src.analysis.static_analyzer import analyze_sql
 from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate, normalize_static
+from src.db.index_metadata_loader import load_index_metadata
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
@@ -31,7 +32,7 @@ def find_plan_file(sql_path):
     return plan_path if os.path.exists(plan_path) else None
 
 
-def evaluate_query(sql_path):
+def evaluate_query(sql_path, index_metadata=None):
     """
     Evaluates one SQL query by combining:
         - static analysis
@@ -45,7 +46,7 @@ def evaluate_query(sql_path):
     # ----------------------------
     # Static analysis
     # ----------------------------
-    static_findings = analyze_sql(sql_path)
+    static_findings = analyze_sql(sql_path, index_metadata=index_metadata)
 
     # ----------------------------
     # Runtime analysis
@@ -117,16 +118,21 @@ def evaluate_query(sql_path):
     }
 
 
-def run_evaluation():
+def run_evaluation(index_metadata=None):
     """
     Runs expanded runtime validation across the full workload and writes
     the resulting report to the evaluation artifacts directory.
     """    
     results = []
 
+    try:
+        index_metadata = load_index_metadata(save_to_file=True)
+    except Exception:
+        index_metadata = {}
+        
     for file in os.listdir(PLAN_DIR):
         if file.endswith(".sql"):
-            results.append(evaluate_query(os.path.join(PLAN_DIR, file)))
+            results.append(evaluate_query(os.path.join(PLAN_DIR, file), index_metadata=index_metadata))
 
     total_static = sum(r["static_warnings"] for r in results)
     total_confirmed = sum(r["confirmed_warnings"] for r in results)

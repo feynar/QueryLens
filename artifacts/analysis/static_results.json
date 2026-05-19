@@ -96,22 +96,6 @@
         }
     },
     {
-        "query_id": "Q05_OrderBy_IndexedColumn_Orders",
-        "rule": "order_by_no_index",
-        "confidence": "medium",
-        "runtime_verifiable": true,
-        "recommendation": {
-            "issue": "ORDER BY without filtering",
-            "impact": "Expensive sort operation",
-            "recommendation": "Add index or filter rows before sorting"
-        },
-        "details": {
-            "issue": "ORDER BY without filtering",
-            "impact": "Expensive sort operation",
-            "recommendation": "Add index or filter rows before sorting"
-        }
-    },
-    {
         "query_id": "Q06_OrderBy_NonIndexed_Customers_Sort",
         "rule": "select_star",
         "confidence": "high",
@@ -178,7 +162,7 @@
     {
         "query_id": "Q07_CustomersOrders_BasicJoin",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -210,7 +194,7 @@
     {
         "query_id": "Q08_CustomersOrders_AggregateJoin",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -242,7 +226,7 @@
     {
         "query_id": "Q09_Join_WithSelectiveFilter",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -274,7 +258,7 @@
     {
         "query_id": "Q10_FullSchema_MultiJoin",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -322,7 +306,7 @@
     {
         "query_id": "Q12_GroupBy_ProductCategory",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -386,7 +370,7 @@
     {
         "query_id": "Q15_Join_WithExplicitSort",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -418,7 +402,7 @@
     {
         "query_id": "Q16_FilteredAggregation_CustomerOrders",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -450,7 +434,7 @@
     {
         "query_id": "Q17_ProductPrice_FilterJoin",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -482,7 +466,7 @@
     {
         "query_id": "Q18_ComputedAggregation_Revenue",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -514,7 +498,7 @@
     {
         "query_id": "Q19_ProductJoin_NonIndexedSort",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -562,7 +546,7 @@
     {
         "query_id": "Q20_WideSchema_SelectStar",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -642,7 +626,7 @@
     {
         "query_id": "Q23_Left_Join",
         "rule": "missing_index",
-        "confidence": "high",
+        "confidence": "medium",
         "runtime_verifiable": true,
         "recommendation": {
             "issue": "Missing index",
@@ -813,22 +797,6 @@
             "issue": "No WHERE clause",
             "impact": "Full table scan possible",
             "recommendation": "Add filtering conditions"
-        }
-    },
-    {
-        "query_id": "Q28_Window",
-        "rule": "order_by_no_index",
-        "confidence": "medium",
-        "runtime_verifiable": true,
-        "recommendation": {
-            "issue": "ORDER BY without filtering",
-            "impact": "Expensive sort operation",
-            "recommendation": "Add index or filter rows before sorting"
-        },
-        "details": {
-            "issue": "ORDER BY without filtering",
-            "impact": "Expensive sort operation",
-            "recommendation": "Add index or filter rows before sorting"
         }
     },
     {

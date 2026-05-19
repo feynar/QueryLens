@@ -19,7 +19,7 @@ from src.parser.feature_extractor import FeatureExtractor
 from src.analysis.static_rules import evaluate_rules
 from src.analysis.recommendation_engine import generate_recommendation
 
-def analyze_sql(file_path):
+def analyze_sql(file_path, index_metadata=None):
     """
     Runs static analysis on a SQL file and returns structured rule findings.
 
@@ -51,7 +51,7 @@ def analyze_sql(file_path):
     
 
     # Evaluate static rule detections from the extracted features.    
-    rules = evaluate_rules(features)
+    rules = evaluate_rules(features, index_metadata=index_metadata)
 
     results = []
     for r in rules:

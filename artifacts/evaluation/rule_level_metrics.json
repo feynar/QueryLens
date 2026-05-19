@@ -36,13 +36,13 @@
         }
     },
     "order_by_no_index": {
-        "total_static": 4,
-        "runtime_verifiable_static": 4,
-        "confirmed": 4,
+        "total_static": 2,
+        "runtime_verifiable_static": 2,
+        "confirmed": 2,
         "precision": 1.0,
         "coverage": 1.0,
         "confidence_distribution": {
-            "high": 4,
+            "high": 2,
             "medium": 0,
             "low": 0
         }
@@ -62,12 +62,12 @@
     "missing_index": {
         "total_static": 12,
         "runtime_verifiable_static": 12,
-        "confirmed": 10,
-        "precision": 0.833,
+        "confirmed": 12,
+        "precision": 1.0,
         "coverage": 1.0,
         "confidence_distribution": {
-            "high": 0,
-            "medium": 10,
+            "high": 12,
+            "medium": 0,
             "low": 0
         }
     },

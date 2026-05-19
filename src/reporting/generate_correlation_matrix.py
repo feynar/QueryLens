@@ -18,7 +18,6 @@ from src.analysis.static_analyzer import analyze_sql
 from src.analysis.plan_analyzer import parse_plan
 from src.correlation.correlator import correlate
 
-
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PLAN_DIR = os.path.join(PROJECT_ROOT, "plans")
 OUTPUT_PATH = os.path.join(PROJECT_ROOT, "artifacts", "correlation_matrix.csv")
@@ -31,7 +30,7 @@ def find_plan_file(sql_path):
     return plan_path if os.path.exists(plan_path) else None
 
 
-def collect_correlations():
+def collect_correlations(index_metadata=None):
     """
     Runs static analysis, runtime plan analysis, and correlation across
     the full workload and returns all correlation records.
@@ -45,7 +44,7 @@ def collect_correlations():
         sql_path = os.path.join(PLAN_DIR, file)
         plan_path = find_plan_file(sql_path)
 
-        static_findings = analyze_sql(sql_path)
+        static_findings = analyze_sql(sql_path, index_metadata=index_metadata)
         runtime_findings = parse_plan(plan_path) if plan_path else []
 
         correlations = correlate(static_findings, runtime_findings)
@@ -124,9 +123,9 @@ def save_csv(rows):
     print(f"→ {OUTPUT_PATH}")
 
 
-def generate_matrix():
+def generate_matrix(index_metadata=None):
     """Builds and saves the rule-level correlation matrix."""
-    correlations = collect_correlations()
+    correlations = collect_correlations(index_metadata=index_metadata)
     aggregated = aggregate_by_rule(correlations)
     save_csv(aggregated)
 

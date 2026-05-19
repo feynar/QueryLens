@@ -156,6 +156,39 @@
                 background-color: #f8d7da;
                 font-weight: bold;
             }
+
+            .static-only {
+                background-color: #e2e3e5;
+                font-weight: bold;
+            }  
+
+            .evidence-box {
+                margin-top: 8px;
+                padding: 8px;
+                background: #f7f7f7;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 0.9em;
+            }
+
+            .evidence-box p {
+                margin: 3px 0;
+            }            
+            
+            .operator-summary {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 10px;
+                margin: 12px 0 18px 0;
+            }
+
+            .operator-summary div {
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                text-align: center;
+            }
         </style>
     </head>
     <body>
@@ -173,9 +206,9 @@
 
         <h2>Global Metrics</h2>
         <div class="metric-list">
-            <p><b>Total Runtime-Verifiable Static Warnings:</b> 35</p>
-            <p><b>Total Confirmed Warnings:</b> 32</p>
-            <p><b>Confirmation Rate:</b> 0.914</p>
+            <p><b>Total Runtime-Verifiable Static Warnings:</b> 33</p>
+            <p><b>Total Runtime-Confirmed Findings:</b> 32</p>
+            <p><b>Confirmation Rate:</b> 0.97</p>
         </div>
 
         <h2>Per-Query Summary</h2>
@@ -183,7 +216,7 @@
             <tr>
                 <th>Query</th>
                 <th>Runtime-Verifiable Warnings</th>
-                <th>Confirmed Warnings</th>
+                <th>Runtime-Confirmed Findings</th>
                 <th>Confirmation Rate</th>
             </tr>
             
@@ -221,8 +254,8 @@
 
         <tr class="summary-good">
             <td>Q05_OrderBy_IndexedColumn_Orders.sql</td>
-            <td>2</td>
-            <td>2</td>
+            <td>1</td>
+            <td>1</td>
             <td>1.0</td>
         </tr>
         
@@ -251,19 +284,19 @@
         </tr>
         
 
-        <tr class="summary-bad">
+        <tr class="summary-good">
             <td>Q09_Join_WithSelectiveFilter.sql</td>
             <td>1</td>
-            <td>0</td>
-            <td>0.0</td>
+            <td>1</td>
+            <td>1.0</td>
         </tr>
         
 
-        <tr class="summary-mixed">
+        <tr class="summary-good">
             <td>Q10_FullSchema_MultiJoin.sql</td>
             <td>2</td>
-            <td>1</td>
-            <td>0.5</td>
+            <td>2</td>
+            <td>1.0</td>
         </tr>
         
 
@@ -405,8 +438,8 @@
 
         <tr class="summary-good">
             <td>Q28_Window.sql</td>
-            <td>2</td>
-            <td>2</td>
+            <td>1</td>
+            <td>1</td>
             <td>1.0</td>
         </tr>
         
@@ -434,15 +467,27 @@
             <summary>Q01_SelectStar_Customers_FullScan.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -458,7 +503,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 50000.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 50000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 50000.0</p>
+                        <p><b>Max Actual Executions:</b> 1.0</p>
+                        <p><b>Total Actual Executions:</b> 1.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -468,12 +521,12 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
@@ -503,19 +556,18 @@
                 <summary>Q02_Sargable_DateRange_Customers_Seek.sql</summary>
                 <div class="query-section">
                     <p class="summary-line summary-neutral">
-                        <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                        <b>Summary:</b> 0 / 0 runtime-verifiable findings confirmed
                     </p>
 
                     <p>
-                        Static Warnings: 0 |
-                        Confirmed: 0 |
+                        Runtime-Verifiable Warnings: 0 |
+                        Runtime-Confirmed Findings: 0 |
                         Rate: 0
                     </p>
 
                     <p><b>No runtime-verifiable findings.</b></p>
                     <p>
-                        This query triggered only static analysis rules that cannot be validated
-                        using execution plan evidence, or no rules were detected.
+                        This query triggered no runtime-verifiable warnings.
                     </p>
 
                     <h4>Recommendations</h4>
@@ -531,15 +583,27 @@
             <summary>Q03_NonSargable_DateFunction_Customers_Scan.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -555,7 +619,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan detected, which is expected for a non-sargable predicate; High actual row count amplifies non-sargable predicate impact; Actual runtime row evidence supports impact; max actual rows = 46302.0</td>
+                <td>Scan detected, which is expected for a non-sargable predicate; High actual row count amplifies non-sargable predicate impact; Actual runtime row evidence supports impact; max actual rows = 46302.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 46302.0</p>
+                        <p><b>Max Actual Executions:</b> 1.0</p>
+                        <p><b>Total Actual Executions:</b> 1.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Non-SARGable predicate</p>
@@ -585,15 +657,27 @@
             <summary>Q04_FunctionPredicate_Customers_Scan.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -609,7 +693,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan detected, which is expected for a non-sargable predicate</td>
+                <td>Scan detected, which is expected for a non-sargable predicate
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 1.0</p>
+                        <p><b>Max Actual Executions:</b> 1.0</p>
+                        <p><b>Total Actual Executions:</b> 1.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Non-SARGable predicate</p>
@@ -639,15 +731,27 @@
             <summary>Q05_OrderBy_IndexedColumn_Orders.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 2 |
-                    Confirmed: 2 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -663,7 +767,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 600000.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 600000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 600000.0</p>
+                        <p><b>Max Actual Executions:</b> 17.0</p>
+                        <p><b>Total Actual Executions:</b> 41.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -673,32 +785,17 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
         <p><b>Impact:</b> Full table scan possible</p>
         <p><b>Recommendation:</b> Add filtering conditions</p>
-    </div>
-    </td>
-            </tr>
-            
-            <tr class="confirmed-high">
-                <td>order_by_no_index</td>
-                <td>True</td>
-                <td>high</td>
-                <td>runtime</td>
-                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 600000.0</td>
-                <td>
-    <div class="recommendation-box">
-        <p><b>Issue:</b> ORDER BY without filtering</p>
-        <p><b>Impact:</b> Expensive sort operation</p>
-        <p><b>Recommendation:</b> Add index or filter rows before sorting</p>
     </div>
     </td>
             </tr>
@@ -715,15 +812,6 @@
             <pre>SELECT col1, col2 FROM table_name</pre>
         </div>
         
-
-        <div class="rewrite-box">
-            <p><b>Rule:</b> order_by_no_index</p>
-            <p><b>Issue:</b> Sorting without index</p>
-            <p><b>Suggestion:</b> Add index on ORDER BY column</p>
-            <p><b>Example:</b></p>
-            <pre>CREATE INDEX idx_orders_date ON Orders(OrderDate)</pre>
-        </div>
-        
             </div>
         </details>
         
@@ -732,15 +820,27 @@
             <summary>Q06_OrderBy_NonIndexed_Customers_Sort.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                    <b>Summary:</b> 2 / 2 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 2 |
-                    Confirmed: 2 |
+                    Runtime-Verifiable Warnings: 2 |
+                    Runtime-Confirmed Findings: 2 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -756,7 +856,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 100000.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 100000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 100000.0</p>
+                        <p><b>Max Actual Executions:</b> 2.0</p>
+                        <p><b>Total Actual Executions:</b> 3.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -766,12 +874,12 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
@@ -786,7 +894,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 100000.0</td>
+                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 100000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 100000.0</p>
+                        <p><b>Max Actual Executions:</b> 2.0</p>
+                        <p><b>Total Actual Executions:</b> 3.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> ORDER BY without filtering</p>
@@ -825,15 +941,27 @@
             <summary>Q07_CustomersOrders_BasicJoin.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -844,12 +972,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -859,12 +987,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 450000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 450000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 450000.0</p>
+                        <p><b>Max Actual Executions:</b> 3.0</p>
+                        <p><b>Total Actual Executions:</b> 5.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -886,15 +1022,27 @@
             <summary>Q08_CustomersOrders_AggregateJoin.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>2</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -905,12 +1053,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -920,12 +1068,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 400000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 400000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 400000.0</p>
+                        <p><b>Max Actual Executions:</b> 5.0</p>
+                        <p><b>Total Actual Executions:</b> 12.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -946,16 +1102,28 @@
         <details class="query-details">
             <summary>Q09_Join_WithSelectiveFilter.sql</summary>
             <div class="query-section">
-                <p class="summary-line summary-bad">
-                    <b>Summary:</b> 0 / 1 rules confirmed by runtime evidence
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 0 |
-                    Rate: 0.0
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
+                    Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>1</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -966,12 +1134,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -981,12 +1149,20 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
-                <td>False</td>
-                <td>none</td>
+                <td>True</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Insufficient runtime evidence</td>
+                <td>High actual row scan suggests missing or ineffective index; Actual runtime row evidence supports impact; max actual rows = 450000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 450000.0</p>
+                        <p><b>Max Actual Executions:</b> 3.0</p>
+                        <p><b>Total Actual Executions:</b> 5.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1007,16 +1183,28 @@
         <details class="query-details">
             <summary>Q10_FullSchema_MultiJoin.sql</summary>
             <div class="query-section">
-                <p class="summary-line summary-mixed">
-                    <b>Summary:</b> 1 / 2 rules confirmed by runtime evidence
+                <p class="summary-line summary-good">
+                    <b>Summary:</b> 2 / 2 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 2 |
-                    Confirmed: 1 |
-                    Rate: 0.5
+                    Runtime-Verifiable Warnings: 2 |
+                    Runtime-Confirmed Findings: 2 |
+                    Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>4</div>
+        <div><b>Seeks</b><br>1</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>2</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1032,7 +1220,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2051000.0</td>
+                <td>Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2051000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 2051000.0</p>
+                        <p><b>Max Actual Executions:</b> 57.0</p>
+                        <p><b>Total Actual Executions:</b> 193.0</p>
+                        <p><b>Scan Count:</b> 4</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Multiple joins detected</p>
@@ -1042,12 +1238,20 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
-                <td>False</td>
-                <td>none</td>
+                <td>True</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Insufficient runtime evidence</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 2051000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 2051000.0</p>
+                        <p><b>Max Actual Executions:</b> 57.0</p>
+                        <p><b>Total Actual Executions:</b> 193.0</p>
+                        <p><b>Scan Count:</b> 4</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1077,15 +1281,27 @@
             <summary>Q11_GlobalAggregation_Orders.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-neutral">
-                    <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                    <b>Summary:</b> 0 / 0 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 0 |
-                    Confirmed: 0 |
+                    Runtime-Verifiable Warnings: 0 |
+                    Runtime-Confirmed Findings: 0 |
                     Rate: 0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1096,12 +1312,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
@@ -1123,15 +1339,27 @@
             <summary>Q12_GroupBy_ProductCategory.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1142,12 +1370,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1157,12 +1385,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 404020.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 404020.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 404020.0</p>
+                        <p><b>Max Actual Executions:</b> 6.0</p>
+                        <p><b>Total Actual Executions:</b> 25.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1184,15 +1420,27 @@
             <summary>Q13_HighSelectivity_OrderLookup.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-bad">
-                    <b>Summary:</b> 0 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 0 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 0 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 0 |
                     Rate: 0.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>0</div>
+        <div><b>Seeks</b><br>1</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1208,7 +1456,15 @@
                 <td>False</td>
                 <td>none</td>
                 <td>runtime</td>
-                <td>Insufficient runtime evidence</td>
+                <td>Insufficient runtime evidence
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 1.0</p>
+                        <p><b>Max Actual Executions:</b> 1.0</p>
+                        <p><b>Total Actual Executions:</b> 1.0</p>
+                        <p><b>Scan Count:</b> 0</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1238,15 +1494,27 @@
             <summary>Q14_LowSelectivity_DateRange.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1262,7 +1530,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200000.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 200000.0</p>
+                        <p><b>Max Actual Executions:</b> 1.0</p>
+                        <p><b>Total Actual Executions:</b> 1.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1292,15 +1568,27 @@
             <summary>Q15_Join_WithExplicitSort.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1311,12 +1599,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1326,12 +1614,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 1100000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 1100000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 1100000.0</p>
+                        <p><b>Max Actual Executions:</b> 49.0</p>
+                        <p><b>Total Actual Executions:</b> 185.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1353,15 +1649,27 @@
             <summary>Q16_FilteredAggregation_CustomerOrders.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>2</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1372,12 +1680,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1387,12 +1695,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 400000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 400000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 400000.0</p>
+                        <p><b>Max Actual Executions:</b> 5.0</p>
+                        <p><b>Total Actual Executions:</b> 12.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1414,15 +1730,27 @@
             <summary>Q17_ProductPrice_FilterJoin.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1433,12 +1761,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1448,12 +1776,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 725612.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 725612.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 725612.0</p>
+                        <p><b>Max Actual Executions:</b> 3.0</p>
+                        <p><b>Total Actual Executions:</b> 5.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1475,15 +1811,27 @@
             <summary>Q18_ComputedAggregation_Revenue.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>3</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>3</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1494,12 +1842,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1509,12 +1857,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 1650000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 1650000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 1650000.0</p>
+                        <p><b>Max Actual Executions:</b> 65.0</p>
+                        <p><b>Total Actual Executions:</b> 289.0</p>
+                        <p><b>Scan Count:</b> 3</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1536,15 +1892,27 @@
             <summary>Q19_ProductJoin_NonIndexedSort.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1555,12 +1923,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1570,12 +1938,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 2002000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 2002000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 2002000.0</p>
+                        <p><b>Max Actual Executions:</b> 49.0</p>
+                        <p><b>Total Actual Executions:</b> 185.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1597,15 +1973,27 @@
             <summary>Q20_WideSchema_SelectStar.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 3 / 3 rules confirmed by runtime evidence
+                    <b>Summary:</b> 3 / 3 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 3 |
-                    Confirmed: 3 |
+                    Runtime-Verifiable Warnings: 3 |
+                    Runtime-Confirmed Findings: 3 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>4</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>3</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1621,7 +2009,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 2251000.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 2251000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 2251000.0</p>
+                        <p><b>Max Actual Executions:</b> 57.0</p>
+                        <p><b>Total Actual Executions:</b> 209.0</p>
+                        <p><b>Scan Count:</b> 4</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1636,7 +2032,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2251000.0</td>
+                <td>Join operator confirms multi-table runtime complexity; High actual row count amplifies join cost; Actual runtime row evidence supports impact; max actual rows = 2251000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 2251000.0</p>
+                        <p><b>Max Actual Executions:</b> 57.0</p>
+                        <p><b>Total Actual Executions:</b> 209.0</p>
+                        <p><b>Scan Count:</b> 4</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Multiple joins detected</p>
@@ -1646,12 +2050,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 2251000.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 2251000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 2251000.0</p>
+                        <p><b>Max Actual Executions:</b> 57.0</p>
+                        <p><b>Total Actual Executions:</b> 209.0</p>
+                        <p><b>Scan Count:</b> 4</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1690,15 +2102,27 @@
             <summary>Q21_Exists.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1714,7 +2138,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 350000.0</td>
+                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 350000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 350000.0</p>
+                        <p><b>Max Actual Executions:</b> 4.0</p>
+                        <p><b>Total Actual Executions:</b> 8.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> EXISTS subquery used</p>
@@ -1736,15 +2168,27 @@
             <summary>Q22_Not_Exists.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                    <b>Summary:</b> 2 / 2 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 2 |
-                    Confirmed: 2 |
+                    Runtime-Verifiable Warnings: 2 |
+                    Runtime-Confirmed Findings: 2 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1760,7 +2204,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 300000.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 300000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 300000.0</p>
+                        <p><b>Max Actual Executions:</b> 4.0</p>
+                        <p><b>Total Actual Executions:</b> 8.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -1775,7 +2227,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 300000.0</td>
+                <td>Merge Join can implement subquery logic efficiently; Aggregation suggests semi-join or deduplication behavior; High actual row count increases subquery impact; Actual runtime row evidence supports impact; max actual rows = 300000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 300000.0</p>
+                        <p><b>Max Actual Executions:</b> 4.0</p>
+                        <p><b>Total Actual Executions:</b> 8.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> NOT EXISTS subquery used</p>
@@ -1805,15 +2265,27 @@
             <summary>Q23_Left_Join.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1824,12 +2296,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1839,12 +2311,20 @@
     </td>
             </tr>
             
-            <tr class="confirmed-medium">
+            <tr class="confirmed-high">
                 <td>missing_index</td>
                 <td>True</td>
-                <td>medium</td>
+                <td>high</td>
                 <td>runtime</td>
-                <td>Multiple scans without seek suggest missing index opportunity; Actual runtime row evidence supports impact; max actual rows = 370202.0</td>
+                <td>High actual row scan suggests missing or ineffective index; Multiple scan operators increase missing-index likelihood; Actual runtime row evidence supports impact; max actual rows = 370202.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 370202.0</p>
+                        <p><b>Max Actual Executions:</b> 3.0</p>
+                        <p><b>Total Actual Executions:</b> 5.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Missing index</p>
@@ -1866,15 +2346,27 @@
             <summary>Q24_Cross_Join.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>1</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1885,12 +2377,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
@@ -1900,12 +2392,12 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>basic_join</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Join detected</p>
@@ -1920,7 +2412,15 @@
                 <td>True</td>
                 <td>medium</td>
                 <td>runtime</td>
-                <td>Join operator confirms cross/cartesian join execution; Actual runtime rows were low, slightly reducing confirmation strength</td>
+                <td>Join operator confirms cross/cartesian join execution; Actual runtime rows were low, slightly reducing confirmation strength
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 3001.0</p>
+                        <p><b>Max Actual Executions:</b> 4.0</p>
+                        <p><b>Total Actual Executions:</b> 9.0</p>
+                        <p><b>Scan Count:</b> 2</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> CROSS JOIN detected</p>
@@ -1950,15 +2450,27 @@
             <summary>Q25_Group_By.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -1974,7 +2486,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Aggregate operator confirms HAVING-related runtime work; Aggregation processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 250000.0</td>
+                <td>Aggregate operator confirms HAVING-related runtime work; Aggregation processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 250000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 250000.0</p>
+                        <p><b>Max Actual Executions:</b> 3.0</p>
+                        <p><b>Total Actual Executions:</b> 8.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> HAVING clause used</p>
@@ -1996,15 +2516,27 @@
             <summary>Q26_Top_Order_By.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                    <b>Summary:</b> 2 / 2 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 2 |
-                    Confirmed: 2 |
+                    Runtime-Verifiable Warnings: 2 |
+                    Runtime-Confirmed Findings: 2 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -2020,7 +2552,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200100.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 200100.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 200100.0</p>
+                        <p><b>Max Actual Executions:</b> 18.0</p>
+                        <p><b>Total Actual Executions:</b> 59.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -2030,12 +2570,12 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
@@ -2050,7 +2590,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 200100.0</td>
+                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 200100.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 200100.0</p>
+                        <p><b>Max Actual Executions:</b> 18.0</p>
+                        <p><b>Total Actual Executions:</b> 59.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> ORDER BY without filtering</p>
@@ -2089,15 +2637,27 @@
             <summary>Q27_Derived_Table.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -2113,7 +2673,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 347941.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 347941.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 347941.0</p>
+                        <p><b>Max Actual Executions:</b> 4.0</p>
+                        <p><b>Total Actual Executions:</b> 10.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -2123,12 +2691,12 @@
     </td>
             </tr>
             
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>derived_table</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Derived table used</p>
@@ -2158,15 +2726,27 @@
             <summary>Q28_Window.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 2 / 2 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 2 |
-                    Confirmed: 2 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>1</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -2177,12 +2757,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="not-confirmed">
+            <tr class="static-only">
                 <td>missing_where</td>
-                <td>False</td>
-                <td>none</td>
-                <td>static</td>
-                <td>Insufficient runtime evidence</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> No WHERE clause</p>
@@ -2193,26 +2773,19 @@
             </tr>
             
             <tr class="confirmed-high">
-                <td>order_by_no_index</td>
-                <td>True</td>
-                <td>high</td>
-                <td>runtime</td>
-                <td>Sort operator detected; Sort processed high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0</td>
-                <td>
-    <div class="recommendation-box">
-        <p><b>Issue:</b> ORDER BY without filtering</p>
-        <p><b>Impact:</b> Expensive sort operation</p>
-        <p><b>Recommendation:</b> Add index or filter rows before sorting</p>
-    </div>
-    </td>
-            </tr>
-            
-            <tr class="confirmed-high">
                 <td>window_function</td>
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Window operator or sort detected; Window processing involved high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0</td>
+                <td>Window operator or sort detected; Window processing involved high actual row volume; Actual runtime row evidence supports impact; max actual rows = 800000.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 800000.0</p>
+                        <p><b>Max Actual Executions:</b> 25.0</p>
+                        <p><b>Total Actual Executions:</b> 73.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Window function used</p>
@@ -2225,15 +2798,7 @@
                 </table>
 
                 <h4>Rewrite Suggestions</h4>
-                
-        <div class="rewrite-box">
-            <p><b>Rule:</b> order_by_no_index</p>
-            <p><b>Issue:</b> Sorting without index</p>
-            <p><b>Suggestion:</b> Add index on ORDER BY column</p>
-            <p><b>Example:</b></p>
-            <pre>CREATE INDEX idx_orders_date ON Orders(OrderDate)</pre>
-        </div>
-        
+                <p>None</p>
             </div>
         </details>
         
@@ -2242,15 +2807,27 @@
             <summary>Q29_Multi_Condition_Where.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-good">
-                    <b>Summary:</b> 1 / 1 rules confirmed by runtime evidence
+                    <b>Summary:</b> 1 / 1 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 1 |
-                    Confirmed: 1 |
+                    Runtime-Verifiable Warnings: 1 |
+                    Runtime-Confirmed Findings: 1 |
                     Rate: 1.0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>1</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>0</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -2266,7 +2843,15 @@
                 <td>True</td>
                 <td>high</td>
                 <td>runtime</td>
-                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 11111.0</td>
+                <td>Scan suggests broad row retrieval; High actual row count increases SELECT * impact; Actual runtime row evidence supports impact; max actual rows = 11111.0
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> 11111.0</p>
+                        <p><b>Max Actual Executions:</b> 1.0</p>
+                        <p><b>Total Actual Executions:</b> 1.0</p>
+                        <p><b>Scan Count:</b> 1</p>
+                        <p><b>Actual Stats Available:</b> True</p>
+                    </div>
+                    </td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> SELECT * used</p>
@@ -2296,15 +2881,27 @@
             <summary>Q30_Correlated_Subquery.sql</summary>
             <div class="query-section">
                 <p class="summary-line summary-neutral">
-                    <b>Summary:</b> 0 / 0 rules confirmed by runtime evidence
+                    <b>Summary:</b> 0 / 0 runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: 0 |
-                    Confirmed: 0 |
+                    Runtime-Verifiable Warnings: 0 |
+                    Runtime-Confirmed Findings: 0 |
                     Rate: 0
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                
+    <div class="operator-summary">
+        <div><b>Scans</b><br>2</div>
+        <div><b>Seeks</b><br>0</div>
+        <div><b>Sorts</b><br>0</div>
+        <div><b>Hash Joins</b><br>1</div>
+        <div><b>Nested Loops</b><br>0</div>
+        <div><b>Key Lookups</b><br>0</div>
+    </div>
+    
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -2315,12 +2912,12 @@
                         <th>Recommendation</th>
                     </tr>
                     
-            <tr class="confirmed-medium">
+            <tr class="static-only">
                 <td>correlated_subquery</td>
-                <td>True</td>
-                <td>medium</td>
-                <td>static</td>
-                <td>High actual row count amplifies correlated subquery cost; Actual runtime row evidence supports impact; max actual rows = 450000.0</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>static-only</td>
+                <td>Advisory static rule; runtime confirmation not applicable</td>
                 <td>
     <div class="recommendation-box">
         <p><b>Issue:</b> Correlated subquery detected</p>

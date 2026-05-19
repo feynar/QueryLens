@@ -1,0 +1,42 @@
+Week 25 — Index-Aware Runtime Reporting and Final Demo Preparation
+
+Hours Logged: 16
+
+Objective
+
+Refine QueryLens by improving index-aware validation, strengthening runtime report readability, and preparing final documentation and demo artifacts.
+
+Activities
+
+Integrated live SQL Server index metadata extraction into the QueryLens analysis workflow using pyodbc. Added an index metadata loader that queries SQL Server system catalog views to identify indexed columns for the benchmark database. Updated the static analysis pipeline so index metadata is loaded once during full batch execution and passed into the static rule engine.
+
+Refined static rule logic to reduce false positives for ORDER BY and missing-index warnings. Updated ORDER BY analysis so indexed ORDER BY columns are not incorrectly reported as missing index issues. Enhanced feature extraction to capture primary table names, ORDER BY columns, join columns, and filter columns so static rules can make more evidence-based decisions.
+
+Improved missing-index detection by using actual SQL Server index metadata together with extracted join and filter columns. This shifted the missing-index rule from a broad scan-based heuristic toward a more realistic index-awareness model supported by live database metadata.
+
+Enhanced the correlation and reporting layers to expose actual runtime evidence more clearly. Added actual execution counts, total execution counts, scan counts, and operator summary statistics to the correlation evidence payload. Updated the HTML validation report with per-query operator summary cards showing scans, seeks, sorts, hash joins, nested loops, and key lookups.
+
+Regenerated the full evaluation pipeline using live SQL Server execution-plan capture and verified successful generation of all analysis, evaluation, reporting, and comparison artifacts. Confirmed that the final report distinguishes runtime-verifiable warnings from static-only advisory findings and that low-evidence cases are suppressed rather than incorrectly confirmed.
+
+Prepared final report assets including updated system architecture and sequence diagrams for project documentation and demonstration.
+
+Outcome
+
+QueryLens now provides stronger live database integration and clearer runtime validation reporting. The system uses pyodbc not only for live execution-plan capture, but also for SQL Server index metadata extraction, improving the credibility and accuracy of static rule interpretation.
+
+The final HTML report now includes operator-level runtime summaries and actual execution evidence, making the system easier to demonstrate and more defensible as a database performance analysis tool.
+
+Evidence
+
+src/db/index_metadata_loader.py
+src/parser/feature_extractor.py
+src/analysis/static_rules.py
+src/correlation/correlator.py
+src/reporting/html_report_generator.py
+src/run_full_analysis.py
+artifacts/index_metadata.json
+artifacts/reports/runtime_validation_report.html
+artifacts/correlation_matrix.csv
+artifacts/evaluation/expanded_runtime_report.json
+docs/System Architecture Diagram.png
+docs/Sequence Diagram.png

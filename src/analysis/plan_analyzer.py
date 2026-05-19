@@ -43,15 +43,22 @@ def parse_plan(file_path):
     with open(file_path, "rb") as f:
         raw = f.read()
 
-    # SQL Server plans are often UTF-16, but fall back to UTF-8 if needed.
+    # Live-captured plans are saved as UTF-8, while manually exported
+    # SQL Server plans may be UTF-16. Try UTF-8 first to avoid decoding
+    # UTF-8 live plans incorrectly as UTF-16.
     try:
-        xml_text = raw.decode("utf-16")
-    except UnicodeError:
-        xml_text = raw.decode("utf-8", errors="ignore")
-        
-    # Remove the XML declaration if present before parsing.
+        xml_text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        try:
+            xml_text = raw.decode("utf-16")
+        except UnicodeError:
+            xml_text = raw.decode("utf-8", errors="ignore")
+
+    xml_text = xml_text.strip()
+
+    # Remove XML declaration if present before parsing.
     if xml_text.startswith("<?xml"):
-        xml_text = xml_text.split("?>", 1)[1]
+        xml_text = xml_text.split("?>", 1)[1].strip()
 
     root = ET.fromstring(xml_text)
 

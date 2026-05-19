@@ -33,7 +33,38 @@ RULE_METADATA = {
     "correlated_subquery": {"runtime_verifiable": False},
 }
 
+def normalize_name(value):
+    if not value:
+        return ""
+    return str(value).replace("[", "").replace("]", "").lower()
 
+
+def is_indexed_column(index_metadata, table_name, column_name):
+    """
+    Returns True if column_name is indexed on table_name.
+    """
+    if not index_metadata:
+        return False
+
+    table = normalize_name(table_name)
+    column = normalize_name(column_name)
+
+    return column in index_metadata.get(table, set())
+
+def any_unindexed_column(index_metadata, table_name, columns):
+    """
+    Returns True if at least one candidate column is not indexed
+    on the table being analyzed.
+    """
+    if not index_metadata or not table_name or not columns:
+        return False
+
+    for column in columns:
+        if not is_indexed_column(index_metadata, table_name, column):
+            return True
+
+    return False
+    
 def build_rule(rule_name, confidence="medium"):
     """
     Builds a normalized rule object using shared metadata.
@@ -49,8 +80,7 @@ def build_rule(rule_name, confidence="medium"):
         "runtime_verifiable": meta.get("runtime_verifiable", False)
     }
 
-
-def evaluate_rules(features):
+def evaluate_rules(features, index_metadata=None):
     """
     Evaluates static anti-pattern rules from extracted SQL features.
 
@@ -85,7 +115,16 @@ def evaluate_rules(features):
 
     # ORDER BY without filtering is treated as a likely sort-cost issue.
     if features["has_order_by"] and not features["has_where"]:
-        rules.append(build_rule("order_by_no_index", "medium"))
+        table_name = features.get("primary_table")
+        order_by_columns = features.get("order_by_columns", [])
+
+        indexed_order_by = any(
+            is_indexed_column(index_metadata, table_name, col)
+            for col in order_by_columns
+        )
+
+        if not indexed_order_by:
+            rules.append(build_rule("order_by_no_index", "medium"))
 
     # NOT EXISTS is checked before EXISTS so the two rules remain mutually exclusive.
     if features["has_not_exists"]:
@@ -105,37 +144,22 @@ def evaluate_rules(features):
     if features["has_having"]:
         rules.append(build_rule("having_clause", "medium"))
         
-    # Join-heavy queries may also trigger missing-index heuristics.        
-    if features["join_count"] > 0:
-        
-        # Case 0: CROSS JOIN is handled separately and is not treated as an index issue.
-        if features["has_cross_join"]:
-            pass
+    # Missing index heuristic using live SQL Server index metadata.
+    # This avoids treating every large join/scan as a missing-index issue.
+    if features["join_count"] > 0 and not features["has_cross_join"]:
+        table_name = features.get("primary_table")
 
-        # Case 1: JOIN without an ON predicate suggests a true cartesian join
-        # or malformed join structure, so missing_index is flagged strongly.
-        elif not features["has_join_predicate"]:
-            rules.append(build_rule("missing_index", "high"))
+        candidate_columns = []
+        candidate_columns.extend(features.get("join_column_names", []))
+        candidate_columns.extend(features.get("where_column_names", []))
 
-        # Case 2: JOIN with WHERE clause uses additional heuristics based on
-        # whether filtering appears selective and whether WHERE references join columns.
-        elif features["has_where"]:
+        if index_metadata:
+            if any_unindexed_column(index_metadata, table_name, candidate_columns):
+                rules.append(build_rule("missing_index", "medium"))
 
-            where_text = " ".join(features["where_columns"])
-            join_text = " ".join(features["join_columns"])
-
-            # Only trigger if the WHERE clause does not reference the stored join columns,
-            # which may suggest weaker filtering or indexing support.
-            if not any(jc in where_text for jc in features["join_columns"]):
-
-                if not features["has_selective_predicate"] and not features["has_range_predicate"]:
-                    rules.append(build_rule("missing_index", "medium"))
-
-                elif features["has_range_predicate"] and not features["has_selective_predicate"]:
-                    rules.append(build_rule("missing_index", "low"))
-
-        # Case 3: JOIN without WHERE is left unflagged for missing_index here.
         else:
-            pass
+            # Offline fallback when SQL Server metadata is unavailable.
+            if not features["has_join_predicate"]:
+                rules.append(build_rule("missing_index", "high"))
     
     return rules

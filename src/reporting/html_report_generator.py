@@ -60,7 +60,10 @@ def build_static_lookup(static_results):
     return lookup
 
 
-def get_row_class(confirmed, confidence):
+def get_row_class(confirmed, confidence, validation_type=None):
+    if validation_type == "static-only":
+        return "static-only"
+
     if not confirmed:
         return "not-confirmed"
 
@@ -121,7 +124,6 @@ def render_rewrites_block(rewrites):
 
     return "\n".join(items)
 
-
 def build_per_query_summary(rows):
     rows = sorted(rows, key=lambda r: r["query"])
 
@@ -145,6 +147,22 @@ def build_per_query_summary(rows):
 
     return "\n".join(table_rows)
 
+def render_operator_summary(details):
+    if not details:
+        return ""
+
+    evidence = details[0].get("evidence", {})
+
+    return f"""
+    <div class="operator-summary">
+        <div><b>Scans</b><br>{html.escape(str(evidence.get("scan_count", 0)))}</div>
+        <div><b>Seeks</b><br>{html.escape(str(evidence.get("seek_count", 0)))}</div>
+        <div><b>Sorts</b><br>{html.escape(str(evidence.get("sort_count", 0)))}</div>
+        <div><b>Hash Joins</b><br>{html.escape(str(evidence.get("hash_join_count", 0)))}</div>
+        <div><b>Nested Loops</b><br>{html.escape(str(evidence.get("nested_loop_count", 0)))}</div>
+        <div><b>Key Lookups</b><br>{html.escape(str(evidence.get("key_lookup_count", 0)))}</div>
+    </div>
+    """
 
 def build_detailed_findings(rows, grouped_details, static_lookup):
     rows = sorted(rows, key=lambda r: r["query"])
@@ -160,6 +178,8 @@ def build_detailed_findings(rows, grouped_details, static_lookup):
 
         summary_class = get_summary_class(confirmed_warnings, static_warnings)
         details = grouped_details.get(query_key, [])
+        
+        operator_summary_html = render_operator_summary(details)
 
         if not details:
             sections.append(f"""
@@ -167,19 +187,18 @@ def build_detailed_findings(rows, grouped_details, static_lookup):
                 <summary>{safe_query_name}</summary>
                 <div class="query-section">
                     <p class="summary-line {summary_class}">
-                        <b>Summary:</b> {confirmed_warnings} / {static_warnings} rules confirmed by runtime evidence
+                        <b>Summary:</b> {confirmed_warnings} / {static_warnings} runtime-verifiable findings confirmed
                     </p>
 
                     <p>
-                        Static Warnings: {static_warnings} |
-                        Confirmed: {confirmed_warnings} |
+                        Runtime-Verifiable Warnings: {static_warnings} |
+                        Runtime-Confirmed Findings: {confirmed_warnings} |
                         Rate: {confirmation_rate}
                     </p>
 
                     <p><b>No runtime-verifiable findings.</b></p>
                     <p>
-                        This query triggered only static analysis rules that cannot be validated
-                        using execution plan evidence, or no rules were detected.
+                        This query triggered no runtime-verifiable warnings.
                     </p>
 
                     <h4>Recommendations</h4>
@@ -200,11 +219,46 @@ def build_detailed_findings(rows, grouped_details, static_lookup):
             rule_name = item.get("rule", "unknown")
             rule = html.escape(str(rule_name))
             confirmed = item.get("confirmed", False)
-            confidence = html.escape(str(item.get("confidence", "none")))
-            validation_type = html.escape(str(item.get("validation_type", "unknown")))
+            raw_confidence = item.get("confidence", "none")
+            raw_validation_type = item.get("validation_type", "unknown")
+
+            if raw_validation_type == "static-only":
+                confirmed_display = "N/A"
+                confidence_display = "N/A"
+            else:
+                confirmed_display = str(confirmed)
+                confidence_display = str(raw_confidence)
+
+            confidence = html.escape(confidence_display)
+            validation_type = html.escape(str(raw_validation_type))
             reason = html.escape(str(item.get("reason", "No explanation available")))
 
-            row_class = get_row_class(confirmed, item.get("confidence", "none"))
+            evidence = item.get("evidence", {})
+            max_actual_rows = evidence.get("max_actual_rows", 0)
+            max_actual_executions = evidence.get("max_actual_executions", 0)
+            total_actual_executions = evidence.get("total_actual_executions", 0)
+            scan_count = evidence.get("scan_count", 0)
+            has_actual_stats = evidence.get("has_actual_stats", False)
+
+            evidence_html = ""
+
+            if raw_validation_type != "static-only":
+                if raw_validation_type != "static-only":
+                    evidence_html = f"""
+                    <div class="evidence-box">
+                        <p><b>Max Actual Rows:</b> {html.escape(str(max_actual_rows))}</p>
+                        <p><b>Max Actual Executions:</b> {html.escape(str(max_actual_executions))}</p>
+                        <p><b>Total Actual Executions:</b> {html.escape(str(total_actual_executions))}</p>
+                        <p><b>Scan Count:</b> {html.escape(str(scan_count))}</p>
+                        <p><b>Actual Stats Available:</b> {html.escape(str(has_actual_stats))}</p>
+                    </div>
+                    """
+
+            row_class = get_row_class(
+                confirmed,
+                raw_confidence,
+                raw_validation_type
+            )
 
             static_item = static_lookup.get((query_key, rule_name), {})
             recommendation_html = render_recommendation_block(
@@ -226,10 +280,10 @@ def build_detailed_findings(rows, grouped_details, static_lookup):
             detail_rows.append(f"""
             <tr class="{row_class}">
                 <td>{rule}</td>
-                <td>{confirmed}</td>
+                <td>{html.escape(confirmed_display)}</td>
                 <td>{confidence}</td>
                 <td>{validation_type}</td>
-                <td>{reason}</td>
+                <td>{reason}{evidence_html}</td>
                 <td>{recommendation_html}</td>
             </tr>
             """)
@@ -241,15 +295,18 @@ def build_detailed_findings(rows, grouped_details, static_lookup):
             <summary>{safe_query_name}</summary>
             <div class="query-section">
                 <p class="summary-line {summary_class}">
-                    <b>Summary:</b> {confirmed_warnings} / {static_warnings} rules confirmed by runtime evidence
+                    <b>Summary:</b> {confirmed_warnings} / {static_warnings} runtime-verifiable findings confirmed
                 </p>
 
                 <p>
-                    Static Warnings: {static_warnings} |
-                    Confirmed: {confirmed_warnings} |
+                    Runtime-Verifiable Warnings: {static_warnings} |
+                    Runtime-Confirmed Findings: {confirmed_warnings} |
                     Rate: {confirmation_rate}
                 </p>
-
+    
+                <h4>Operator Summary</h4>
+                {operator_summary_html}
+    
                 <table class="detail-table">
                     <tr>
                         <th>Rule</th>
@@ -442,6 +499,39 @@ def build_html(summary_report, correlation_results, static_results):
                 background-color: #f8d7da;
                 font-weight: bold;
             }}
+
+            .static-only {{
+                background-color: #e2e3e5;
+                font-weight: bold;
+            }}  
+
+            .evidence-box {{
+                margin-top: 8px;
+                padding: 8px;
+                background: #f7f7f7;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 0.9em;
+            }}
+
+            .evidence-box p {{
+                margin: 3px 0;
+            }}            
+            
+            .operator-summary {{
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 10px;
+                margin: 12px 0 18px 0;
+            }}
+
+            .operator-summary div {{
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                text-align: center;
+            }}
         </style>
     </head>
     <body>
@@ -460,7 +550,7 @@ def build_html(summary_report, correlation_results, static_results):
         <h2>Global Metrics</h2>
         <div class="metric-list">
             <p><b>Total Runtime-Verifiable Static Warnings:</b> {metrics['total_static_warnings']}</p>
-            <p><b>Total Confirmed Warnings:</b> {metrics['total_confirmed_warnings']}</p>
+            <p><b>Total Runtime-Confirmed Findings:</b> {metrics['total_confirmed_warnings']}</p>
             <p><b>Confirmation Rate:</b> {metrics['confirmation_rate']}</p>
         </div>
 
@@ -469,7 +559,7 @@ def build_html(summary_report, correlation_results, static_results):
             <tr>
                 <th>Query</th>
                 <th>Runtime-Verifiable Warnings</th>
-                <th>Confirmed Warnings</th>
+                <th>Runtime-Confirmed Findings</th>
                 <th>Confirmation Rate</th>
             </tr>
             {per_query_summary_html}

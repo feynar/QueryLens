@@ -1,0 +1,20 @@
+{
+    "customers": [
+        "createddate",
+        "customerid"
+    ],
+    "orders": [
+        "customerid",
+        "orderdate",
+        "orderid"
+    ],
+    "products": [
+        "category",
+        "productid"
+    ],
+    "orderitems": [
+        "orderid",
+        "orderitemid",
+        "productid"
+    ]
+}

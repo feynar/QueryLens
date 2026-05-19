@@ -60,7 +60,13 @@ class FeatureExtractor(TSqlParserVisitor):
             "join_columns": [],
             "where_columns": [],
             "has_selective_predicate": False,
-            "has_range_predicate": False
+            "has_range_predicate": False,
+            
+            "primary_table": None,
+            "order_by_columns": [],
+            
+            "join_column_names": [],
+            "where_column_names": []
         }
 
         self.current_depth = 0
@@ -131,6 +137,25 @@ class FeatureExtractor(TSqlParserVisitor):
             if len(parts) > 1:
                 condition = parts[1]
                 self.features["join_columns"].append(condition.strip())
+
+                # Extract simple column names from join predicates, e.g.
+                # c.CustomerID = o.CustomerID -> CustomerID
+                tokens = (
+                    condition
+                    .replace("=", " ")
+                    .replace("(", " ")
+                    .replace(")", " ")
+                    .replace(",", " ")
+                    .split()
+                )
+
+                for token in tokens:
+                    token = token.replace("[", "").replace("]", "").strip()
+
+                    if "." in token:
+                        column = token.split(".")[-1]
+                        if column.isidentifier():
+                            self.features["join_column_names"].append(column)
                 
         return self.visitChildren(ctx)
 
@@ -145,6 +170,30 @@ class FeatureExtractor(TSqlParserVisitor):
 
     def visitOrder_by_clause(self, ctx):
         self.features["has_order_by"] = True
+
+        text = ctx.getText().upper()
+        text = text.replace("ORDERBY", "")
+        text = text.replace("ORDER BY", "")
+
+        for part in text.split(","):
+            col = part.strip()
+            
+            # Remove common ORDER BY modifiers.            
+            col = col.replace("ASC", "").replace("DESC", "").strip()
+            col = col.replace(" ASC", "")
+            col = col.replace(" DESC", "")
+            col = col.replace("ASC", "")
+            col = col.replace("DESC", "")
+            col = col.replace("[", "").replace("]", "")
+            col = col.strip()
+
+            # Remove table alias/schema prefix.
+            if "." in col:
+                col = col.split(".")[-1]
+
+            if col:
+                self.features["order_by_columns"].append(col)
+
         return self.visitChildren(ctx)
 
     # ---------------------------------
@@ -207,14 +256,22 @@ class FeatureExtractor(TSqlParserVisitor):
         if text.startswith("(") and "SELECT" in text:
             self.features["has_derived_table"] = True
 
+        # Capture first table as primary table.
+        if not self.features["primary_table"] and not text.startswith("("):
+            table_name = text.split()[0]
+            
+            # Remove alias fragments and schema prefix.
+            table_name = table_name.replace("[", "").replace("]", "")
+            table_name = table_name.split(".")[-1]            
+
+            self.features["primary_table"] = table_name
+
         alias = None
         as_alias_ctx = ctx.as_table_alias() if hasattr(ctx, "as_table_alias") else None
 
         if as_alias_ctx:
             alias = as_alias_ctx.getText().upper()
-            
-        # Only aliases from the outer query are tracked here.
-        # Subquery-local aliases should not be treated as outer references.
+
         if alias and not self.in_subquery:
             self.outer_tables.add(alias)
 
@@ -228,6 +285,11 @@ class FeatureExtractor(TSqlParserVisitor):
         # Track qualified column references for later missing-index heuristics.
         if "." in text:
             self.features["where_columns"].append(text)
+            
+            column_name = text.split(".")[-1].replace("[", "").replace("]", "").strip()
+
+            if column_name and column_name.isidentifier():
+                self.features["where_column_names"].append(column_name)
             
             alias = text.split(".")[0].strip()
 
