@@ -19,4 +19,4 @@ Evidence
 src/analysis/threshold_config.py
 src/analysis/false_positive_analyzer.py
 artifacts/validation_log.txt
-artifacts/eval/full_pipeline_report.json
+artifacts/evaluation/full_pipeline_report.json

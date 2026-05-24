@@ -16,7 +16,7 @@ test_select_star_detected (tests.test_ast_rules.TestASTRules.test_select_star_de
 test_window_function_detected (tests.test_ast_rules.TestASTRules.test_window_function_detected) ... ok
 
 ----------------------------------------------------------------------
-Ran 13 tests in 0.519s
+Ran 13 tests in 0.480s
 
 OK
 

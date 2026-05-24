@@ -17,6 +17,6 @@ QueryLens now provides empirical characterization of runtime execution behavior 
 Evidence
 
 src/analysis/runtime_behavior_summary.py
-artifacts/eval/runtime_behavior_summary.json
+artifacts/evaluation/runtime_behavior_summary.json
 plans_expanded/*.sqlplan
-artifacts/eval/expanded_runtime_report.json
+artifacts/evaluation/expanded_runtime_report.json

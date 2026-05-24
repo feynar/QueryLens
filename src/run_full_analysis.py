@@ -64,6 +64,7 @@ from src.tools.generate_static_test_log import generate_static_test_log
 from src.tools.false_positive_analyzer import run_analysis as run_false_positive_analysis
 
 from src.db.live_plan_capture import capture_all_plans
+from src.config.db_config import ENABLE_LIVE_CAPTURE
 from src.db.index_metadata_loader import load_index_metadata
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1] 
@@ -71,10 +72,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PLANS_FOLDER = PROJECT_ROOT / "plans"
 LIVE_PLANS_FOLDER = PROJECT_ROOT / "plans_live"
 ARTIFACTS = PROJECT_ROOT / "artifacts"
-
-# Set to True to generate fresh actual execution plans using pyodbc.
-# Set to False to use saved .sqlplan files from plans/.
-USE_LIVE_CAPTURE = True
 
 def save_json(data, path):
     """Writes JSON output to disk, creating parent directories if needed."""    
@@ -157,7 +154,7 @@ def get_plan_file(base, plans_folder):
     Offline mode:
         plans/<query>.sqlplan
     """
-    if USE_LIVE_CAPTURE:
+    if ENABLE_LIVE_CAPTURE:
         return LIVE_PLANS_FOLDER / f"{base}.sqlplan"
 
     return plans_folder / f"{base}.sqlplan"
@@ -179,7 +176,7 @@ def main_batch(plans_folder):
     """    
     print("\n=== Running QueryLens Batch Analysis ===")
     
-    if USE_LIVE_CAPTURE:
+    if ENABLE_LIVE_CAPTURE:
         print("\n=== Live capture enabled ===")
         print("Generating fresh actual execution plans using pyodbc...")
         capture_all_plans()
@@ -188,14 +185,29 @@ def main_batch(plans_folder):
         print("\n=== Offline mode enabled ===")
         print("Using saved .sqlplan files from plans/\n")
 
-    print("\n=== Loading SQL Server index metadata ===")
-    
-    try:
-        index_metadata = load_index_metadata(save_to_file=True)
-        print("Index metadata loaded")
-    except Exception as ex:
-        index_metadata = {}
-        print(f"Index metadata unavailable; continuing without index metadata: {ex}")
+    print("\n=== Loading index metadata ===")
+
+    if ENABLE_LIVE_CAPTURE:
+        try:
+            index_metadata = load_index_metadata(save_to_file=True)
+            print("Live SQL Server index metadata loaded")
+        except Exception as ex:
+            index_metadata = {}
+            print(f"Index metadata unavailable; continuing without index metadata: {ex}")
+    else:
+        try:
+            from src.db.index_metadata_loader import load_index_metadata_from_file
+
+            index_metadata = load_index_metadata_from_file()
+
+            if index_metadata:
+                print("Cached index metadata loaded from artifacts/index_metadata.json")
+            else:
+                print("No cached index metadata found; continuing without index metadata")
+
+        except Exception as ex:
+            index_metadata = {}
+            print(f"Cached index metadata unavailable; continuing without index metadata: {ex}")
         
     baseline_query_count, baseline_seconds = measure_baseline_runtime(plans_folder)
     pipeline_start = time.time()

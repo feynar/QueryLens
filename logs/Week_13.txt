@@ -18,4 +18,4 @@ Evidence
 
 src/analysis/html_report_generator.py
 artifacts/reports/runtime_validation_report.html
-artifacts/eval/full_pipeline_report.json
+artifacts/evaluation/full_pipeline_report.json

@@ -25,6 +25,6 @@ Evidence
 src/analysis/generate_rule_level_metrics	
 src/analysis/runtime_validator_expanded.py
 src/analysis/prototype_plan_analyzer.py
-artifacts/eval/expanded_runtime_report.json
+artifacts/evaluation/expanded_runtime_report.json
 datasets/expanded_workload.sql
 plans_expanded/*.sqlplan

@@ -18,5 +18,5 @@ Evidence
 
 src/analysis/full_pipeline_evaluator.py
 src/correlation/correlator.py
-artifacts/eval/full_pipeline_report.json
+artifacts/evaluation/full_pipeline_report.json
 artifacts/research_summary.txt

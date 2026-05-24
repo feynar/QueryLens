@@ -1,0 +1,52 @@
+Week 26 — Deployment Validation, Environment Reproducibility, and Final Submission Stabilization
+
+Hours Logged: 14
+
+Objective
+
+Finalize QueryLens for reproducible deployment and submission by validating cross-system execution, stabilizing environment configuration behavior, and confirming end-to-end reproducibility of the analysis pipeline.
+
+Activities
+
+Performed deployment validation of QueryLens on a secondary Windows 10 workstation to verify reproducibility outside the primary development environment. Installed Python 3.11.9, SQL Server 2019 Developer Edition, ODBC Driver 17 for SQL Server, and all required Python dependencies using the finalized requirements.txt configuration.
+
+Executed the full QueryLens setup process from a clean environment, including database schema creation, dataset initialization, workload deployment, and runtime pipeline execution. Validated successful SQL Server connectivity using the pyodbc database connection layer and confirmed automated loading of live SQL Server index metadata through system catalog queries.
+
+Refined the execution workflow to support explicit offline and live runtime modes through centralized configuration management. Updated the pipeline so cached index metadata is used during offline execution while live metadata retrieval occurs only when live execution-plan capture is enabled. This improved reproducibility and eliminated unnecessary database dependencies during offline evaluation.
+
+Validated automated generation of all runtime artifacts including:
+
+execution-plan captures,
+runtime validation reports,
+rule-level metrics,
+correlation matrices,
+comparison artifacts,
+performance logs,
+HTML diagnostic reports.
+
+Executed the full automated test suite using pytest and confirmed successful execution of all unit and integration tests across the finalized architecture.
+
+Performed final repository cleanup and dependency verification. Added finalized requirements.txt and updated README documentation describing installation, configuration, offline/live execution modes, and evaluation workflow.
+
+Conducted final review of project documentation, figures, diagrams, and evaluation sections to ensure alignment between implementation artifacts, proposal objectives, and report discussion.
+
+Outcome
+
+QueryLens is now fully reproducible across multiple development environments and supports stable execution in both offline and live SQL Server validation modes. The finalized system includes reproducible installation instructions, validated dependency management, automated testing, and fully operational runtime validation using live SQL Server execution plans and index metadata.
+
+The project is fully stabilized for final academic submission and demonstration.
+
+Evidence
+requirements.txt
+README.md
+src/config/db_config.py
+src/db/db_connection.py
+src/db/index_metadata_loader.py
+src/db/live_plan_capture.py
+src/run_full_analysis.py
+tests/test_ast_rules.py
+tests/test_correlation.py
+tests/test_pipeline_integration.py
+artifacts/live_capture_log.txt
+artifacts/index_metadata.json
+artifacts/reports/runtime_validation_report.html

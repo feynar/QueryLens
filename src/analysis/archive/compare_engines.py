@@ -44,4 +44,4 @@ def save_comparison(results, out_path):
 
 if __name__ == "__main__":
     results = run_comparison("datasets")
-    save_comparison(results, "artifacts/eval/regex_vs_ast_comparison.json")
+    save_comparison(results, "artifacts/evaluation/regex_vs_ast_comparison.json")

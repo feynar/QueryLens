@@ -15,5 +15,5 @@ Evidence
 plans_expanded/.sql
 plans_expanded/.sqlplan
 src/analysis/runtime_validator_expanded.py
-artifacts/eval/expanded_runtime_report.json
-artifacts/eval/expanded_research_summary.txt
+artifacts/evaluation/expanded_runtime_report.json
+artifacts/evaluation/expanded_research_summary.txt

@@ -1,0 +1,4 @@
+antlr4-python3-runtime==4.13.2
+matplotlib==3.8.4
+pyodbc==5.1.0
+pytest==8.2.2

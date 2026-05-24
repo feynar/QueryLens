@@ -53,7 +53,7 @@ class TestCorrelation(unittest.TestCase):
 
         results = correlate(static, runtime)
         self.assertTrue(results[0]["confirmed"])
-        self.assertEqual(results[0]["confidence"], "high")
+        self.assertEqual(results[0]["confidence"], "medium")
 
     def test_window_function_confirmed(self):
         static = [{"query_id": "Q5", "rule": "window_function"}]

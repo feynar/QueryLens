@@ -36,6 +36,6 @@ def generate_summary(comparison_file, output_file):
 
 if __name__ == "__main__":
     generate_summary(
-        "artifacts/eval/regex_vs_ast_comparison.json",
-        "artifacts/eval/comparison_summary.json"
+        "artifacts/evaluation/regex_vs_ast_comparison.json",
+        "artifacts/evaluation/comparison_summary.json"
     )

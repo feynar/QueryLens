@@ -19,4 +19,4 @@ Evidence
 src/analysis/generate_correlation_matrix.py
 src/analysis/full_pipeline_evaluator.py
 artifacts/correlation_matrix.csv
-artifacts/eval/full_pipeline_report.json
+artifacts/evaluation/full_pipeline_report.json

@@ -12,7 +12,6 @@ import pyodbc
 
 from src.config.db_config import CONNECTION_STRING
 
-
 def get_connection():
     """
     Opens and returns a pyodbc connection to SQL Server.
